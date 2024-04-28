@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "902650636483",
+    "project_id": "chayyakartaug",
+    "storage_bucket": "chayyakartaug.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:902650636483:android:6af63ed5a01a5d30695a76",
+        "android_client_info": {
+          "package_name": "com.chayakart"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "902650636483-l4ntfgr5ko34fcrll5dv0d2jc8qndgkl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQfkrwSWHtVYO2himPrWRBK9jBl5ctXh4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "902650636483-l4ntfgr5ko34fcrll5dv0d2jc8qndgkl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
