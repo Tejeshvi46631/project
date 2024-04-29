@@ -10,6 +10,7 @@ import 'package:egrocer/core/provider/productChangeListingProvider.dart';
 import 'package:egrocer/core/provider/productWishListProvider.dart';
 import 'package:egrocer/core/provider/promoCodeProvider.dart';
 import 'package:egrocer/core/provider/userProfileProvider.dart';
+import 'package:egrocer/core/repository/facebook_analytics.dart';
 import 'package:egrocer/core/widgets/sessionManager.dart';
 import 'package:egrocer/features/screens/main/mainInitialize.dart';
 import 'package:egrocer/features/screens/main/mainProviderWidget.dart';
@@ -36,6 +37,8 @@ Future<void> main() async {
 
     await FirebaseMessaging.instance.setAutoInitEnabled(true);
   } catch (_) {}
+
+  FacebookAnalytics.initFbAppEvents();
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
 

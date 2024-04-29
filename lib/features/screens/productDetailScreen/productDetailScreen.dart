@@ -7,6 +7,7 @@ import 'package:egrocer/core/model/productListItem.dart';
 import 'package:egrocer/core/provider/cartListProvider.dart';
 import 'package:egrocer/core/provider/productDetailProvider.dart';
 import 'package:egrocer/core/provider/selectedVariantItemProvider.dart';
+import 'package:egrocer/core/repository/facebook_analytics.dart';
 import 'package:egrocer/core/utils/styles/colorsRes.dart';
 import 'package:egrocer/core/widgets/generalMethods.dart';
 import 'package:egrocer/core/widgets/widgets.dart';
@@ -56,6 +57,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   void initState() {
     super.initState();
     //fetch productList from api
+    _fbViewContentEvent();
     Future.delayed(Duration.zero).then((value) async {
       Map<String, String> params = await Constant.getProductsDefaultParams();
       params[ApiAndParams.id] = widget.id;
@@ -454,5 +456,16 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       images.addAll(product.images);
     }
     context.read<ProductDetailProvider>().notify();
+  }
+
+  void _fbViewContentEvent() {
+    try {
+      FacebookAnalytics.viewContent(id: widget.id, content: {
+        'name': widget.productListItem?.name ?? '',
+        if ((widget.productListItem?.variants ?? []).isNotEmpty)
+          'price': widget.productListItem?.variants.first.discountedPrice,
+        'category_id': widget.productListItem?.categoryId
+      });
+    } catch (e) {}
   }
 }

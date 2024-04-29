@@ -1,4 +1,5 @@
 import 'package:country_code_picker/country_code_picker.dart';
+import 'package:egrocer/core/model/cartData.dart';
 import 'package:egrocer/core/model/homeScreenData.dart';
 import 'package:egrocer/core/model/order.dart';
 import 'package:egrocer/core/model/productList.dart';
@@ -172,10 +173,13 @@ class RouteGenerator {
         );
       //
       case checkoutScreen:
+        var checkoutArguments = settings.arguments as CartData;
         return CupertinoPageRoute(
           builder: (_) => ChangeNotifierProvider<CheckoutProvider>(
             create: (context) => CheckoutProvider(),
-            child: const CheckoutScreen(),
+            child: CheckoutScreen(
+              cartData: checkoutArguments,
+            ),
           ),
         );
       //
