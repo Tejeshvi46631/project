@@ -4,6 +4,7 @@ import 'package:egrocer/core/constant/constant.dart';
 import 'package:egrocer/core/constant/routeGenerator.dart';
 import 'package:egrocer/core/model/productListItem.dart';
 import 'package:egrocer/core/provider/productWishListProvider.dart';
+import 'package:egrocer/core/repository/facebook_analytics.dart';
 import 'package:egrocer/core/widgets/generalMethods.dart';
 import 'package:egrocer/core/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -55,6 +56,9 @@ class _ProductWishListIconState extends State<ProductWishListIcon> {
                         .addRemoveFavoriteProduct(widget.product);
                     widget.product?.isFavorite =
                         (widget.product?.isFavorite == true ? false : true);
+                    if (widget.product?.isFavorite == true) {
+                      _fbEventAddToWishlist();
+                    }
                     setState(() {});
                   }
 
@@ -101,11 +105,11 @@ class _ProductWishListIconState extends State<ProductWishListIcon> {
                                 .stateId ==
                             (widget.product?.id ?? 0))
                     ? Widgets.getLoadingIndicator()
-                    :
-
-                Icon(
-                  size: 25,
-                        color:  widget.product?.isFavorite == true? Colors.red:Colors.grey,
+                    : Icon(
+                        size: 25,
+                        color: widget.product?.isFavorite == true
+                            ? Colors.red
+                            : Colors.grey,
                         /* providerContext
                                 .read<ProductWishListProvider>()
                                 .wishlistProducts
@@ -131,5 +135,26 @@ class _ProductWishListIconState extends State<ProductWishListIcon> {
         });
       },
     );
+  }
+
+  void _fbEventAddToWishlist() {
+    var product = widget.product;
+    double productPrice = 0;
+    try {
+      if (product!.variants.isNotEmpty) {
+        productPrice =
+            double.tryParse(product.variants.first.discountedPrice) ?? 0;
+      }
+      FacebookAnalytics.addToWishlist(
+          id: product.id,
+          type: product.categoryId,
+          currency: 'INR',
+          price: productPrice,
+          content: {
+            'name': product.name,
+            'id': product.id,
+            'category_id': product.categoryId
+          });
+    } catch (e) {}
   }
 }

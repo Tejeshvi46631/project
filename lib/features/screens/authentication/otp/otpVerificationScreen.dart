@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:egrocer/core/constant/constant.dart';
+import 'package:egrocer/core/repository/facebook_analytics.dart';
 import 'package:egrocer/core/widgets/generalMethods.dart';
 import 'package:egrocer/core/widgets/sessionManager.dart';
 import 'package:egrocer/features/screens/authentication/otp/ui/otpBody.dart';
@@ -129,6 +130,7 @@ class _LoginAccountState extends State<OtpVerificationScreen> {
 
         widget.firebaseAuth.signInWithCredential(credential).then((value) {
           User? user = value.user!;
+          FacebookAnalytics.initFbAppEvents();
           OtpFunction.backendApiProcess(
               user, widget.phoneNumber, widget.selectedCountryCode, context);
         }).catchError((e) {
