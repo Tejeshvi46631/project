@@ -1,10 +1,8 @@
-
 import 'package:egrocer/core/constant/constant.dart';
+import 'package:egrocer/core/repository/facebook_analytics.dart';
 import 'package:egrocer/core/widgets/generalMethods.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-
 
 class SessionManager extends ChangeNotifier {
   static String preferenceName = "egrocerappPref";
@@ -175,12 +173,14 @@ class SessionManager extends ChangeNotifier {
           ),
           TextButton(
             onPressed: () {
-              String authData = Constant.session.getData(SessionManager.keyAuthInfo);
+              String authData =
+                  Constant.session.getData(SessionManager.keyAuthInfo);
               prefs.clear();
               setBoolData(introSlider, true, false);
               setBoolData(isUserLogin, false, false);
               setData(SessionManager.keyAuthInfo, authData, false);
-             // Navigator.of(context).pushNamedAndRemoveUntil(loginScreen, (Route<dynamic> route) => false);
+              _fbEventLogout();
+              // Navigator.of(context).pushNamedAndRemoveUntil(loginScreen, (Route<dynamic> route) => false);
             },
             child: Text(
               getTranslatedValue(
@@ -247,5 +247,11 @@ class SessionManager extends ChangeNotifier {
         ],
       ),
     );
+  }
+
+  void _fbEventLogout() {
+    try {
+      FacebookAnalytics.logout();
+    } catch (e) {}
   }
 }

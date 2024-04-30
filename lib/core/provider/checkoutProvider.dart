@@ -4,12 +4,14 @@ import 'package:egrocer/core/constant/apiAndParams.dart';
 import 'package:egrocer/core/constant/constant.dart';
 import 'package:egrocer/core/constant/routeGenerator.dart';
 import 'package:egrocer/core/model/address.dart';
+import 'package:egrocer/core/model/cartData.dart';
 import 'package:egrocer/core/model/checkout.dart';
 import 'package:egrocer/core/model/initiateTransaction.dart';
 import 'package:egrocer/core/model/paymentMethods.dart';
 import 'package:egrocer/core/model/paytmTransationToken.dart';
 import 'package:egrocer/core/model/placedPrePaidOrder.dart';
 import 'package:egrocer/core/model/timeSlots.dart';
+import 'package:egrocer/core/repository/facebook_analytics.dart';
 import 'package:egrocer/core/webservices/addTransactionApi.dart';
 import 'package:egrocer/core/webservices/addressApi.dart';
 import 'package:egrocer/core/webservices/cartApi.dart';
@@ -20,6 +22,7 @@ import 'package:egrocer/core/webservices/timeSlotSettingsApi.dart';
 import 'package:egrocer/core/widgets/generalMethods.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:provider/provider.dart';
 
 enum CheckoutTimeSlotsState {
   timeSlotsLoading,
@@ -359,7 +362,8 @@ class CheckoutProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future placeOrder({required BuildContext context}) async {
+  Future placeOrder(
+      {required BuildContext context, required CartData cartData}) async {
     try {
       print("entered in place order");
       late DateTime dateTime;
@@ -429,6 +433,7 @@ class CheckoutProvider extends ChangeNotifier {
           transactionId = payStackReference;
         } else if (selectedPaymentMethod == "COD") {
           print("enter orderplacescreen");
+          _fbEventPurchaseSuccess(context, cartData);
           Navigator.of(context).pushNamedAndRemoveUntil(
               orderPlaceScreen, (Route<dynamic> route) => false);
         } else if (selectedPaymentMethod == "Paytm") {
@@ -607,5 +612,24 @@ class CheckoutProvider extends ChangeNotifier {
       checkoutPlaceOrderState = CheckoutPlaceOrderState.placeOrderError;
       notifyListeners();
     }
+  }
+
+  void _fbEventPurchaseSuccess(BuildContext context, CartData cartData) {
+    try {
+      var cartTotal =
+          context.read<CheckoutProvider>().subTotalAmount.getTotalWithGST() +
+              context.read<CheckoutProvider>().deliveryCharge;
+      FacebookAnalytics.purchaseSuccess(
+          amount: cartTotal,
+          currency: 'INR',
+          parameters: {
+            'paymentMethod': selectedPaymentMethod,
+            'numItems': cartData.data.cart.length,
+            'items': cartData.data.cart
+                .map((e) =>
+                    {'name': e.name, 'price': e.discountedPrice, 'qty': e.qty})
+                .toList()
+          });
+    } catch (e) {}
   }
 }

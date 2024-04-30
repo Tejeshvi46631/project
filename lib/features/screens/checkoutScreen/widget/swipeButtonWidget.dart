@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:egrocer/core/constant/apiAndParams.dart';
 import 'package:egrocer/core/constant/constant.dart';
+import 'package:egrocer/core/model/cartData.dart';
 import 'package:egrocer/core/provider/checkoutProvider.dart';
+import 'package:egrocer/core/repository/facebook_analytics.dart';
 import 'package:egrocer/core/utils/styles/colorsRes.dart';
 import 'package:egrocer/core/widgets/generalMethods.dart';
 import 'package:egrocer/core/widgets/sessionManager.dart';
@@ -17,9 +19,13 @@ import 'package:razorpay_flutter/razorpay_flutter.dart';
 class OrderSwipeButton extends StatefulWidget {
   final BuildContext context;
   final bool isEnabled;
+  final CartData cartData;
 
   const OrderSwipeButton(
-      {Key? key, required this.context, required this.isEnabled})
+      {Key? key,
+      required this.context,
+      required this.isEnabled,
+      required this.cartData})
       : super(key: key);
 
   @override
@@ -65,6 +71,7 @@ class _SwipeButtonState extends State<OrderSwipeButton> {
         response.paymentId.toString();
     context.read<CheckoutProvider>().addTransaction(context: context);
     print("Payment Successful");
+    _fbEventPurchaseSuccess(context, widget.cartData);
     GeneralMethods.showSnackBarMsg(context, "Payment Successful");
   }
 
@@ -72,9 +79,13 @@ class _SwipeButtonState extends State<OrderSwipeButton> {
     setState(() {
       isPaymentUnderProcessing = false;
     });
-    Map<dynamic, dynamic> message = jsonDecode(response.message ?? "")["error"];
+    try {
+      Map<dynamic, dynamic> message =
+          jsonDecode(response.message ?? "")["error"];
+    } catch (e) {}
     GeneralMethods.showSnackBarMsg(context, "Payment failed");
     print("Payment failed");
+    _fbEventPurchaseFail(context, widget.cartData);
     GeneralMethods.showSnackBarMsg(context, response.code.toString());
     GeneralMethods.showSnackBarMsg(context, response.error.toString());
   }
@@ -237,9 +248,8 @@ class _SwipeButtonState extends State<OrderSwipeButton> {
                             .read<CheckoutProvider>()
                             .selectedPaymentMethod ==
                         "COD") {
-                      await context
-                          .read<CheckoutProvider>()
-                          .placeOrder(context: context);
+                      await context.read<CheckoutProvider>().placeOrder(
+                          context: context, cartData: widget.cartData);
                     } else {
                       if (Constant.isPromoCodeApplied == true) {
                         amount = await ((context
@@ -258,7 +268,8 @@ class _SwipeButtonState extends State<OrderSwipeButton> {
 
                       await context
                           .read<CheckoutProvider>()
-                          .placeOrder(context: context)
+                          .placeOrder(
+                              context: context, cartData: widget.cartData)
                           .then((value) async {
                         if (context
                                 .read<CheckoutProvider>()
@@ -561,5 +572,46 @@ class _SwipeButtonState extends State<OrderSwipeButton> {
             margin: EdgeInsets.all(10),
             borderRadius: 5,
           ); */
+  }
+
+  void _fbEventPurchaseSuccess(BuildContext context, CartData cartData) {
+    try {
+      var cartTotal =
+          context.read<CheckoutProvider>().subTotalAmount.getTotalWithGST() +
+              context.read<CheckoutProvider>().deliveryCharge;
+      var placedOrderId = context.read<CheckoutProvider>().placedOrderId;
+      FacebookAnalytics.purchaseSuccess(
+          amount: cartTotal,
+          currency: 'INR',
+          parameters: {
+            'orderId': placedOrderId,
+            'paymentMethod': 'Razorpay',
+            'numItems': cartData.data.cart.length,
+            'items': cartData.data.cart
+                .map((e) =>
+                    {'name': e.name, 'price': e.discountedPrice, 'qty': e.qty})
+                .toList()
+          });
+    } catch (e) {}
+  }
+
+  void _fbEventPurchaseFail(BuildContext context, CartData cartData) {
+    try {
+      var cartTotal =
+          context.read<CheckoutProvider>().subTotalAmount.getTotalWithGST() +
+              context.read<CheckoutProvider>().deliveryCharge;
+      var placedOrderId = context.read<CheckoutProvider>().placedOrderId;
+      FacebookAnalytics.customEvent(name: 'purchaseFail', parameters: {
+        'orderId': placedOrderId,
+        'amount': cartTotal,
+        'currency': 'INR',
+        'paymentMethod': 'Razorpay',
+        'numItems': cartData.data.cart.length,
+        'items': cartData.data.cart
+            .map((e) =>
+                {'name': e.name, 'price': e.discountedPrice, 'qty': e.qty})
+            .toList()
+      });
+    } catch (e) {}
   }
 }

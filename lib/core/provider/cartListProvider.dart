@@ -2,10 +2,12 @@ import 'package:egrocer/core/constant/apiAndParams.dart';
 import 'package:egrocer/core/constant/constant.dart';
 import 'package:egrocer/core/model/cartData.dart';
 import 'package:egrocer/core/model/cartList.dart';
+import 'package:egrocer/core/model/productListItem.dart';
 import 'package:egrocer/core/provider/cartProvider.dart';
+import 'package:egrocer/core/provider/homeScreenDataProvider.dart';
+import 'package:egrocer/core/repository/facebook_analytics.dart';
 import 'package:egrocer/core/webservices/cartApi.dart';
 import 'package:egrocer/core/widgets/generalMethods.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -16,7 +18,8 @@ class CartListProvider extends ChangeNotifier {
   List<CartList> cartList = [];
 
   Future<void> addRemoveCartItemFromLocalList(
-      {required String productId,
+      {required BuildContext context,
+      required String productId,
       required String productVariantId,
       required String qty}) async {
     if (int.parse(qty) == 0) {
@@ -35,6 +38,7 @@ class CartListProvider extends ChangeNotifier {
           cartList.removeAt(i);
         }
       }
+      _fbAddCartEvent(context, productId, qty);
       cartList.add(CartList(
           productId: productId, productVariantId: productVariantId, qty: qty));
 
@@ -120,6 +124,7 @@ class CartListProvider extends ChangeNotifier {
                       double.parse(response[ApiAndParams.subTotal].toString()));
                 }
                 addRemoveCartItemFromLocalList(
+                    context: context,
                     productId: params[ApiAndParams.productId].toString(),
                     productVariantId:
                         params[ApiAndParams.productVariantId].toString(),
@@ -175,6 +180,7 @@ class CartListProvider extends ChangeNotifier {
                       double.parse(response[ApiAndParams.subTotal].toString()));
                 }
                 addRemoveCartItemFromLocalList(
+                    context: context,
                     productId: params[ApiAndParams.productId].toString(),
                     productVariantId:
                         params[ApiAndParams.productVariantId].toString(),
@@ -203,6 +209,7 @@ class CartListProvider extends ChangeNotifier {
 
         if (response[ApiAndParams.status].toString() == "1") {
           addRemoveCartItemFromLocalList(
+              context: context,
               productId: params[ApiAndParams.productId].toString(),
               productVariantId:
                   params[ApiAndParams.productVariantId].toString(),
@@ -233,5 +240,43 @@ class CartListProvider extends ChangeNotifier {
     notifyListeners();
     await removeItemFromCartApi(
         context: context, params: {ApiAndParams.removeAllCartItems: "1"});
+  }
+
+  void _fbAddCartEvent(BuildContext context, String productId, String qty) {
+    try {
+      var homeScreenProvider =
+          context.read<HomeScreenProvider>().homeScreenData;
+      ProductListItem? productFound;
+      String? sectionTitle;
+      for (int i = 0; i < homeScreenProvider.sections.length; i++) {
+        var section = homeScreenProvider.sections[i];
+        for (int j = 0; j < section.products.length; j++) {
+          var product = section.products[j];
+          if (product.id == productId) {
+            sectionTitle = section.title;
+            productFound = product;
+            break;
+          }
+        }
+      }
+      if (productFound != null) {
+        var itemPrice =
+            double.tryParse(productFound.variants.first.discountedPrice) ?? 0;
+        FacebookAnalytics.addToCart(
+            id: productFound.id,
+            type: productFound.categoryId,
+            currency: 'INR',
+            price: itemPrice,
+            content: {
+              "name": productFound.name,
+              "category_id": productFound.categoryId,
+              "product_variant_id": productFound.variants.first.id,
+              "quantity": qty,
+              "id": productFound.id,
+              "price": itemPrice,
+              "subcategory_name": sectionTitle
+            });
+      }
+    } catch (e) {}
   }
 }
