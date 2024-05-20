@@ -630,6 +630,16 @@ class CheckoutProvider extends ChangeNotifier {
                     {'name': e.name, 'price': e.discountedPrice, 'qty': e.qty})
                 .toList()
           });
+      FacebookAnalytics.customEvent(name: 'purchase_success', parameters: {
+        'total': cartTotal,
+        'currency': 'INR',
+        'paymentMethod': selectedPaymentMethod,
+        'numItems': cartData.data.cart.length,
+        'items': cartData.data.cart
+            .map((e) =>
+                {'name': e.name, 'price': e.discountedPrice, 'qty': e.qty})
+            .toList()
+      });
     } catch (e) {}
   }
 }
