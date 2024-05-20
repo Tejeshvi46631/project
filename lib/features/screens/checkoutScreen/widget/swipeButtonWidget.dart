@@ -592,6 +592,17 @@ class _SwipeButtonState extends State<OrderSwipeButton> {
                     {'name': e.name, 'price': e.discountedPrice, 'qty': e.qty})
                 .toList()
           });
+      FacebookAnalytics.customEvent(name: 'purchase_success', parameters: {
+        'total': cartTotal,
+        'currency': 'INR',
+        'orderId': placedOrderId,
+        'paymentMethod': 'Razorpay',
+        'numItems': cartData.data.cart.length,
+        'items': cartData.data.cart
+            .map((e) =>
+                {'name': e.name, 'price': e.discountedPrice, 'qty': e.qty})
+            .toList()
+      });
     } catch (e) {}
   }
 
