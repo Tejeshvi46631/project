@@ -348,7 +348,9 @@ class _ProductListStackState extends State<ProductListStack> {
                     child: SingleChildScrollView(
                       controller: widget.scrollController,
                       child: ProductListWidget(),
-                    )))
+                    )
+                )
+            )
           ],
         ),
         Consumer<CartListProvider>(

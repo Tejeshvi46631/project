@@ -15,6 +15,11 @@ import 'package:flutter_paystack/flutter_paystack.dart';
 import 'package:paytm/paytm.dart';
 import 'package:provider/provider.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../../../core/constant/routeGenerator.dart';
+import '../../../../core/provider/activeOrdersProvider.dart';
+import '../../orderSummaryScreen/orderSummaryScreen.dart';
 
 class OrderSwipeButton extends StatefulWidget {
   final BuildContext context;
@@ -227,351 +232,107 @@ class _SwipeButtonState extends State<OrderSwipeButton> {
       padding: const EdgeInsets.all(8.0),
       child: Container(
         height: 50,
-        width: MediaQuery.sizeOf(context).width,
+        width: MediaQuery.of(context).size.width,
+        decoration: BoxDecoration(
+          color: ColorsRes.buttoncolor, // Custom background color
+          borderRadius: BorderRadius.circular(10.0), // Rounded border radius
+        ),
         child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: ColorsRes.gradient2,
-              //primary: ColorsRes.gradient2, // background
-              //onPrimary: Colors.white, // foreground
-              foregroundColor: Colors.white,
-            ),
-            onPressed: widget.isEnabled
-                ? () async {
-                    razorpayKey = context
-                        .read<CheckoutProvider>()
-                        .paymentMethodsData
-                        .razorpayKey;
+          style: ElevatedButton.styleFrom(
+            backgroundColor: ColorsRes.buttoncolor,
+            foregroundColor: Colors.white,
+          ),
+          onPressed: widget.isEnabled && !isPaymentUnderProcessing
+              ? () async {
+            SharedPreferences pref = await SharedPreferences.getInstance();
+            pref.remove("discountedAmount");
+            setState(()  {
 
-                   // razorpayKey = "rzp_test_Ins7nrNtRLbZTy";
+              isPaymentUnderProcessing = true;
+            });
 
-                    if (context
-                            .read<CheckoutProvider>()
-                            .selectedPaymentMethod ==
-                        "COD") {
-                      await context.read<CheckoutProvider>().placeOrder(
-                          context: context, cartData: widget.cartData);
-                    } else {
-                      if (Constant.isPromoCodeApplied == true) {
-                        amount = await ((context
-                                        .read<CheckoutProvider>()
-                                        .subTotalAmount -
-                                    Constant.discount)
-                                .getTotalWithGST() +
-                            context.read<CheckoutProvider>().deliveryCharge);
-                      } else {
-                        amount = await (context
-                                .read<CheckoutProvider>()
-                                .subTotalAmount
-                                .getTotalWithGST() +
-                            context.read<CheckoutProvider>().deliveryCharge);
-                      }
+            try {
+              razorpayKey =
+                  context.read<CheckoutProvider>().paymentMethodsData.razorpayKey;
 
-                      await context
-                          .read<CheckoutProvider>()
-                          .placeOrder(
-                              context: context, cartData: widget.cartData)
-                          .then((value) async {
-                        if (context
-                                .read<CheckoutProvider>()
-                                .checkoutPlaceOrderState !=
-                            CheckoutPlaceOrderState.placeOrderError)
-                          openRazorPayGateway();
-                        /*    await context
-                          .read<CheckoutProvider>()
-                          .initiateRazorpayTransaction(context: context)
-                          .then((value) => openRazorPayGateway()); */
-                      });
-                    }
+              Order? placedOrder;
+
+              if (context
+                  .read<CheckoutProvider>()
+                  .selectedPaymentMethod == "COD") {
+                placedOrder = (await context
+                    .read<CheckoutProvider>()
+                    .placeOrder(context: context, cartData: widget.cartData)) as Order?;
+              } else {
+                if (Constant.isPromoCodeApplied) {
+                  amount = await ((context
+                      .read<CheckoutProvider>()
+                      .subTotalAmount -
+                      Constant.discount)
+                      .getTotalWithGST() +
+                      context.read<CheckoutProvider>().deliveryCharge);
+                } else {
+                  amount = await (context
+                      .read<CheckoutProvider>()
+                      .subTotalAmount
+                      .getTotalWithGST() +
+                      context.read<CheckoutProvider>().deliveryCharge);
+                }
+
+                placedOrder = await context
+                    .read<CheckoutProvider>()
+                    .placeOrder(context: context, cartData: widget.cartData)
+                    .then((value) async {
+                  if (context
+                      .read<CheckoutProvider>()
+                      .checkoutPlaceOrderState !=
+                      CheckoutPlaceOrderState.placeOrderError) {
+                    openRazorPayGateway();
                   }
-                : null,
-            child: Text("Procced To Pay")),
+                 // return value;
+                });
+              }
+
+
+
+
+
+
+
+
+            } catch (error) {
+              GeneralMethods.showSnackBarMsg(
+                  context, "Order placement failed");
+            } finally {
+              setState(() {
+                isPaymentUnderProcessing = false;
+              });
+            }
+          }
+              : null,
+          child: isPaymentUnderProcessing
+              ? Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              ),
+              SizedBox(width: 10),
+              Text(
+                  "Your order is being processed, please wait..."),
+            ],
+          )
+              : Text(
+            "Proceed To Pay",
+            style: TextStyle(
+              color: Colors.white, // Set text color to white
+              fontSize: 16, // Adjust font size as needed
+              fontWeight: FontWeight.bold, // Adjust font weight as needed
+            ),
+          ),
+        ),
       ),
     );
-
-    /*  widget.isEnabled
-        ? Padding(
-            padding: EdgeInsetsDirectional.fromSTEB(
-                Constant.size10, 0, Constant.size10, Constant.size10),
-            child: SwipeButton(
-              borderRadius: BorderRadius.all(Radius.circular(Constant.size5)),
-              thumb: Container(
-                height: 60,
-                padding: EdgeInsets.symmetric(
-                    horizontal: Constant.size10, vertical: Constant.size10),
-                decoration: DesignConfig.boxGradient(
-                  8,
-                  color1: !isPaymentUnderProcessing
-                      ? ColorsRes.gradient1
-                      : ColorsRes.grey,
-                  color2: !isPaymentUnderProcessing
-                      ? ColorsRes.gradient2
-                      : ColorsRes.grey,
-                  isSetShadow: false,
-                ),
-                child: Lottie.asset(
-                  Constant.getAssetsPath(3, "swipe_to_order"),
-                ),
-              ),
-              thumbPadding: EdgeInsets.all(Constant.size3),
-              height: 60,
-              enabled: !isPaymentUnderProcessing,
-              activeTrackColor: ColorsRes.appColorLight,
-              activeThumbColor: ColorsRes.appColorLight,
-              inactiveThumbColor: ColorsRes.grey,
-              inactiveTrackColor: ColorsRes.grey,
-              onSwipe: (context.read<CheckoutProvider>().selectedAddress!.id !=
-                      null)
-                  ? 
-                  () {
-                      if (context
-                              .read<CheckoutProvider>()
-                              .selectedPaymentMethod ==
-                          "COD") {
-                        print("entered in cod ");
-                        context
-                            .read<CheckoutProvider>()
-                            .placeOrder(context: context);
-                      } else if (context
-                              .read<CheckoutProvider>()
-                              .selectedPaymentMethod ==
-                          "Razorpay") {
-                        razorpayKey = context
-                            .read<CheckoutProvider>()
-                            .paymentMethodsData
-                            .razorpayKey;
-                        amount = double.parse(Constant.isPromoCodeApplied
-                                    ? (double.parse(context
-                                                    .read<CheckoutProvider>()
-                                                    .totalAmount
-                                                    .toString()
-                                                // .deliveryChargeData
-                                                // .totalAmount
-
-                                                ) -
-                                            Constant.discount)
-                                        // .getTotalWithGST()
-                                        .toString()
-                                    : context
-                                        .read<CheckoutProvider>()
-                                        .totalAmount
-                                        .toString()
-                                // .deliveryChargeData
-                                // .totalAmount
-                                )
-                            .getTotalWithGST();
-                        print("Amount Have To Pay $amount");
-                        context
-                            .read<CheckoutProvider>()
-                            .placeOrder(context: context)
-                            .then((value) {
-                          context
-                              .read<CheckoutProvider>()
-                              .initiateRazorpayTransaction(context: context)
-                              .then((value) => openRazorPayGateway());
-                        });
-                      } else if (context
-                              .read<CheckoutProvider>()
-                              .selectedPaymentMethod ==
-                          "paymentoption") {
-                        razorpayKey = context
-                            .read<CheckoutProvider>()
-                            .paymentMethodsData
-                            .razorpayKey;
-                        amount = double.parse(Constant.isPromoCodeApplied
-                                    ? (double.parse(context
-                                                    .read<CheckoutProvider>()
-                                                    .totalAmount
-                                                    .toString()
-                                                // .deliveryChargeData
-                                                // .totalAmount
-                                                ) -
-                                            Constant.discount)
-                                        .toString()
-                                    : context
-                                        .read<CheckoutProvider>()
-                                        .totalAmount
-                                        .toString()
-                                // .deliveryChargeData
-                                // .totalAmount
-                                )
-                            .getTotalWithGST();
-                        context
-                            .read<CheckoutProvider>()
-                            .placeOrder(context: context)
-                            .then((value) {
-                          context
-                              .read<CheckoutProvider>()
-                              .initiateRazorpayTransaction(context: context)
-                              .then((value) => openRazorPayGateway());
-                        });
-                      } 
-                      else if (context
-                              .read<CheckoutProvider>()
-                              .selectedPaymentMethod ==
-                          "Paystack") {
-                        amount = double.parse(Constant.isPromoCodeApplied
-                                ? (double.parse(context
-                                            .read<CheckoutProvider>()
-                                            .totalAmount
-                                            .toString())
-                                        // .deliveryChargeData
-                                        // .totalAmount)
-                                        -
-                                        Constant.discount)
-                                    .getTotalWithGST()
-                                    .toString()
-                                : context
-                                    .read<CheckoutProvider>()
-                                    .totalAmount
-                                    .toString())
-                            .getTotalWithGST();
-                        context
-                            .read<CheckoutProvider>()
-                            .placeOrder(context: context)
-                            .then((value) => openPaystackPaymentGateway());
-                      } else if (context
-                              .read<CheckoutProvider>()
-                              .selectedPaymentMethod ==
-                          "Stripe") {
-                        amount = double.parse(Constant.isPromoCodeApplied
-                                    ? (double.parse(context
-                                                    .read<CheckoutProvider>()
-                                                    .totalAmount
-                                                    .toString()
-                                                // .deliveryChargeData
-                                                // .totalAmount
-                                                ) -
-                                            Constant.discount)
-                                        .toString()
-                                    : context
-                                        .read<CheckoutProvider>()
-                                        .totalAmount
-                                        .toString()
-                                // .deliveryChargeData
-                                // .totalAmount
-                                )
-                            .getTotalWithGST();
-
-                        context
-                            .read<CheckoutProvider>()
-                            .placeOrder(context: context)
-                            .then((value) {
-                          StripeService.payWithPaymentSheet(
-                            amount:
-                                int.parse((amount * 100).toStringAsFixed(0)),
-                            isTestEnvironment: true,
-                            awaitedOrderId:
-                                context.read<CheckoutProvider>().placedOrderId,
-                            context: context,
-                            currency: context
-                                .read<CheckoutProvider>()
-                                .paymentMethods
-                                .data
-                                .stripeCurrencyCode,
-                          );
-                        });
-                      } else if (context
-                              .read<CheckoutProvider>()
-                              .selectedPaymentMethod ==
-                          "Paytm") {
-                        amount = double.parse(Constant.isPromoCodeApplied
-                                    ? (double.parse(context
-                                                    .read<CheckoutProvider>()
-                                                    .totalAmount
-                                                    .toString()
-                                                // .deliveryChargeData
-                                                // .totalAmount
-                                                ) -
-                                            Constant.discount)
-                                        .toString()
-                                    : context
-                                        .read<CheckoutProvider>()
-                                        .totalAmount
-                                        .toString()
-                                // .deliveryChargeData
-                                // .totalAmount
-                                )
-                            .getTotalWithGST();
-
-                        context
-                            .read<CheckoutProvider>()
-                            .placeOrder(context: context)
-                            .then((value) {
-                          openPaytmPaymentGateway();
-                        });
-                      } else if (context
-                              .read<CheckoutProvider>()
-                              .selectedPaymentMethod ==
-                          "Paypal") {
-                        amount = double.parse(Constant.isPromoCodeApplied
-                                    ? (double.parse(context
-                                                    .read<CheckoutProvider>()
-                                                    .totalAmount
-                                                    .toString()
-                                                // .deliveryChargeData
-                                                // .totalAmount
-                                                ) -
-                                            Constant.discount)
-                                        .toString()
-                                    : context
-                                        .read<CheckoutProvider>()
-                                        .totalAmount
-                                        .toString()
-                                // .deliveryChargeData
-                                // .totalAmount
-                                )
-                            .getTotalWithGST();
-                        context
-                            .read<CheckoutProvider>()
-                            .placeOrder(context: context);
-                      }
-
-                      setState(() {
-                        isPaymentUnderProcessing = true;
-                      });
-                    }
-                  : () {
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        backgroundColor: Colors.transparent.withOpacity(0.4),
-                        padding: EdgeInsets.all(20.0),
-                        content: Text(
-                          'Please Add Address First',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 17,
-                              fontWeight: FontWeight.w600),
-                        ),
-                      ));
-                    },
-              child: isPaymentUnderProcessing
-                  ? CircularProgressIndicator(color: ColorsRes.appColorWhite)
-                  : Text(
-                      context.read<CheckoutProvider>().checkoutAddressState ==
-                              CheckoutAddressState.addressBlank
-                          ? getTranslatedValue(
-                              context,
-                              "lblUnableToCheckout",
-                            )
-                          : getTranslatedValue(
-                              context,
-                              "lblSwipeToPlaceOrder",
-                            ),
-                      style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                            color:
-                                (widget.isEnabled || !isPaymentUnderProcessing)
-                                    ? ColorsRes.appColor
-                                    : ColorsRes.mainTextColor,
-                            fontSize: 16,
-                          ),
-                    ),
-            ),
-          )
-        : CustomShimmer(
-            width: MediaQuery.of(context).size.width,
-            height: Constant.size60,
-            margin: EdgeInsets.all(10),
-            borderRadius: 5,
-          ); */
   }
 
   void _fbEventPurchaseSuccess(BuildContext context, CartData cartData) {

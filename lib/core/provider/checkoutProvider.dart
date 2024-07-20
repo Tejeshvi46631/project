@@ -24,6 +24,8 @@ import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 
+import '../../features/screens/orderSummaryScreen/widgets/OrdersucessfullySummaryScreen.dart';
+
 enum CheckoutTimeSlotsState {
   timeSlotsLoading,
   timeSlotsLoaded,
@@ -91,7 +93,7 @@ class CheckoutProvider extends ChangeNotifier {
   bool isTimeSlotsEnabled = true;
   int selectedDate = 0;
   int selectedTime = 0;
-  String selectedPaymentMethod = "";
+  String? selectedPaymentMethod;
 
   //Payment methods variables
   late PaymentMethods paymentMethods;
@@ -169,14 +171,14 @@ class CheckoutProvider extends ChangeNotifier {
 
   Future getOrderChargesProvider(
       {required BuildContext context,
-      required Map<String, String> params}) async {
+        required Map<String, String> params}) async {
     try {
       checkoutDeliveryChargeState =
           CheckoutDeliveryChargeState.deliveryChargeLoading;
       notifyListeners();
       print(params);
       Map<String, dynamic> getCheckoutData =
-          (await getCartListApi(context: context, params: params));
+      (await getCartListApi(context: context, params: params));
       print(getCheckoutData);
       if (getCheckoutData[ApiAndParams.status].toString() == "1") {
         print("entered ordercharge");
@@ -238,12 +240,12 @@ class CheckoutProvider extends ChangeNotifier {
   Future getTimeSlotsSettings({required BuildContext context}) async {
     try {
       Map<String, dynamic> getTimeSlotsSettings =
-          (await getTimeSlotSettingsApi(context: context, params: {}));
+      (await getTimeSlotSettingsApi(context: context, params: {}));
 
       if (getTimeSlotsSettings[ApiAndParams.status].toString() == "1") {
         print("entered in if gettime");
         TimeSlotsSettings timeSlots =
-            TimeSlotsSettings.fromJson(getTimeSlotsSettings);
+        TimeSlotsSettings.fromJson(getTimeSlotsSettings);
         timeSlotsData = timeSlots.data;
         isTimeSlotsEnabled = timeSlots.data.timeSlotsIsEnabled == "true";
 
@@ -310,7 +312,7 @@ class CheckoutProvider extends ChangeNotifier {
   Future getPaymentMethods({required BuildContext context}) async {
     try {
       Map<String, dynamic> getPaymentMethodsSettings =
-          (await getPaymentMethodsSettingsApi(context: context, params: {}));
+      (await getPaymentMethodsSettingsApi(context: context, params: {}));
 
       if (getPaymentMethodsSettings[ApiAndParams.status].toString() == "1") {
         paymentMethods = PaymentMethods.fromJson(getPaymentMethodsSettings);
@@ -354,12 +356,11 @@ class CheckoutProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
-
-  setSelectedPaymentMethod(String method) {
+  setSelectedPaymentMethod(String? method) {
     isPaymentOptionSelected = false;
     selectedPaymentMethod = method;
     isPaymentOptionSelected = true;
-    notifyListeners();
+    notifyListeners(); // Notify listeners when the state changes
   }
 
   Future placeOrder(
@@ -390,60 +391,65 @@ class CheckoutProvider extends ChangeNotifier {
 
       params[ApiAndParams.finalTotal] = Constant.isPromoCodeApplied
           ? ((
-                          // double.parse(deliveryChargeData.totalAmount)
-                          subTotalAmount - Constant.discount)
-                      .getTotalWithGST() +
-                  deliveryCharge)
-              .toString()
+          // double.parse(deliveryChargeData.totalAmount)
+          subTotalAmount - Constant.discount)
+          .getTotalWithGST() +
+          deliveryCharge)
+          .toString()
           : //double.parse(deliveryChargeData.totalAmount)
-          (subTotalAmount.getTotalWithGST() + deliveryCharge).toString();
+      (subTotalAmount.getTotalWithGST() + deliveryCharge).toString();
 
       params[ApiAndParams.paymentMethod] = selectedPaymentMethod.toString();
       params[ApiAndParams.addressId] = selectedAddress!.id.toString();
       params[ApiAndParams.deliveryTime] =
-          "${dateTime.day}-${dateTime.month}-${dateTime.year} ${timeSlotsData.timeSlots[selectedTime].title}";
+      "${dateTime.day}-${dateTime.month}-${dateTime.year} ${timeSlotsData.timeSlots[selectedTime].title}";
       params[ApiAndParams.status] = orderStatus;
       params[ApiAndParams.discount] = Constant.discount.toString();
       params[ApiAndParams.order_from] = "1";
       print(params);
 
       Map<String, dynamic> getPlaceOrderResponse =
-          (await getPlaceOrderApi(context: context, params: params));
+      (await getPlaceOrderApi(context: context, params: params));
       if (getPlaceOrderResponse[ApiAndParams.status].toString() == "1") {
         if (selectedPaymentMethod == "Razorpay" ||
             selectedPaymentMethod == "Stripe") {
           PlacedPrePaidOrder placedPrePaidOrder =
-              PlacedPrePaidOrder.fromJson(getPlaceOrderResponse);
+          PlacedPrePaidOrder.fromJson(getPlaceOrderResponse);
           placedOrderId = placedPrePaidOrder.data.orderId.toString();
         }
         if (selectedPaymentMethod == "Net Banking" ||
             selectedPaymentMethod == "Stripe") {
           PlacedPrePaidOrder placedPrePaidOrder =
-              PlacedPrePaidOrder.fromJson(getPlaceOrderResponse);
+          PlacedPrePaidOrder.fromJson(getPlaceOrderResponse);
           placedOrderId = placedPrePaidOrder.data.orderId.toString();
         }
-        if (selectedPaymentMethod == "paymentoption" ||
-            selectedPaymentMethod == "Stripe") {
-          PlacedPrePaidOrder placedPrePaidOrder =
-              PlacedPrePaidOrder.fromJson(getPlaceOrderResponse);
-          placedOrderId = placedPrePaidOrder.data.orderId.toString();
-        } else if (selectedPaymentMethod == "Paystack") {
+        // if (selectedPaymentMethod == "paymentoption" ||
+        //     selectedPaymentMethod == "Stripe") {
+        //   PlacedPrePaidOrder placedPrePaidOrder =
+        //   PlacedPrePaidOrder.fromJson(getPlaceOrderResponse);
+        //   placedOrderId = placedPrePaidOrder.data.orderId.toString();
+        // }
+        //
+        else if (selectedPaymentMethod == "Paystack") {
           payStackReference =
-              "Charged_From_${GeneralMethods.setFirstLetterUppercase(Platform.operatingSystem)}_${DateTime.now().millisecondsSinceEpoch}";
+          "Charged_From_${GeneralMethods.setFirstLetterUppercase(Platform.operatingSystem)}_${DateTime.now().millisecondsSinceEpoch}";
           transactionId = payStackReference;
         } else if (selectedPaymentMethod == "COD") {
           print("enter orderplacescreen");
           _fbEventPurchaseSuccess(context, cartData);
-          Navigator.of(context).pushNamedAndRemoveUntil(
-              orderPlaceScreen, (Route<dynamic> route) => false);
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            orderSuccessfullySummaryScreen, (route) => false,// Use the string route name here
+          );
+
         } else if (selectedPaymentMethod == "Paytm") {
           PlacedPrePaidOrder placedPrePaidOrder =
-              PlacedPrePaidOrder.fromJson(getPlaceOrderResponse);
+          PlacedPrePaidOrder.fromJson(getPlaceOrderResponse);
           placedOrderId = placedPrePaidOrder.data.orderId.toString();
           initiatePaytmTransaction(context: context);
         } else if (selectedPaymentMethod == "Paypal") {
           PlacedPrePaidOrder placedPrePaidOrder =
-              PlacedPrePaidOrder.fromJson(getPlaceOrderResponse);
+          PlacedPrePaidOrder.fromJson(getPlaceOrderResponse);
           placedOrderId = placedPrePaidOrder.data.orderId.toString();
           initiatePaypalTransaction(context: context);
         }
@@ -469,12 +475,12 @@ class CheckoutProvider extends ChangeNotifier {
       params[ApiAndParams.amount] = totalAmount.getTotalWithGST().toString();
 
       Map<String, dynamic> getPaytmTransactionTokenResponse =
-          (await getPaytmTransactionTokenApi(context: context, params: params));
+      (await getPaytmTransactionTokenApi(context: context, params: params));
 
       if (getPaytmTransactionTokenResponse[ApiAndParams.status].toString() ==
           "1") {
         PaytmTransactionToken paytmTransactionToken =
-            PaytmTransactionToken.fromJson(getPaytmTransactionTokenResponse);
+        PaytmTransactionToken.fromJson(getPaytmTransactionTokenResponse);
         paytmTxnToken = paytmTransactionToken.data?.txnToken ?? "";
         checkoutPlaceOrderState = CheckoutPlaceOrderState.placeOrderLoaded;
         notifyListeners();
@@ -499,12 +505,12 @@ class CheckoutProvider extends ChangeNotifier {
       params[ApiAndParams.orderId] = placedOrderId;
 
       Map<String, dynamic> getInitiatedTransactionResponse =
-          (await getInitiatedTransactionApi(context: context, params: params));
+      (await getInitiatedTransactionApi(context: context, params: params));
 
       if (getInitiatedTransactionResponse[ApiAndParams.status].toString() ==
           "1") {
         InitiateTransaction initiateTransaction =
-            InitiateTransaction.fromJson(getInitiatedTransactionResponse);
+        InitiateTransaction.fromJson(getInitiatedTransactionResponse);
         razorpayOrderId = initiateTransaction.data.transactionId;
         checkoutPlaceOrderState = CheckoutPlaceOrderState.placeOrderLoaded;
         notifyListeners();
@@ -529,18 +535,20 @@ class CheckoutProvider extends ChangeNotifier {
       params[ApiAndParams.orderId] = placedOrderId;
 
       Map<String, dynamic> getInitiatedTransactionResponse =
-          (await getInitiatedTransactionApi(context: context, params: params));
+      (await getInitiatedTransactionApi(context: context, params: params));
 
       if (getInitiatedTransactionResponse[ApiAndParams.status].toString() ==
           "1") {
         Map<String, dynamic> data =
-            getInitiatedTransactionResponse[ApiAndParams.data];
+        getInitiatedTransactionResponse[ApiAndParams.data];
         Navigator.pushNamed(context, paypalPaymentScreen,
-                arguments: data["paypal_redirect_url"])
+            arguments: data["paypal_redirect_url"])
             .then((value) {
           if (value == true) {
-            Navigator.of(context).pushNamedAndRemoveUntil(
-                orderPlaceScreen, (Route<dynamic> route) => false);
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              orderSuccessfullySummaryScreen, (route) => false,// Use the string route name here
+            );
           } else {
             GeneralMethods.showSnackBarMsg(
               context,
@@ -592,13 +600,15 @@ class CheckoutProvider extends ChangeNotifier {
       print(selectedPaymentMethod.toString());
 
       Map<String, dynamic> addedTransaction =
-          (await getAddTransactionApi(context: context, params: params));
+      (await getAddTransactionApi(context: context, params: params));
       print(addedTransaction[ApiAndParams.status].toString());
       if (addedTransaction[ApiAndParams.status].toString() == "1") {
         checkoutPlaceOrderState = CheckoutPlaceOrderState.placeOrderLoaded;
         notifyListeners();
-        Navigator.of(context).pushNamedAndRemoveUntil(
-            orderPlaceScreen, (Route<dynamic> route) => false);
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          orderSuccessfullySummaryScreen, (route) => false,// Use the string route name here
+        );
       } else {
         print("IN PAYEMNT FAILED MESSAGE");
         GeneralMethods.showSnackBarMsg(
@@ -627,7 +637,7 @@ class CheckoutProvider extends ChangeNotifier {
             'numItems': cartData.data.cart.length,
             'items': cartData.data.cart
                 .map((e) =>
-                    {'name': e.name, 'price': e.discountedPrice, 'qty': e.qty})
+            {'name': e.name, 'price': e.discountedPrice, 'qty': e.qty})
                 .toList()
           });
     } catch (e) {}

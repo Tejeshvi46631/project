@@ -67,20 +67,9 @@ class _ProductListWidgetState extends State<ProductListWidget> {
                   : /* LIST VIEW UI */ Column(
                       mainAxisSize: MainAxisSize.min,
                       children: List.generate(products.length, (index) {
-                        /*   print("Widget Title on product list");
-                        print(Constant.gSections
-                            .where((element) =>
-                                element.categoryid ==
-                                products[index].categoryId)
-                            .toList());
-                        print(widget.title);
-                        print(Constant.gSections
-                            .where((e) => e.title == widget.title)); */
+
                         String
-                            secID = /* Constant.gSections
-                                .where((e) => e.title == widget.title)
-                                .first
-                                .id ?? */
+                            secID =
                             '';
                         return ProductListItemContainer(
                           product: products[index],

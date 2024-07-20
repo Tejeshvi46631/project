@@ -14,8 +14,9 @@ class CustomCircularProgressIndicator extends StatelessWidget {
     return SizedBox(
       height: heightAndWidth ?? 20,
       width: heightAndWidth ?? 20,
-      child: CircularProgressIndicator(
-        color: color ?? ColorsRes.appColor,
+      child: CircularProgressIndicator.adaptive(
+        backgroundColor: color ?? ColorsRes.appColor,
+
       ),
     );
   }

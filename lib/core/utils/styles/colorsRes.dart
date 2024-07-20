@@ -36,7 +36,7 @@ class ColorsRes {
   static Color subTitleMainTextColor = const Color(0x94000000);
 
   static Color mainIconColor = Colors.white;
-
+  static Color butonborder = Colors.orange;
   static Color bgColorLight = const Color(0xfff7f7f7);
   static Color bgColorDark = const Color(0xff141A1F);
 
@@ -48,7 +48,7 @@ class ColorsRes {
 
   static Color subTitleTextColorLight = const Color(0x94000000);
   static Color subTitleTextColorDark = const Color(0x94ffffff);
-
+  static Color buttoncolor = Color.fromRGBO(32, 199, 150, 1.0);
   static Color grey = Colors.grey;
   static Color appColorWhite = Colors.white;
   static Color appColorBlack = Colors.black;

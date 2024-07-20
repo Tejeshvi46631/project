@@ -263,37 +263,7 @@ class _ProductVariantDropDownMenuListState
                                                         ],
                                                       ),
                                                     ),
-                                                    ProductCartButton(
-                                                      productId: widget
-                                                          .product.id
-                                                          .toString(),
-                                                      productVariantId: widget
-                                                          .variants[index].id
-                                                          .toString(),
-                                                      count: int.parse(widget
-                                                                  .variants[
-                                                                      index]
-                                                                  .status) ==
-                                                              0
-                                                          ? -1
-                                                          : int.parse(widget
-                                                              .variants[index]
-                                                              .cartCount),
-                                                      isUnlimitedStock: widget
-                                                              .product
-                                                              .isUnlimitedStock ==
-                                                          "1",
-                                                      maximumAllowedQuantity:
-                                                          double.parse(widget
-                                                              .product
-                                                              .totalAllowedQuantity
-                                                              .toString()),
-                                                      availableStock:
-                                                          double.parse(widget
-                                                              .variants[index]
-                                                              .stock),
-                                                      isGrid: false,
-                                                    ),
+
                                                   ],
                                                 );
                                               },
@@ -319,79 +289,45 @@ class _ProductVariantDropDownMenuListState
                               }
                             }
                           },
-                          child: Container(
-                            margin: widget.isGrid
-                                ? EdgeInsets.zero
-                                : EdgeInsetsDirectional.only(end: 10),
-                            decoration: BoxDecoration(
-                              borderRadius: Constant.borderRadius5,
-                              color: Theme.of(context).scaffoldBackgroundColor,
-                            ),
-                            child: Container(
-                              padding: widget.variants.length > 1
+                          child: Center(
+                            child: Container
+                              (
+                              margin: widget.isGrid
                                   ? EdgeInsets.zero
-                                  : EdgeInsets.all(5),
-                              alignment: AlignmentDirectional.center,
-                              height: 35,
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Spacer(),
-                                  Text(
-                                    " ${widget.variants[0].stockUnitName}",
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: ColorsRes.mainTextColor,
-                                    ),
-                                  ),
-                                  Spacer(),
-                                  if (widget.variants.length > 1)
-                                    Padding(
-                                      padding: EdgeInsetsDirectional.only(
-                                          start: 5, end: 5),
-                                      child: Widgets.defaultImg(
-                                        image: "ic_drop_down",
-                                        height: 10,
-                                        width: 10,
-                                        boxFit: BoxFit.cover,
-                                        iconColor: ColorsRes.mainTextColor,
+                                  : EdgeInsetsDirectional.only(end: 10),
+                              decoration: BoxDecoration(
+                                borderRadius: Constant.borderRadius5,
+                                color: ColorsRes.appColorWhite,
+                              ),
+                              child: Container(
+                                padding: widget.variants.length > 1
+                                    ? EdgeInsets.zero
+                                    : EdgeInsets.all(5),
+                                alignment: AlignmentDirectional.center,
+                                height: 35,
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Spacer(),
+                                    Center(
+                                      child: Text(
+                                        " ${widget.variants[0].stockUnitName}",
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: ColorsRes.mainTextColor,
+                                        ),
                                       ),
                                     ),
-                                ],
+
+
+                                  ],
+                                ),
                               ),
                             ),
                           ),
                         ),
                       ),
-                      Expanded(
-                        child: ProductCartButton(
-                          productId: widget.product.id.toString(),
-                          productVariantId: widget
-                              .variants[selectedVariantItemProvider
-                                  .getSelectedIndex()]
-                              .id
-                              .toString(),
-                          count: int.parse(widget
-                                      .variants[selectedVariantItemProvider
-                                          .getSelectedIndex()]
-                                      .status) ==
-                                  0
-                              ? -1
-                              : int.parse(widget
-                                  .variants[selectedVariantItemProvider
-                                      .getSelectedIndex()]
-                                  .cartCount),
-                          isUnlimitedStock:
-                              widget.product.isUnlimitedStock == "1",
-                          maximumAllowedQuantity: double.parse(
-                              widget.product.totalAllowedQuantity.toString()),
-                          availableStock: double.parse(widget
-                              .variants[selectedVariantItemProvider
-                                  .getSelectedIndex()]
-                              .stock),
-                          isGrid: widget.isGrid,
-                        ),
-                      ),
+
                     ],
                   ),
                 ],

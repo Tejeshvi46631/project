@@ -78,13 +78,13 @@ class _ProductCartButtonState extends State<ProductCartButton> /*with TickerProv
                           color: Colors.transparent,
                         )
                       : BoxDecoration(
-                          color: Colors.transparent,
+                          color: Colors.white,
                           border: Border.symmetric(
                             vertical: BorderSide(
-                              color: ColorsRes.subTitleMainTextColor,
+                              color: ColorsRes.butonborder,
                             ),
                             horizontal: BorderSide(
-                              color: ColorsRes.subTitleMainTextColor,
+                              color: ColorsRes.butonborder,
                             ),
                           ),
                           borderRadius: BorderRadiusDirectional.all(

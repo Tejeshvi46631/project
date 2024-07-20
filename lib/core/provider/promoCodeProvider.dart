@@ -31,7 +31,7 @@ class PromoCodeProvider extends ChangeNotifier {
       print(params);
       Map<String, dynamic> getData =
           (await getPromoCodeApi(context: context, params: params));
-      print("promocodeapi");
+      print(" promocodeapi");
       print(getData);
       print(getData[ApiAndParams.status]);
       if (getData[ApiAndParams.status] == 1) {

@@ -90,13 +90,7 @@ class HomeMainScreenState extends State<HomeMainScreen> {
             ),
       ),
 
-      //   Navigator.pushNamed(
-      //           context,
-      //           orderHistoryScreen,
-      //         );
-      // ProfileScreen(
-      //   scrollController: scrollController[4],
-      // )
+
     ];
 
     Future.delayed(

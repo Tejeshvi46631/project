@@ -20,6 +20,7 @@ class CartWidget extends StatefulWidget {
 }
 
 class _CartWidgetState extends State<CartWidget> {
+
   @override
   Widget build(BuildContext context) {
     return Consumer<CartProvider>(
@@ -100,7 +101,7 @@ class _CartWidgetState extends State<CartWidget> {
                         context, mainHomeScreen,
                       );
                     },
-                    child: Text('Add More Product'),
+                    child: Text('Buy More Product'),
                   )
 
                 ],

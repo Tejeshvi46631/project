@@ -55,6 +55,9 @@ class ProductDetailWidget extends StatefulWidget {
 }
 
 class _ProductDetailWidgetState extends State<ProductDetailWidget> {
+  bool showFullDescription = false;
+
+  bool descTextShowFlag = false;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -414,7 +417,8 @@ class _ProductDetailWidgetState extends State<ProductDetailWidget> {
                                                               ],
                                                             ),
                                                           ),
-                                                          ProductCartButton(
+                                                          ProductCartButton
+                                                            (
                                                             productId: widget
                                                                 .product.id
                                                                 .toString(),
@@ -530,7 +534,8 @@ class _ProductDetailWidgetState extends State<ProductDetailWidget> {
                               ),
                             ),
                             Expanded(
-                              child: ProductCartButton(
+                              child: ProductCartButton
+                                (
                                 productId: widget.product.id.toString(),
                                 productVariantId: widget
                                     .product
@@ -582,14 +587,24 @@ class _ProductDetailWidgetState extends State<ProductDetailWidget> {
               fontWeight: FontWeight.w500),
         ),
         Text(
-          "IN Stock | We Deliver in 3 to 7 working days ",
+          " IN Stock | ",
+          softWrap: true,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+              fontSize: 13,
+              color: Colors.green,
+              fontWeight: FontWeight.w500),
+        ),
+        Text(
+          "We Deliver in 3 to 7 working days ",
           softWrap: true,
           overflow: TextOverflow.ellipsis,
           style: TextStyle(
               fontSize: 12,
               color: ColorsRes.mainTextColor,
               fontWeight: FontWeight.w500),
-        ), Text(
+        ),
+        Text(
           "in all cities districts across india",
           softWrap: true,
           overflow: TextOverflow.ellipsis,
@@ -601,101 +616,77 @@ class _ProductDetailWidgetState extends State<ProductDetailWidget> {
         Widgets.getSizedBox(
           height: Constant.size5,
         ),
-        Padding(
-          padding: const EdgeInsetsDirectional.symmetric(horizontal: 5),
-          child: Card(
-            child: Container(
 
-              
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 5),
+        child: Card(
+          child: Container(
+            margin: const EdgeInsets.all(10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  "Description",
+                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
+                  textAlign: TextAlign.left,
+                ),
+                SizedBox(height: 8),
+                showFullDescription
+                    ? HtmlWidget(
+                  widget.product.description,
 
-              margin: const EdgeInsetsDirectional.all(10),
-              child: Column(
+                )
+                    : HtmlWidget(
+                  _abbreviateDescription(widget.product.description),
 
-                crossAxisAlignment: CrossAxisAlignment.start,
+                ),
+                SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Expanded(
+                      child: ElevatedButton(
+                        child: Text(
+                          showFullDescription ? "View Less" : "View More",
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.black,
+                          ),
+                        ),
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                                  (Set<MaterialState> states) {
+                                // Set transparent background based on button state
+                                if (states.contains(MaterialState.disabled)) {
+                                  return Colors.white; // Make it transparent when disabled
+                                }
+                                return Colors.white; // Make it transparent otherwise
+                              }),
+                          side: MaterialStateProperty.resolveWith<BorderSide>(
+                                (Set<MaterialState> states) {
+                              // Orange border color
+                              return BorderSide(
+                                color: Colors.orange,
+                                width: 1.0, // Border width
+                              );
+                            },
+                          ),
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            showFullDescription = !showFullDescription;
+                          });
+                        },
+                      ),
 
-                children: <Widget>[
-
-                  // ExpandableText(product.description)
-                  HtmlWidget(
-                    widget.product.description,
-                    enableCaching: true,
-                    renderMode: RenderMode.column,
-                    buildAsync: false,
-                    textStyle: TextStyle(color: ColorsRes.mainTextColor),
-                  ),
-
-                  // Text(widget.product.description,
-                  //     maxLines: widget.descTextShowFlag ? 100 : 5,
-                  //     textAlign: TextAlign.start),
-
-
-                  Row(
-
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      widget.descTextShowFlag
-                          ? ElevatedButton(
-                              child: Text("View Less",
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      color: Color.fromRGBO(242, 92, 197, 1))),
-                              style: ButtonStyle(
-                                  foregroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Colors.white),
-                                  backgroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Colors.white),
-                                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                          side: BorderSide(
-                                            color:
-                                                Color.fromRGBO(242, 92, 197, 1),
-                                          )))),
-                              onPressed: () => setState(() {
-                                    widget.descTextShowFlag =
-                                        !widget.descTextShowFlag;
-                                  }))
-                          : ElevatedButton(
-                              child: Text("View More",
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      color: Color.fromRGBO(242, 92, 197, 1))),
-                              style: ButtonStyle(
-                                  foregroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Colors.white),
-                                  backgroundColor:
-                                      MaterialStateProperty.all<Color>(Colors.white),
-                                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                      side: BorderSide(
-                                        color: Color.fromRGBO(242, 92, 197, 1),
-                                      )))),
-                              onPressed: () => setState(() {
-                                    widget.descTextShowFlag =
-                                        !widget.descTextShowFlag;
-                                  }))
-                    ],
-                  ),
-
-                ],
-              ),
-
-              //ExpandableText(product.description)
-              // HtmlWidget(
-              //   product.description,
-              //   enableCaching: true,
-              //   renderMode: RenderMode.column,
-              //   buildAsync: false,
-              //   textStyle: TextStyle(color: ColorsRes.mainTextColor),
-              // ),
+                    ),
+                  ],
+                ),
+              ],
             ),
-
           ),
         ),
+      ),
         Widgets.getSizedBox(
           height: Constant.size5,
         ),
@@ -704,7 +695,7 @@ class _ProductDetailWidgetState extends State<ProductDetailWidget> {
           padding:
               EdgeInsets.only(left: 10.0, top: 8.0, right: 8.0, bottom: 8.0),
           child: Text(
-            "Features",
+            "Features & Details",
             style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
             textAlign: TextAlign.left,
           ),
@@ -722,6 +713,72 @@ class _ProductDetailWidgetState extends State<ProductDetailWidget> {
                 textStyle: TextStyle(color: ColorsRes.mainTextColor),
               ),
             ),
+          ),
+        ),
+        Widgets.getSizedBox(
+          height: Constant.size5,
+        ),
+
+        Container(
+          alignment: Alignment.centerLeft,
+          padding: EdgeInsets.only(left: 10.0, top: 8.0, right: 8.0, bottom: 8.0),
+          child: Column(
+            // crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Text(
+                  "Return Policy",
+                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
+                  textAlign: TextAlign.left,
+                ),
+              ),
+              Center(
+                child: Text(
+                  "This Product is Non-Returnable",
+                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
+                  textAlign: TextAlign.left,
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        Padding(
+          padding: const EdgeInsetsDirectional.symmetric(horizontal: 5),
+          child: ElevatedButton(
+            child: Text(
+              "View Return Policy",
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.black,
+              ),
+            ),
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                      (Set<MaterialState> states) {
+                    // Set transparent background based on button state
+                    if (states.contains(MaterialState.disabled)) {
+                      return Colors.white; // Make it transparent when disabled
+                    }
+                    return Colors.white; // Make it transparent otherwise
+                  }),
+              side: MaterialStateProperty.resolveWith<BorderSide>(
+                    (Set<MaterialState> states) {
+                  // Orange border color
+                  return BorderSide(
+                    color: Colors.orange,
+                    width: 1.0, // Border width
+                  );
+                },
+              ),
+            ),
+            onPressed: () {
+              Navigator.pushNamed(context, webViewScreen,
+                  arguments: getTranslatedValue(
+                    context,
+                    "lblPolicies",
+                  ));
+            },
           ),
         ),
         Widgets.getSizedBox(
@@ -753,9 +810,26 @@ class _ProductDetailWidgetState extends State<ProductDetailWidget> {
                 ),
                 itemCount: widget.shopByReaginProduct.length,
                 itemBuilder: (context, index) {
-                  return ProductListItemContainer(
-                    product: widget.shopByReaginProduct[index],
-                    listSimilarProductListItem: widget.shopByReaginProduct,
+                  return Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10.0),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 2,
+                              blurRadius: 5,
+                              offset: Offset(0, 3), // changes position of shadow
+                            ),
+                          ],
+                        ),
+                        child: ProductListItemContainer(
+                          product: widget.shopByReaginProduct[index],
+                          listSimilarProductListItem: widget.shopByReaginProduct,
+                        )
+                    ),
                   );
                 },
               ),
@@ -791,10 +865,27 @@ class _ProductDetailWidgetState extends State<ProductDetailWidget> {
                 ),
                 itemCount: widget.listSimilarProductListItem.length,
                 itemBuilder: (context, index) {
-                  return ProductListItemContainer(
-                    product: widget.listSimilarProductListItem[index]!,
-                    listSimilarProductListItem:
-                        widget.listSimilarProductListItem,
+                  return Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10.0),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 2,
+                              blurRadius: 5,
+                              offset: Offset(0, 3), // changes position of shadow
+                            ),
+                          ],
+                        ),
+                        child: ProductListItemContainer(
+                          product: widget.listSimilarProductListItem[index]!,
+                          listSimilarProductListItem:
+                          widget.listSimilarProductListItem,
+                        )
+                    ),
                   );
                 },
               ),
@@ -805,4 +896,10 @@ class _ProductDetailWidgetState extends State<ProductDetailWidget> {
       ],
     );
   }
+}
+
+String _abbreviateDescription(String description) {
+  // Return the first few characters or lines of the description for abbreviation
+  // You can customize this logic based on your requirements
+  return description.substring(0, 100); // Example: Show first 100 characters
 }

@@ -4,6 +4,7 @@ import 'package:egrocer/core/constant/routeGenerator.dart';
 import 'package:egrocer/core/model/productListItem.dart';
 import 'package:egrocer/core/provider/selectedVariantItemProvider.dart';
 import 'package:egrocer/core/utils/styles/designConfig.dart';
+import 'package:egrocer/core/widgets/productVariantDropDownMenuGrid.dart';
 import 'package:egrocer/core/widgets/productVariantDropDownMenuList.dart';
 import 'package:egrocer/core/widgets/productWishListIcon.dart';
 import 'package:egrocer/core/widgets/widgets.dart';
@@ -93,73 +94,62 @@ class _State extends State<ProductListItemContainer> {
                                           context: context,
                                         ),
                                       ),
-                                    PositionedDirectional(
-                                        bottom: 5,
-                                        end: 5,
-                                        child: Column(
-                                          children: [
-                                            if (product.indicator == 1)
-                                              Widgets.defaultImg(
-                                                  height: 24,
-                                                  width: 24,
-                                                  image: "veg_indicator"),
-                                            if (product.indicator == 2)
-                                              Widgets.defaultImg(
-                                                  height: 24,
-                                                  width: 24,
-                                                  image: "non_veg_indicator"),
-                                          ],
-                                        )),
+
                                   ],
                                 );
                               },
                             ),
                             Expanded(
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: Constant.size10,
-                                    horizontal: Constant.size10),
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Widgets.getSizedBox(
-                                      height: Constant.size10,
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: Constant.size10,
+                                        horizontal: Constant.size10),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Widgets.getSizedBox(
+                                          height: Constant.size10,
+                                        ),
+                                        Text(
+                                          product.name,
+                                          softWrap: true,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                              fontSize: 13,
+                                              fontWeight: FontWeight.w500),
+                                        ),
+                                        Widgets.getSizedBox(
+                                          height: Constant.size10,
+                                        ),
+                                        ProductVariantDropDownMenuGrid(
+                                          variants: variants,
+                                          from: "",
+                                          product: product,
+                                          isGrid: false,
+                                        ),
+                                      ],
                                     ),
-                                    Text(
-                                      product.name,
-                                      softWrap: true,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.w500),
-                                    ),
-                                    Widgets.getSizedBox(
-                                      height: Constant.size10,
-                                    ),
-                                    ProductVariantDropDownMenuList(
-                                      variants: variants,
-                                      from: "",
-                                      product: product,
-                                      isGrid: false,
-                                    ),
-                                  ],
-                                ),
+
+                                  ),
+                                  // PositionedDirectional(
+                                  //   end: 5,
+                                  //   bottom: 5,
+                                  //   child: ProductWishListIcon(
+                                  //     product: product,
+                                  //   ),
+                                  // ),
+                                ],
                               ),
+
                             )
                           ]),
-                      PositionedDirectional(
-                        end: 5,
-                        top: 5,
-                        child: ProductWishListIcon(
-                          product: product,
-                          onTap: (val) {
-                            setState(() {});
-                          },
-                        ),
-                      ),
+
+
                     ],
                   ),
                 ),

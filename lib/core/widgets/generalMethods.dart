@@ -472,13 +472,33 @@ class GeneralMethods {
     return uri.toString();
   }
 
-  static getCurrencyFormat(double amount) {
+  //Tejeshvi Changes Done Fof round up value
+  static String getCurrencyFormat(double amount) {
+    // Round up the amount using the ceil() method
+    int roundedAmount = amount.ceil();
+
+    // Format the rounded integer as currency
     return NumberFormat.currency(
-            symbol: Constant.currency,
-            decimalDigits: int.parse(Constant.decimalPoints),
-            name: Constant.currencyCode)
-        .format(amount);
+        symbol: Constant.currency,
+        decimalDigits: 0, // Setting decimalDigits to 0 for integer formatting
+        name: Constant.currencyCode
+    ).format(roundedAmount);
   }
+  String getCurrencyFormatdouble(String amountString) {
+    // Parse amountString to double
+    double amount = double.tryParse(amountString) ?? 0.0;
+
+    // Parse decimal points from String to int
+    int decimalDigits = int.tryParse(Constant.decimalPoints) ?? 2;
+
+    // Format the amount using NumberFormat.currency
+    return NumberFormat.currency(
+      symbol: Constant.currency,
+      decimalDigits: decimalDigits,
+      name: Constant.currencyCode,
+    ).format(amount);
+  }
+
 }
 
 String getTranslatedValue(BuildContext context, String key) {

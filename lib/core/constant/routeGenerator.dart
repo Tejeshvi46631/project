@@ -58,6 +58,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../features/screens/orderSummaryScreen/widgets/OrdersucessfullySummaryScreen.dart';
+
 const String introSliderScreen = 'introSliderScreen';
 const String splashScreen = 'splashScreen';
 const String loginScreen = 'loginScreen';
@@ -83,7 +85,7 @@ const String addressListScreen = 'addressListScreen';
 const String addressDetailScreen = 'addressDetailScreen';
 const String orderDetailScreen = 'orderDetailScreen';
 const String orderHistoryScreen = 'orderHistoryScreen';
-const String notificationListScreen = 'notificationListScreen';
+const String notificationListScreen = 'orderHistoryScreen';
 const String transactionListScreen = 'transactionListScreen';
 const String faqListScreen = 'faqListScreen';
 const String orderPlaceScreen = 'orderPlaceScreen';
@@ -93,6 +95,7 @@ const String notificationsAndMailSettingsScreenScreen =
 const String underMaintenanceScreen = 'underMaintenanceScreen';
 const String appUpdateScreen = 'appUpdateScreen';
 const String paypalPaymentScreen = 'paypalPaymentScreen';
+const String orderSuccessfullySummaryScreen = 'orderSuccessfullySummaryScreen';
 
 String currentRoute = splashScreen;
 
@@ -101,21 +104,30 @@ class RouteGenerator {
     currentRoute = settings.name ?? "";
 
     switch (settings.name) {
-      case introSliderScreen:
-        return CupertinoPageRoute(
-          builder: (_) => const IntroSliderScreen(),
-        );
+      // case introSliderScreen:
+      //   return CupertinoPageRoute(
+      //     builder: (_) => const IntroSliderScreen(),
+      //   );
 
       case splashScreen:
         return CupertinoPageRoute(
           builder: (_) => const Splash(),
+        );
+// Route generator snippet
+    // Route generator snippet
+      case orderSuccessfullySummaryScreen:
+        return CupertinoPageRoute(
+          builder: (_) => ChangeNotifierProvider<ActiveOrdersProvider>(
+            create: (context) => ActiveOrdersProvider(),
+            child: const OrdersucessfullySummaryScreen(),
+          ),
         );
 
       case loginScreen:
         return CupertinoPageRoute(
           builder: (_) => const LoginAccount(),
         );
-      //
+    //
       case webViewScreen:
         return CupertinoPageRoute(
           builder: (_) => WebViewScreen(dataFor: settings.arguments as String),
@@ -130,32 +142,32 @@ class RouteGenerator {
               phoneNumber: firebaseArguments[2] as String,
               selectedCountryCode: firebaseArguments[3] as CountryCode),
         );
-      //
+    //
       case editProfileScreen:
         return CupertinoPageRoute(
           builder: (_) => EditProfile(from: settings.arguments as String),
         );
-      //
+    //
       case getLocationScreen:
         return CupertinoPageRoute(
           builder: (_) => GetLocation(from: settings.arguments as String),
         );
-      //
+    //
       case confirmLocationScreen:
         List<dynamic> confirmLocationArguments =
-            settings.arguments as List<dynamic>;
+        settings.arguments as List<dynamic>;
         return CupertinoPageRoute(
           builder: (_) => ConfirmLocation(
             address: confirmLocationArguments[0],
             from: confirmLocationArguments[1] as String,
           ),
         );
-      //
+    //
       case mainHomeScreen:
         return CupertinoPageRoute(
           builder: (_) => HomeMainScreen(),
         );
-      //
+    //
       case cartScreen:
         return CupertinoPageRoute(
           builder: (_) => ChangeNotifierProvider<CartProvider>(
@@ -163,7 +175,7 @@ class RouteGenerator {
             child: const CartListScreen(),
           ),
         );
-      //
+    //
       case wishlistScreen:
         return CupertinoPageRoute(
           builder: (_) => ChangeNotifierProvider<ProductWishListProvider>(
@@ -171,7 +183,7 @@ class RouteGenerator {
             child: const WishListDrawerScreen(),
           ),
         );
-      //
+    //
       case checkoutScreen:
         var checkoutArguments = settings.arguments as CartData;
         return CupertinoPageRoute(
@@ -182,7 +194,7 @@ class RouteGenerator {
             ),
           ),
         );
-      //
+    //
       case promoCodeScreen:
         return CupertinoPageRoute(
           builder: (_) => ChangeNotifierProvider<PromoCodeProvider>(
@@ -190,10 +202,10 @@ class RouteGenerator {
             child: PromoCodeListScreen(amount: settings.arguments as double),
           ),
         );
-      //
+    //
       case productListScreen:
         List<dynamic> productListArguments =
-            settings.arguments as List<dynamic>;
+        settings.arguments as List<dynamic>;
         return CupertinoPageRoute(
           builder: (_) => ChangeNotifierProvider<ProductListProvider>(
             create: (context) => ProductListProvider(),
@@ -208,7 +220,7 @@ class RouteGenerator {
         );
       case productListScreenV2:
         List<dynamic> productListArguments =
-            settings.arguments as List<dynamic>;
+        settings.arguments as List<dynamic>;
         return CupertinoPageRoute(
           builder: (_) => ChangeNotifierProvider<ProductListProviderV2>(
             create: (context) => ProductListProviderV2(),
@@ -223,7 +235,7 @@ class RouteGenerator {
             ),
           ),
         );
-      //
+    //
       case productSearchScreen:
         return CupertinoPageRoute(
           builder: (_) => ChangeNotifierProvider<ProductSearchProvider>(
@@ -231,10 +243,10 @@ class RouteGenerator {
             child: ProductSearchScreen(),
           ),
         );
-      //
+    //
       case productListFilterScreen:
         List<dynamic> productListFilterArguments =
-            settings.arguments as List<dynamic>;
+        settings.arguments as List<dynamic>;
         return CupertinoPageRoute(
           builder: (_) => ChangeNotifierProvider<ProductFilterProvider>(
             create: (context) => ProductFilterProvider(),
@@ -249,7 +261,7 @@ class RouteGenerator {
 
       case productDetailScreen:
         List<dynamic> productDetailArguments =
-            settings.arguments as List<dynamic>;
+        settings.arguments as List<dynamic>;
         return CupertinoPageRoute(
           builder: (_) => ChangeNotifierProvider<ProductDetailProvider>(
             create: (context) => ProductDetailProvider(),
@@ -262,10 +274,10 @@ class RouteGenerator {
             ),
           ),
         );
-      //
+    //
       case fullScreenProductImageScreen:
         List<dynamic> productFullScreenImagesScreen =
-            settings.arguments as List<dynamic>;
+        settings.arguments as List<dynamic>;
         return CupertinoPageRoute(
           builder: (_) => ProductFullScreenImagesScreen(
             initialPage: productFullScreenImagesScreen[0] as int,
@@ -273,7 +285,7 @@ class RouteGenerator {
             isVideo: productFullScreenImagesScreen[2] as bool,
           ),
         );
-      //
+    //
       case addressListScreen:
         return CupertinoPageRoute(
           builder: (_) => ChangeNotifierProvider<AddressProvider>(
@@ -283,10 +295,10 @@ class RouteGenerator {
             ),
           ),
         );
-      //
+    //
       case addressDetailScreen:
         List<dynamic> addressDetailArguments =
-            settings.arguments as List<dynamic>;
+        settings.arguments as List<dynamic>;
         return CupertinoPageRoute(
           builder: (_) => ChangeNotifierProvider<AddressProvider>(
             create: (context) => AddressProvider(),
@@ -296,7 +308,7 @@ class RouteGenerator {
             ),
           ),
         );
-      //
+    //
       case orderHistoryScreen:
         return CupertinoPageRoute(
           builder: (_) => ChangeNotifierProvider<ActiveOrdersProvider>(
@@ -304,7 +316,7 @@ class RouteGenerator {
             child: const OrdersHistoryScreen(),
           ),
         );
-      //
+    //
       case orderDetailScreen:
         return CupertinoPageRoute(
           builder: (_) => ChangeNotifierProvider(
@@ -314,7 +326,7 @@ class RouteGenerator {
             ),
           ),
         );
-      //
+    //
       case notificationListScreen:
         return CupertinoPageRoute(
           builder: (_) => ChangeNotifierProvider<NotificationProvider>(
@@ -322,7 +334,7 @@ class RouteGenerator {
             child: const NotificationListScreen(),
           ),
         );
-      //
+    //
       case transactionListScreen:
         return CupertinoPageRoute(
           builder: (_) => ChangeNotifierProvider<TransactionProvider>(
@@ -330,7 +342,7 @@ class RouteGenerator {
             child: const TransactionListScreen(),
           ),
         );
-      //
+    //
       case faqListScreen:
         return CupertinoPageRoute(
           builder: (_) => ChangeNotifierProvider<FaqProvider>(
@@ -338,7 +350,7 @@ class RouteGenerator {
             child: const FaqListScreen(),
           ),
         );
-      //
+    //
       case notificationsAndMailSettingsScreenScreen:
         return CupertinoPageRoute(
           builder: (_) => ChangeNotifierProvider<NotificationsSettingsProvider>(
@@ -346,28 +358,28 @@ class RouteGenerator {
             child: const NotificationsAndMailSettingsScreenScreen(),
           ),
         );
-      //
+    //
       case orderPlaceScreen:
         return CupertinoPageRoute(
           builder: (_) => const OrderPlacedScreen(),
         );
-      //
+    //
       case orderCompleteScreen:
         return CupertinoPageRoute(
           builder: (_) => OrderCompleteScreen(),
         );
-      //
+    //
       case underMaintenanceScreen:
         return CupertinoPageRoute(
           builder: (_) => const UnderMaintenanceScreen(),
         );
-      //
+    //
       case appUpdateScreen:
         return CupertinoPageRoute(
           builder: (_) =>
               AppUpdateScreen(canIgnoreUpdate: settings.arguments as bool),
         );
-      //
+    //
       case paypalPaymentScreen:
         return CupertinoPageRoute(
           builder: (_) =>
@@ -375,7 +387,7 @@ class RouteGenerator {
         );
 
       default:
-        // If there is no such named route in the switch statement, e.g. /third
+      // If there is no such named route in the switch statement, e.g. /third
         return _errorRoute();
     }
   }
@@ -393,3 +405,4 @@ class RouteGenerator {
     });
   }
 }
+

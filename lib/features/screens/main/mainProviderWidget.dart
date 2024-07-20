@@ -13,6 +13,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../home/homeScreen/mainHomeScreen.dart';
+
 class MainProvider {
   static MaterialApp widgetCall(currLang,BuildContext context) {
     return MaterialApp(
@@ -27,7 +29,7 @@ class MainProvider {
         "lblAppName",
       ),
       theme: ColorsRes.setAppTheme(),
-      home: const Splash(),
+      home: const HomeMainScreen(),
       localizationsDelegates: const [
         TranslationsDelegate(),
         CountryLocalizations.delegate,

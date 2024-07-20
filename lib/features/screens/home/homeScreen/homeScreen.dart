@@ -30,7 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     //fetch productList from api
     Future.delayed(Duration.zero).then(
-      (value) async {
+          (value) async {
         HomeScreenFunction.callInit(context);
         checkUsedPromoCode();
       },
@@ -97,15 +97,15 @@ class _HomeScreenState extends State<HomeScreen> {
             builder: (context, cartListProvider, child) {
               return cartListProvider.cartListState == CartListState.loading
                   ? PositionedDirectional(
-                      top: 0,
-                      end: 0,
-                      start: 0,
-                      bottom: 0,
-                      child: Container(
-                          color: Colors.black.withOpacity(0.2),
-                          child:
-                              const Center(child: CircularProgressIndicator())),
-                    )
+                top: 0,
+                end: 0,
+                start: 0,
+                bottom: 0,
+                child: Container(
+                    color: Colors.black.withOpacity(0.2),
+                    child:
+                    const Center(child: CircularProgressIndicator())),
+              )
                   : const SizedBox.shrink();
             },
           ),

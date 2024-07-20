@@ -95,7 +95,7 @@ class _OrdersHistoryScreenState extends State<OrdersHistoryScreen>
                 child: Column(
                   children: List.generate(
                     provider.orders.length,
-                    (index) => _buildOrderContainer(
+                        (index) => _buildOrderContainer(
                       provider.orders[index],
                     ),
                   ),

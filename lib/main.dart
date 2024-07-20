@@ -21,6 +21,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'core/provider/activeOrdersProvider.dart';
 export 'package:awesome_notifications/awesome_notifications.dart';
 
 Future<void> main() async {
@@ -74,6 +76,9 @@ class MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider<ActiveOrdersProvider>(
+          create: (context) => ActiveOrdersProvider(),
+        ),
         ChangeNotifierProvider<CategoryListProvider>(
           create: (context) {
             return CategoryListProvider();
@@ -89,6 +94,7 @@ class MyAppState extends State<MyApp> {
             return CityByLatLongProvider();
           },
         ),
+
         ChangeNotifierProvider<HomeScreenProvider>(
           create: (context) {
             return HomeScreenProvider();

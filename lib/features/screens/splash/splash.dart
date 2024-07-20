@@ -50,7 +50,7 @@ class _SplashScreenState extends State<Splash> {
       backgroundColor: Colors.white,
       body: Container(
         alignment: Alignment.center,
-        child: Widgets.defaultImg(image: 'splash_logo'),
+        //child: Widgets.defaultImg(image: 'splash_logo'),
       ),
     );
   }

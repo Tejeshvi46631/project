@@ -29,8 +29,14 @@ class ActiveOrdersProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
-
-  getOrders({
+  Order? getCurrentOrder() {
+    // Example: Get the last order in the list
+    if (orders.isNotEmpty) {
+      return orders.last;
+    }
+    return null;
+  }
+  Future<void> getOrders({
     required Map<String, String> params,
     required BuildContext context,
   }) async {
@@ -44,20 +50,19 @@ class ActiveOrdersProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-
       params[ApiAndParams.limit] = Constant.defaultDataLoadLimitAtOnce.toString();
       print(params[ApiAndParams.limit]);
       params[ApiAndParams.offset] = offset.toString();
       print(params[ApiAndParams.offset]);
-      Map<String, dynamic> getData = (await fetchOrders(context: context, params: params));
+      Map<String, dynamic> getData =
+      await fetchOrders(context: context, params: params);
 
       if (getData[ApiAndParams.status].toString() == "1") {
-        print("getdata issue");
-
-        // totalData = 4;
         totalData = int.parse(getData[ApiAndParams.total].toString());
 
-        List<Order> tempOrders = (getData['data'] as List).map((e) => Order.fromJson(Map.from(e ?? {}))).toList();
+        List<Order> tempOrders = (getData['data'] as List)
+            .map((e) => Order.fromJson(Map.from(e ?? {})))
+            .toList();
 
         orders.addAll(tempOrders);
       }

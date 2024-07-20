@@ -31,7 +31,7 @@ class _OrderDetailContainerState extends State<OrderDetailContainer> {
                     "${getTranslatedValue(
                       context,
                       "lblOrder",
-                    )} #${widget.order.id}",
+                    )} ${widget.order.id}",
                     style: const TextStyle(fontWeight: FontWeight.w500),
                   ),
                   const Spacer(),

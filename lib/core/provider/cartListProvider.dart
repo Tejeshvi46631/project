@@ -19,9 +19,9 @@ class CartListProvider extends ChangeNotifier {
 
   Future<void> addRemoveCartItemFromLocalList(
       {required BuildContext context,
-      required String productId,
-      required String productVariantId,
-      required String qty}) async {
+        required String productId,
+        required String productVariantId,
+        required String qty}) async {
     if (int.parse(qty) == 0) {
       for (int i = 0; i < cartList.length; i++) {
         if (cartList[i].productId == productId &&
@@ -53,12 +53,12 @@ class CartListProvider extends ChangeNotifier {
       try {
         Map<String, String> params = await Constant.getProductsDefaultParams();
         Map<String, dynamic> getData =
-            await getCartListApi(context: context, params: params);
+        await getCartListApi(context: context, params: params);
         if (getData[ApiAndParams.status].toString() == "1") {
           List<Cart> carts =
-              (getData[ApiAndParams.data][ApiAndParams.cart] as List)
-                  .map((e) => Cart.fromJson(Map.from(e)))
-                  .toList();
+          (getData[ApiAndParams.data][ApiAndParams.cart] as List)
+              .map((e) => Cart.fromJson(Map.from(e)))
+              .toList();
 
           for (int i = 0; i < carts.length; i++) {
             cartList.add(CartList(
@@ -104,7 +104,7 @@ class CartListProvider extends ChangeNotifier {
       if (int.parse(params[ApiAndParams.qty].toString()) > 0) {
         if (isUnlimitedStock) {
           if (double.parse(params[ApiAndParams.qty].toString()) >
-                  maximumAllowedQuantity &&
+              maximumAllowedQuantity &&
               actionFor == "add") {
             GeneralMethods.showSnackBarMsg(
               context,
@@ -127,7 +127,7 @@ class CartListProvider extends ChangeNotifier {
                     context: context,
                     productId: params[ApiAndParams.productId].toString(),
                     productVariantId:
-                        params[ApiAndParams.productVariantId].toString(),
+                    params[ApiAndParams.productVariantId].toString(),
                     qty: params[ApiAndParams.qty].toString());
               } else {
                 cartListState = CartListState.error;
@@ -147,7 +147,7 @@ class CartListProvider extends ChangeNotifier {
           }
         } else {
           if (double.parse(params[ApiAndParams.qty].toString()) >
-                  availableStock &&
+              availableStock &&
               actionFor == "add") {
             GeneralMethods.showSnackBarMsg(
               context,
@@ -159,7 +159,7 @@ class CartListProvider extends ChangeNotifier {
             cartListState = CartListState.error;
             notifyListeners();
           } else if (double.parse(params[ApiAndParams.qty].toString()) >
-                  maximumAllowedQuantity &&
+              maximumAllowedQuantity &&
               actionFor == "add") {
             GeneralMethods.showSnackBarMsg(
               context,
@@ -183,7 +183,7 @@ class CartListProvider extends ChangeNotifier {
                     context: context,
                     productId: params[ApiAndParams.productId].toString(),
                     productVariantId:
-                        params[ApiAndParams.productVariantId].toString(),
+                    params[ApiAndParams.productVariantId].toString(),
                     qty: params[ApiAndParams.qty].toString());
               } else {
                 cartListState = CartListState.error;
@@ -204,7 +204,7 @@ class CartListProvider extends ChangeNotifier {
         }
       } else {
         response =
-            await removeItemFromCartApi(context: context, params: params);
+        await removeItemFromCartApi(context: context, params: params);
         params[ApiAndParams.qty] = "0";
 
         if (response[ApiAndParams.status].toString() == "1") {
@@ -212,7 +212,7 @@ class CartListProvider extends ChangeNotifier {
               context: context,
               productId: params[ApiAndParams.productId].toString(),
               productVariantId:
-                  params[ApiAndParams.productVariantId].toString(),
+              params[ApiAndParams.productVariantId].toString(),
               qty: params[ApiAndParams.qty].toString());
 
           if (from == "cartList") {

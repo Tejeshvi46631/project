@@ -4,16 +4,23 @@ import 'package:egrocer/core/provider/cartListProvider.dart';
 import 'package:egrocer/core/utils/styles/colorsRes.dart';
 import 'package:egrocer/core/widgets/generalMethods.dart';
 import 'package:egrocer/core/widgets/widgets.dart';
+import 'package:egrocer/features/screens/home/homeScreen/mainHomeScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/model/order.dart';
+import '../../../core/provider/activeOrdersProvider.dart';
+
 class OrderPlacedScreen extends StatefulWidget {
-  const OrderPlacedScreen({Key? key}) : super(key: key);
+  // Add this field to accept the order object
+
+  const OrderPlacedScreen({Key? key}) : super(key: key); // Modify the constructor
 
   @override
   State<OrderPlacedScreen> createState() => _OrderPlacedScreenState();
 }
+
 
 class _OrderPlacedScreenState extends State<OrderPlacedScreen> {
   @override
@@ -22,6 +29,7 @@ class _OrderPlacedScreenState extends State<OrderPlacedScreen> {
     Future.delayed(Duration.zero).then((value) =>
         context.read<CartListProvider>().clearCart(context: context));
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -85,13 +93,23 @@ class _OrderPlacedScreenState extends State<OrderPlacedScreen> {
                   Widgets.getSizedBox(
                     height: Constant.size20,
                   ),
+                  //Changes Done By Tejeshvi
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.of(context).pushNamedAndRemoveUntil(
-                        orderHistoryScreen,
-                        (Route<dynamic> route) => false,
-                      );
-                    },
+                        Navigator.pushNamed(
+                                context,
+                                orderHistoryScreen,
+                              );
+                    //   Navigator.pushNamed(
+                    //     context,
+                    //     orderDetailScreen,
+                    //     arguments: widget.order,
+                    //   ).then((value) {
+                    //     if (value != null) {
+                    //       context.read<ActiveOrdersProvider>().updateOrder(value as Order);
+                    //     }
+                    //   });
+                     },
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 20, vertical: 15),

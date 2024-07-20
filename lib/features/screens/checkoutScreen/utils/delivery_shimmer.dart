@@ -1,12 +1,15 @@
 import 'package:egrocer/core/constant/constant.dart';
 import 'package:egrocer/core/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class GetDeliveryShimmer extends StatelessWidget {
   const GetDeliveryShimmer({super.key});
 
+
   @override
   Widget build(BuildContext context) {
+
     return Padding(
       padding: EdgeInsets.all(Constant.size10),
       child: Column(

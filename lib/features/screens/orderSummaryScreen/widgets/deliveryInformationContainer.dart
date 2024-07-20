@@ -1,7 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:egrocer/core/model/order.dart';
 import 'package:egrocer/core/utils/styles/colorsRes.dart';
 import 'package:egrocer/core/widgets/generalMethods.dart';
-import 'package:flutter/material.dart';
 
 class DeliveryInformationContainer extends StatelessWidget {
   final Order order;
@@ -10,57 +10,60 @@ class DeliveryInformationContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Card(
       margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.only(bottom: 10, top: 10),
-      width: MediaQuery.of(context).size.width,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: Theme.of(context).cardColor),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Text(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      elevation: 2,
+      child: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
               getTranslatedValue(
                 context,
                 "lblDeliveryInformation",
               ),
-              style:
-                  const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500),
+              style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500),
             ),
-          ),
-          const Divider(),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  getTranslatedValue(
-                    context,
-                    "lblDeliverTo",
-                  ),
-                  style: const TextStyle(fontWeight: FontWeight.w500),
+            const Divider(),
+            ListTile(
+              leading: Icon(Icons.person, color: Theme.of(context).primaryColor),
+              title: Text(
+                order.userName,
+                style: TextStyle(
+                  color: ColorsRes.subTitleMainTextColor,
+                  fontSize: 13.0,
+                  fontWeight: FontWeight.w700,
                 ),
-                const SizedBox(
-                  height: 2.5,
-                ),
-                Text(
-                  order.address,
-                  style: TextStyle(
-                      color: ColorsRes.subTitleMainTextColor, fontSize: 13.0),
-                ),
-                Text(
-                  order.mobile,
-                  style: TextStyle(
-                      color: ColorsRes.subTitleMainTextColor, fontSize: 12.0),
-                ),
-              ],
+              ),
             ),
-          ),
-        ],
+            ListTile(
+              leading: Icon(Icons.location_on, color: Theme.of(context).primaryColor),
+              title: Text(
+                order.address,
+                style: TextStyle(
+                  color: ColorsRes.subTitleMainTextColor,
+                  fontSize: 13.0,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.phone, color: Theme.of(context).primaryColor),
+              title: Text(
+                order.mobile,
+                style: TextStyle(
+                  color: ColorsRes.subTitleMainTextColor,
+                  fontSize: 12.0,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
