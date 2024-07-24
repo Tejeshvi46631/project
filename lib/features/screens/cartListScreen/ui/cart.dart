@@ -2,13 +2,11 @@ import 'package:egrocer/core/constant/constant.dart';
 import 'package:egrocer/core/constant/routeGenerator.dart';
 import 'package:egrocer/core/model/cartData.dart';
 import 'package:egrocer/core/provider/cartProvider.dart';
-import 'package:egrocer/core/provider/promoCodeProvider.dart';
 import 'package:egrocer/core/widgets/cartListItemContainer.dart';
 import 'package:egrocer/core/widgets/defaultBlankItemMessageScreen.dart';
 import 'package:egrocer/core/widgets/generalMethods.dart';
 import 'package:egrocer/core/widgets/widgets.dart';
 import 'package:egrocer/features/screens/cartListScreen/ui/btn.dart';
-import 'package:egrocer/features/screens/checkoutScreen/widget/promoCode.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

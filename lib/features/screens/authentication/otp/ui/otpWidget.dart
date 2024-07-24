@@ -65,7 +65,7 @@ class OtpScreenWidget{
           )}\t",
           children: <TextSpan>[
             TextSpan(
-                text: timer != null && timer!.isActive
+                text: timer != null && timer.isActive
                     ? otpResendTime.toString()
                     : getTranslatedValue(
                   context,

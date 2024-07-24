@@ -110,7 +110,7 @@ class ColorsRes {
       ),
     ),
     colorScheme: ColorScheme.fromSwatch(primarySwatch: ColorsRes.appColor).copyWith(
-      background: bgColorDark,
+      surface: bgColorDark,
       brightness: Brightness.dark,
     ),
   );
@@ -134,7 +134,7 @@ class ColorsRes {
     }
 
     if (isDark) {
-      if (!isDarkTheme) {
+     /* if (!isDarkTheme) {
         Constant.session.setBoolData(SessionManager.isDarkTheme, false, false);
       }
       mainTextColor = darkThemeTextColor;
@@ -143,7 +143,17 @@ class ColorsRes {
       shimmerBaseColor = shimmerBaseColorDark;
       shimmerHighlightColor = shimmerHighlightColorDark;
       shimmerContentColor = shimmerContentColorDark;
-      return darkTheme;
+      return darkTheme;*/
+      if (!isDarkTheme) {
+        Constant.session.setBoolData(SessionManager.isDarkTheme, true, false);
+      }
+      mainTextColor = lightThemeTextColor;
+      subTitleMainTextColor = subTitleTextColorLight;
+
+      shimmerBaseColor = shimmerBaseColorLight;
+      shimmerHighlightColor = shimmerHighlightColorLight;
+      shimmerContentColor = shimmerContentColorLight;
+      return lightTheme;
     } else {
       if (isDarkTheme) {
         Constant.session.setBoolData(SessionManager.isDarkTheme, true, false);

@@ -11,7 +11,7 @@ import 'package:egrocer/core/widgets/generalMethods.dart';
 import 'package:egrocer/core/widgets/sessionManager.dart';
 import 'package:egrocer/core/widgets/widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_paystack/flutter_paystack.dart';
+//import 'package:flutter_paystack/flutter_paystack.dart';
 import 'package:paytm/paytm.dart';
 import 'package:provider/provider.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
@@ -43,7 +43,7 @@ class _SwipeButtonState extends State<OrderSwipeButton> {
   late String razorpayKey = "";
   late String paystackKey = "";
   late double amount = 0.00;
-  late PaystackPlugin paystackPlugin;
+  //late PaystackPlugin paystackPlugin;
 
   Future<void> storePromoUser() async {
     await FirebaseFirestore.instance.collection('users').add({
@@ -57,14 +57,14 @@ class _SwipeButtonState extends State<OrderSwipeButton> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration.zero).then((value) async {
+   /* Future.delayed(Duration.zero).then((value) async {
       paystackPlugin = PaystackPlugin();
       _razorpay.on(
           Razorpay.EVENT_PAYMENT_SUCCESS, _handleRazorPayPaymentSuccess);
       _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handleRazorPayPaymentError);
       _razorpay.on(
           Razorpay.EVENT_EXTERNAL_WALLET, _handleRazorPayExternalWallet);
-    });
+    });*/
   }
 
   void _handleRazorPayPaymentSuccess(PaymentSuccessResponse response) {
@@ -131,7 +131,7 @@ class _SwipeButtonState extends State<OrderSwipeButton> {
   }
 
   // Using package flutter_paystack
-  Future openPaystackPaymentGateway() async {
+ /* Future openPaystackPaymentGateway() async {
     await paystackPlugin.initialize(
         publicKey: context
             .read<CheckoutProvider>()
@@ -167,7 +167,7 @@ class _SwipeButtonState extends State<OrderSwipeButton> {
       });
       GeneralMethods.showSnackBarMsg(context, response.message);
     }
-  }
+  }*/
 
   //Paytm Payment Gateway
   openPaytmPaymentGateway() async {

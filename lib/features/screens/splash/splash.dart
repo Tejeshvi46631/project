@@ -18,39 +18,67 @@ class Splash extends StatefulWidget {
 class _SplashScreenState extends State<Splash> {
   late PackageInfo packageInfo;
   String currentAppVersion = "";
-  String expectedAppVersion = "1.0.16";
+  final String expectedAppVersion = "1.0.16";
 
   @override
   void initState() {
     super.initState();
-
-    Future.delayed(Duration.zero).then((value) async {
-      try {
-        SplashInit.firebaseCall(context);
-      } catch (ignore) {}
-      packageInfo = await PackageInfo.fromPlatform();
-      SplashSetting.getSetting(
-          context, packageInfo, currentAppVersion, expectedAppVersion);
-    });
+    initializeSplash();
   }
 
-  callHomeProvider() async {
-    Map<String, String> params = await Constant.getProductsDefaultParams();
-    await context
-        .read<HomeScreenProvider>()
-        .getHomeScreenApiProvider(context: context, params: params)
-        .then((homeScreenData) async {
-      print("In mainnn");
-    });
+  Future<void> initializeSplash() async {
+    await initializeFirebase();
+    await fetchPackageInfo();
+    await getSettings();
+    await callHomeProvider();
+    navigateToNextScreen();
+  }
+
+  Future<void> initializeFirebase() async {
+    try {
+      await SplashInit.firebaseCall(context);
+    } catch (e) {
+      print("Firebase initialization error: $e");
+    }
+  }
+
+  Future<void> fetchPackageInfo() async {
+    try {
+      packageInfo = await PackageInfo.fromPlatform();
+      currentAppVersion = packageInfo.version;
+    } catch (e) {
+      print("Error fetching package info: $e");
+    }
+  }
+
+  Future<void> getSettings() async {
+    try {
+      await SplashSetting.getSetting(context, packageInfo, currentAppVersion, expectedAppVersion);
+    } catch (e) {
+      print("Error getting settings: $e");
+    }
+  }
+
+  Future<void> callHomeProvider() async {
+    try {
+      Map<String, String> params = await Constant.getProductsDefaultParams();
+      await context.read<HomeScreenProvider>().getHomeScreenApiProvider(context: context, params: params);
+    } catch (e) {
+      print("Error calling home provider: $e");
+    }
+  }
+
+  void navigateToNextScreen() {
+    // TODO: Add logic to navigate to the next screen, e.g.:
+    // Navigator.pushReplacementNamed(context, Routes.nextScreen);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Container(
-        alignment: Alignment.center,
-        //child: Widgets.defaultImg(image: 'splash_logo'),
+      body: Center(
+        child: Widgets.defaultImg(image: 'splash_logo'),
       ),
     );
   }

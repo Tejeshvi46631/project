@@ -64,11 +64,9 @@ class _LoginUpperWidgetState extends State<LoginUpperWidget> {
                     textOverflow: TextOverflow.ellipsis,
                     showCountryOnly: false,
                     alignLeft: false,
-                    backgroundColor:
-                        isDark ? Colors.black : Colors.black,
+                   // backgroundColor: isDark ? Colors.black : Colors.black,
                     textStyle: TextStyle(color: ColorsRes.mainTextColor),
-                    dialogBackgroundColor:
-                        isDark ? Colors.black : Colors.black,
+                   // dialogBackgroundColor: isDark ? Colors.black : Colors.black,
                     padding: EdgeInsets.zero,
                   ),
                 ),
@@ -161,8 +159,7 @@ class _LoginUpperWidgetState extends State<LoginUpperWidget> {
     if (edtPhoneNumber.text.isNotEmpty) {
       await FirebaseAuth.instance.verifyPhoneNumber(
         timeout: Duration(seconds: Constant.otpTimeOutSecond),
-        phoneNumber:
-            '${selectedCountryCode!.dialCode}${edtPhoneNumber.text}',
+        phoneNumber: '${selectedCountryCode!.dialCode}${edtPhoneNumber.text}',
         verificationCompleted: (PhoneAuthCredential credential) {},
         verificationFailed: (FirebaseAuthException e) {
           GeneralMethods.showSnackBarMsg(context, e.message!);
@@ -174,7 +171,7 @@ class _LoginUpperWidgetState extends State<LoginUpperWidget> {
           isLoading = false;
           setState(() {
             phoneNumber =
-                '${selectedCountryCode!.dialCode} - ${edtPhoneNumber.text}';
+            '${selectedCountryCode!.dialCode} - ${edtPhoneNumber.text}';
             otpVerificationId = verificationId;
             List<dynamic> firebaseArguments = [
               firebaseAuth,

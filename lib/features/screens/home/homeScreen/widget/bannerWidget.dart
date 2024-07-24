@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:egrocer/core/constant/constant.dart';
 import 'package:egrocer/core/constant/routeGenerator.dart';
 import 'package:egrocer/core/model/homeScreenData.dart';
@@ -6,17 +7,22 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class BannerUi extends StatelessWidget {
-  const BannerUi(
-      {super.key, required this.banner, this.horizontalPadding = true});
+  const BannerUi({
+    Key? key,
+    required this.banner,
+    this.horizontalPadding = true,
+  }) : super(key: key);
 
   final BannerModel banner;
   final bool horizontalPadding;
 
   @override
   Widget build(BuildContext context) {
-    var splittedUrl =
-        banner.navigateUrl?.replaceAll('/subCategory/', "").split("/");
+    var splittedUrl = banner.navigateUrl?.replaceAll('/subCategory/', "").split("/");
     var subCategoryId = splittedUrl?.first;
+
+    print("View all Split: $subCategoryId");
+
     String? selectedCategory;
     if (splittedUrl?.length == 2) {
       selectedCategory = splittedUrl?[1];
@@ -24,23 +30,28 @@ class BannerUi extends StatelessWidget {
     if (banner.type == 'wholesale') {
       return SizedBox();
     }
+
     return InkWell(
       onTap: () {
+        final sectionsList = subCategoryId != null
+            ? context
+            .read<HomeScreenProvider>()
+            .homeScreenData
+            .sections.where((element) => element.categoryid == subCategoryId)
+            .toList()
+            : [];
+
+        // Debugging prints
+        print("SubCategoryId: $subCategoryId");
+        print("Sections List: $sectionsList");
+
         Navigator.pushNamed(context, productListScreenV2, arguments: [
           banner.alt,
-          subCategoryId != null
-              ? context
-                  .read<HomeScreenProvider>()
-                  .homeScreenData
-                  .sections
-                  .where((element) => element.categoryid == subCategoryId)
-                  .toList()
-              : [],
+          sectionsList,
           selectedCategory?.split("_").last ?? "",
         ]);
       },
       child: SizedBox(
-        // height: MediaQuery.of(context).size.height * 0.28,
         child: Padding(
           padding: EdgeInsets.symmetric(
               vertical: 10.0, horizontal: horizontalPadding ? 10 : 0),
@@ -49,9 +60,13 @@ class BannerUi extends StatelessWidget {
             child: ClipRRect(
               borderRadius: Constant.borderRadius10,
               clipBehavior: Clip.antiAliasWithSaveLayer,
-              child: Image.network(
-                banner.imageUrl,
+              child: CachedNetworkImage(
+                imageUrl: banner.imageUrl,
                 fit: BoxFit.cover,
+                placeholder: (context, url) => Center(
+                  child: CircularProgressIndicator(),
+                ),
+                errorWidget: (context, url, error) => Icon(Icons.image_rounded),
               ),
             ),
           ),
@@ -60,3 +75,4 @@ class BannerUi extends StatelessWidget {
     );
   }
 }
+

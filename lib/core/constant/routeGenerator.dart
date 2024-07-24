@@ -30,7 +30,6 @@ import 'package:egrocer/features/screens/confirmLocationScreen/confirmLocationSc
 import 'package:egrocer/features/screens/home/homeScreen/mainHomeScreen.dart';
 import 'package:egrocer/features/screens/home/ordersHistoryScreen/ordersHistoryScreen.dart';
 import 'package:egrocer/features/screens/home/wishlist/drawer/wishlist_drawer.dart';
-import 'package:egrocer/features/screens/introSlider/intro.dart';
 import 'package:egrocer/features/screens/orderCompleteScreen/orderCompleteScreen.dart';
 import 'package:egrocer/features/screens/orderSummaryScreen/orderSummaryScreen.dart';
 import 'package:egrocer/features/screens/otherScreens/appUpdateScreen.dart';

@@ -126,11 +126,12 @@ class HomeMainScreenState extends State<HomeMainScreen> {
     networkStatus = await GeneralMethods.checkInternet()
         ? NetworkStatus.online
         : NetworkStatus.offline;
+
     Connectivity().onConnectivityChanged.listen(
-      (status) {
+          (ConnectivityResult status) {
         if (mounted) {
           setState(
-            () {
+                () {
               networkStatus = GeneralMethods.getNetworkStatus(status);
             },
           );
@@ -139,40 +140,38 @@ class HomeMainScreenState extends State<HomeMainScreen> {
     );
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: homeBottomNavigation(
           currentPage, selectBottomMenu, pages.length, context),
       body: networkStatus == NetworkStatus.online
-          ? WillPopScope(
-              onWillPop: () {
-                if (currentPage == 0) {
-                  return Future.value(true);
-                } else {
-                  if (mounted) {
-                    setState(
-                      () {
-                        currentPage = 0;
-                      },
-                    );
-                  }
-                  return Future.value(false);
-                }
-              },
-              child: IndexedStack(
-                index: currentPage,
-                children: pages,
-              ),
-            )
+          ? PopScope(
+        canPop: currentPage == 0,
+        onPopInvoked: (didPop) {
+          if (didPop) return;
+          if (currentPage != 0) {
+            if (mounted) {
+              setState(() {
+                currentPage = 0;
+              });
+            }
+          }
+        },
+        child: IndexedStack(
+          index: currentPage,
+          children: pages,
+        ),
+      )
           : Center(
-              child: Text(
-                getTranslatedValue(
-                  context,
-                  "lblCheckInternet",
-                ),
-              ),
-            ),
+        child: Text(
+          getTranslatedValue(
+            context,
+            "lblCheckInternet",
+          ),
+        ),
+      ),
     );
   }
 

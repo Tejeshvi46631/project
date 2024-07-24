@@ -111,6 +111,9 @@ class HomeScreenCategory {
                                         _category.name,
                                         _sections,
                                         _sections[index].title,
+                                        print("list ${_sections.toList()}"),
+                                        print("index tile ${_sections[index].title}"),
+                                        print("index tilename ${_category.name}")
                                         /*  sections
                                                 ?.where((element) =>
                                                     element.categoryid ==
@@ -132,7 +135,7 @@ class HomeScreenCategory {
                                         CrossAxisAlignment.start,
                                     children: [
                                       SizedBox(
-                                        width: 200,
+                                        width: 180,
                                         // height: 150,
                                         child: ClipRRect(
                                           borderRadius: BorderRadius.only(

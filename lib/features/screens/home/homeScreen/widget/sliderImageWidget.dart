@@ -30,12 +30,16 @@ class SliderImageWidget extends StatefulWidget {
 
 class _SliderImageWidgetState extends State<SliderImageWidget> {
   PageController _pageController = PageController(initialPage: 0);
+  Timer? _sliderTimer;
 
   @override
   void initState() {
+    super.initState();
+    _pageController = PageController();
     Future.delayed(Duration.zero).then((value) {
       if (mounted) {
-        Timer.periodic(Duration(seconds: 3), (timer) {
+        _sliderTimer = Timer.periodic(Duration(seconds: 3), (timer) {
+          if (!mounted) return;
           if (context.read<SliderImagesProvider>().currentSliderImageIndex <
               (widget.sliders.length - 1)) {
             context.read<SliderImagesProvider>().setSliderCurrentIndexImage(
@@ -51,11 +55,11 @@ class _SliderImageWidgetState extends State<SliderImageWidget> {
         });
       }
     });
-    super.initState();
   }
 
   @override
   void dispose() {
+    _sliderTimer?.cancel();
     _pageController.dispose();
     super.dispose();
   }

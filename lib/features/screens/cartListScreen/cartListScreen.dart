@@ -1,7 +1,6 @@
 import 'package:egrocer/core/constant/constant.dart';
 import 'package:egrocer/core/provider/cartListProvider.dart';
 import 'package:egrocer/core/provider/cartProvider.dart';
-import 'package:egrocer/core/utils/styles/colorsRes.dart';
 import 'package:egrocer/core/widgets/defaultBlankItemMessageScreen.dart';
 import 'package:egrocer/core/widgets/generalMethods.dart';
 import 'package:egrocer/core/widgets/widgets.dart';

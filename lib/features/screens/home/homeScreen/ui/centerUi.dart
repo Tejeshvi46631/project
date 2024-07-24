@@ -63,6 +63,7 @@ class _HomeCenterUIState extends State<HomeCenterUI> {
                   if (homeScreenProvider.homeScreenData.topBanners.isNotEmpty)
                     BannerUi(
                       banner: homeScreenProvider.homeScreenData.topBanners.first,
+                     // list: homeScreenProvider.homeScreenData.sections,
                     ),
                   SizedBox(height: 10),
                   // Below slider offer images

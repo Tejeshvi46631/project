@@ -12,7 +12,7 @@ import 'package:url_launcher/url_launcher.dart';
 class LocalAwesomeNotification {
   AwesomeNotifications notification = AwesomeNotifications();
 
-  init(BuildContext context) {
+  init(BuildContext context) async{
     requestPermission();
 
     notification.initialize(
@@ -24,13 +24,22 @@ class LocalAwesomeNotification {
           channelDescription: 'Notification channel',
           playSound: true,
           enableVibration: true,
+          criticalAlerts: true,
           importance: NotificationImportance.High,
           ledColor: ColorsRes.appColor,
         )
       ],
       channelGroups: [],
+      debug: true,
     );
-    listenTap(context);
+    await AwesomeNotifications().isNotificationAllowed().then(
+          (isAllowed) async {
+        if (!isAllowed) {
+          await AwesomeNotifications().requestPermissionToSendNotifications();
+        }
+      },
+    );
+    await listenTap(context);
   }
 
   listenTap(BuildContext context) {
@@ -59,10 +68,34 @@ class LocalAwesomeNotification {
                 }
               },
             );
-          });
+          },
+        onNotificationDisplayedMethod: onNotificationDisplayedMethod,
+        onDismissActionReceivedMethod: onDismissActionReceivedMethod,);
     } catch (e, st) {
       print(st.toString());
     }
+  }
+
+  /// Use this method to detect when the user taps on a notification or action button
+  static Future<void> onActionReceivedMethod(
+      ReceivedAction receivedAction) async {
+    debugPrint('onActionReceivedMethod');
+    final payload = receivedAction.payload ?? {};
+    if (payload["navigate"] == "true") {
+     // navigation
+    }
+  }
+
+  /// Use this method to detect every time that a new notification is displayed
+  static Future<void> onNotificationDisplayedMethod(
+      ReceivedNotification receivedNotification) async {
+    debugPrint('onNotificationDisplayedMethod');
+  }
+
+  /// Use this method to detect if the user dismissed a notification
+  static Future<void> onDismissActionReceivedMethod(
+      ReceivedAction receivedAction) async {
+    debugPrint('onDismissActionReceivedMethod');
   }
 
   createImageNotification({required RemoteMessage notificationData, required bool isLocked}) async {

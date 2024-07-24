@@ -22,11 +22,11 @@ class ProductListScreenV2 extends StatefulWidget {
 }
 
 class _ProductListScreenV2State extends State<ProductListScreenV2> {
+
   @override
   Widget build(BuildContext context) {
-    // print(widget.sections
-    //     .indexWhere((element) => element.title == widget.currentSubCategory));
-    print(jsonEncode(widget.sections));
+    print("View Sesctions ${widget.sections.indexWhere((element) => element.title == widget.currentSubCategory)}");
+    print("View Sesctions one${jsonEncode(widget.sections)}");
     return DefaultTabController(
       length: widget.sections.length,
       initialIndex: widget.sections.indexWhere(
@@ -38,21 +38,19 @@ class _ProductListScreenV2State extends State<ProductListScreenV2> {
       child: Scaffold(
         appBar: getAppBar(
           context: context,
-          title: Text(
-            widget.title ??
-                getTranslatedValue(
-                  context,
-                  "lblProducts",
-                ),
-            softWrap: true,
-            //style: TextStyle(color: ColorsRes.mainTextColor),
+          title: Container(
+            height: 50,
+            margin: EdgeInsets.only(bottom: 10),
+            child: Image.asset(
+              "assets/images/chhayakart-white-logo.png",
+              fit: BoxFit.fill,
+            ),
           ),
           actions: [
             setCartCounter(context: context),
             setNotificationCounter(context: context)
           ],
           bottom: TabBar(
-
             indicatorColor: Colors.transparent,
             labelColor: Colors.black,
             labelPadding:EdgeInsets.fromLTRB(4, 0, 4,0),
@@ -87,7 +85,6 @@ class _ProductListScreenV2State extends State<ProductListScreenV2> {
           showBackButton: false,
         ),
         body: TabBarView(
-
             children: widget.sections
                 .map((e) => ListView.builder(
                       itemCount: e.products.length,

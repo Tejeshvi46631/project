@@ -10,176 +10,101 @@ import 'package:egrocer/core/provider/productChangeListingProvider.dart';
 import 'package:egrocer/core/provider/productWishListProvider.dart';
 import 'package:egrocer/core/provider/promoCodeProvider.dart';
 import 'package:egrocer/core/provider/userProfileProvider.dart';
-import 'package:egrocer/core/repository/facebook_analytics.dart';
 import 'package:egrocer/core/widgets/sessionManager.dart';
-import 'package:egrocer/features/screens/main/mainInitialize.dart';
 import 'package:egrocer/features/screens/main/mainProviderWidget.dart';
 import 'package:egrocer/features/screens/main/notificationCall.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'core/provider/activeOrdersProvider.dart';
-export 'package:awesome_notifications/awesome_notifications.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Initialize Firebase
   try {
-    if (Firebase.apps.isNotEmpty) {
-      await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform,
-      );
-    } else {
-      await Firebase.initializeApp();
-    }
-
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
     await FirebaseMessaging.instance.setAutoInitEnabled(true);
-  } catch (_) {}
+    await FirebaseAppCheck.instance.activate(
+      androidProvider: AndroidProvider.playIntegrity,
+    );
+  } catch (e) {
+    print("Error initializing Firebase: $e");
+  }
 
-  FacebookAnalytics.initFbAppEvents();
 
-  SharedPreferences prefs = await SharedPreferences.getInstance();
+  final prefs = await SharedPreferences.getInstance();
 
   SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
+    const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
+  );
 
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
-
-  runApp(
-    MyApp(prefs: prefs),
-  );
+  runApp(MyApp(prefs: prefs));
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   final SharedPreferences prefs;
 
   const MyApp({Key? key, required this.prefs}) : super(key: key);
 
   @override
-  MyAppState createState() => MyAppState();
-}
-
-class MyAppState extends State<MyApp> {
-  @override
-  void initState() {
-    MainNotification.call(context);
-
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<ActiveOrdersProvider>(
-          create: (context) => ActiveOrdersProvider(),
-        ),
-        ChangeNotifierProvider<CategoryListProvider>(
-          create: (context) {
-            return CategoryListProvider();
-          },
-        ),
-        ChangeNotifierProvider<CartProvider>(
-          create: (context) {
-            return CartProvider();
-          },
-        ),
-        ChangeNotifierProvider<CityByLatLongProvider>(
-          create: (context) {
-            return CityByLatLongProvider();
-          },
-        ),
-
-        ChangeNotifierProvider<HomeScreenProvider>(
-          create: (context) {
-            return HomeScreenProvider();
-          },
-        ),
-        ChangeNotifierProvider<ProductChangeListingTypeProvider>(
-          create: (context) {
-            return ProductChangeListingTypeProvider();
-          },
-        ),
-        ChangeNotifierProvider<FaqProvider>(
-          create: (context) {
-            return FaqProvider();
-          },
-        ),
-        ChangeNotifierProvider<ProductAddOrRemoveFavoriteProvider>(
-          create: (context) {
-            return ProductAddOrRemoveFavoriteProvider();
-          },
-        ),
-        ChangeNotifierProvider<ProductWishListProvider>(
-          create: (context) {
-            return ProductWishListProvider();
-          },
-        ),
-        ChangeNotifierProvider<UserProfileProvider>(
-          create: (context) {
-            return UserProfileProvider();
-          },
-        ),
-        ChangeNotifierProvider<CartListProvider>(
-          create: (context) {
-            return CartListProvider();
-          },
-        ),
-        ChangeNotifierProvider<PromoCodeProvider>(
-          create: (context) {
-            return PromoCodeProvider();
-          },
-        ),
-        /*   ChangeNotifierProvider<ProductListProviderV2>(
-          create: (context) {
-            return ProductListProviderV2();
-          },
-        ), */
+        ChangeNotifierProvider(create: (_) => ActiveOrdersProvider()),
+        ChangeNotifierProvider(create: (_) => CategoryListProvider()),
+        ChangeNotifierProvider(create: (_) => CartProvider()),
+        ChangeNotifierProvider(create: (_) => CityByLatLongProvider()),
+        ChangeNotifierProvider(create: (_) => HomeScreenProvider()),
+        ChangeNotifierProvider(create: (_) => ProductChangeListingTypeProvider()),
+        ChangeNotifierProvider(create: (_) => FaqProvider()),
+        ChangeNotifierProvider(create: (_) => ProductAddOrRemoveFavoriteProvider()),
+        ChangeNotifierProvider(create: (_) => ProductWishListProvider()),
+        ChangeNotifierProvider(create: (_) => UserProfileProvider()),
+        ChangeNotifierProvider(create: (_) => CartListProvider()),
+        ChangeNotifierProvider(create: (_) => PromoCodeProvider()),
+        ChangeNotifierProvider(create: (_) => SessionManager(prefs: prefs)),
       ],
-      child: ChangeNotifierProvider<SessionManager>(
-        create: (_) => SessionManager(prefs: widget.prefs),
-        child: Consumer<SessionManager>(
-          builder: (context, SessionManager sessionNotifier, child) {
-            Constant.session = Provider.of<SessionManager>(context);
-            Constant.searchedItemsHistoryList = Constant.session.prefs
-                    .getStringList(SessionManager.keySearchHistory) ??
-                [];
+      child: Consumer<SessionManager>(
+        builder: (context, sessionManager, child) {
+          Constant.session = sessionManager;
+          Constant.searchedItemsHistoryList = sessionManager.prefs
+              .getStringList(SessionManager.keySearchHistory) ??
+              [];
 
-            FirebaseMessaging.instance
-                .requestPermission(alert: true, sound: true, badge: true);
+          FirebaseMessaging.instance.requestPermission(alert: true, sound: true, badge: true);
 
-            Locale currLang = Constant.session.getCurrLang();
+          final currLang = sessionManager.getCurrLang();
+          final view = View.of(context);
 
-            final window = WidgetsBinding.instance.window;
+          if (sessionManager.getData(SessionManager.appThemeName).toString().isEmpty) {
+            sessionManager.setData(SessionManager.appThemeName, Constant.themeList[0], false);
+            sessionManager.setBoolData(SessionManager.isDarkTheme,
+                view.platformDispatcher.platformBrightness == Brightness.dark, false);
+          }
 
-            if (Constant.session
-                .getData(SessionManager.appThemeName)
-                .toString()
-                .isEmpty) {
-              Constant.session.setData(
-                  SessionManager.appThemeName, Constant.themeList[0], false);
-              Constant.session.setBoolData(SessionManager.isDarkTheme,
-                  window.platformBrightness == Brightness.dark, false);
+          // Update theme on brightness change
+          view.platformDispatcher.onPlatformBrightnessChanged = () {
+            if (sessionManager.getData(SessionManager.appThemeName) == Constant.themeList[0]) {
+              sessionManager.setBoolData(SessionManager.isDarkTheme,
+                  view.platformDispatcher.platformBrightness == Brightness.dark, true);
             }
+          };
 
-            // This callback is called every time the brightness changes from the device.
-            window.onPlatformBrightnessChanged = () {
-              if (Constant.session.getData(SessionManager.appThemeName) ==
-                  Constant.themeList[0]) {
-                Constant.session.setBoolData(SessionManager.isDarkTheme,
-                    window.platformBrightness == Brightness.dark, true);
-              }
-            };
+          // Initialize notifications
+          MainNotification.call(context);
 
-
-            return MainProvider.widgetCall(currLang, context);
-          },
-        ),
+          return MainProvider.widgetCall(currLang, context);
+        },
       ),
     );
   }

@@ -17,8 +17,6 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
 
-
-
 class GeneralMethods {
   static String formatDate(DateTime dateTime) {
     return "${dateTime.day.toString().padLeft(2, '0')}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.year}";

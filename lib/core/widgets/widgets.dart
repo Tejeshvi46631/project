@@ -1,4 +1,5 @@
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:egrocer/core/constant/constant.dart';
 import 'package:egrocer/core/constant/routeGenerator.dart';
 import 'package:egrocer/core/provider/cartListProvider.dart';
@@ -113,7 +114,7 @@ class Widgets {
     bool? isActive,
   }) {
     String dark =
-        (Constant.session.getBoolData(SessionManager.isDarkTheme)) == true
+        (Constant.session.getBoolData(SessionManager.isDarkTheme)) == false
             ? "_dark"
             : "";
     String active = (isActive ??= false) == true ? "_active" : "";
@@ -162,40 +163,22 @@ class Widgets {
   }) {
     return image.trim().isEmpty
         ? defaultImg(
-            image: "placeholder",
-            height: height,
-            width: width,
-            boxFit: boxFit,
-          )
-        : Image.network(
-            image,
-            width: width,
-            height: height,
-            fit: boxFit,
-            errorBuilder: (context, error, stackTrace) {
-              return Icon(Icons.image_rounded);
-            },
-          );
-
-    /*   FadeInImage.assetNetwork(
-            image: image,
-            width: width,
-            height: height,
-            fit: boxFit,
-            placeholderFit: BoxFit.cover,
-            placeholder: Constant.getAssetsPath(
-              0,
-              "placeholder.png",
-            ),
-            imageErrorBuilder: (
-              BuildContext context,
-              Object error,
-              StackTrace? stackTrace,
-            ) {
-              return defaultImg(image: "placeholder", width: width, height: height, boxFit: boxFit);
-            },
-          ); */
+      image: "placeholder",
+      height: height,
+      width: width,
+      boxFit: boxFit,
+    )
+        : CachedNetworkImage(
+      imageUrl: image,
+      width: width,
+      height: height,
+      fit: boxFit,
+      placeholder: (context, url) => Center(child: CircularProgressIndicator()),
+      errorWidget: (context, url, error) => Icon(Icons.image_rounded),
+    );
   }
+
+
 
   static openBottomSheetDialog(
       BuildContext context, String title, var sheetWidget) {
@@ -691,7 +674,7 @@ Widget getSearchWidget({
 
           ),
         )),
-        SizedBox(width: Constant.size10),
+       /* SizedBox(width: Constant.size10),
         Container(
           decoration: DesignConfig.boxPrimary(10),
           padding: EdgeInsets.symmetric(
@@ -700,7 +683,7 @@ Widget getSearchWidget({
             image: "voice_search_icon",
             iconColor: ColorsRes.mainIconColor,
           ),
-        ),
+        ),*/
       ]),
     ),
   );
