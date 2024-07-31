@@ -55,103 +55,96 @@ class _State extends State<ProductListItemContainer> {
                 child: Container(
                   decoration: DesignConfig.boxDecoration(
                       Theme.of(context).cardColor, 8),
-                  child: Stack(
-                    children: [
-                      Row(
-                          mainAxisSize: MainAxisSize.max,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Consumer<SelectedVariantItemProvider>(
-                              builder: (context, selectedVariantItemProvider,
-                                  child) {
-                                return Stack(
-                                  children: [
-                                    ClipRRect(
-                                        borderRadius: Constant.borderRadius10,
-                                        clipBehavior:
-                                            Clip.antiAliasWithSaveLayer,
-                                        child: Widgets.setNetworkImg(
-                                          boxFit: BoxFit.fill,
-                                          image: product.imageUrl,
-                                          height: 125,
-                                          width: 125,
-                                        )),
-                                    if (product
-                                            .variants[
-                                                selectedVariantItemProvider
-                                                    .getSelectedIndex()]
-                                            .status ==
-                                        0)
-                                      PositionedDirectional(
-                                        top: 0,
-                                        end: 0,
-                                        start: 0,
-                                        bottom: 0,
-                                        child: getOutOfStockWidget(
-                                          height: 125,
-                                          width: 125,
-                                          textSize: 15,
-                                          context: context,
-                                        ),
-                                      ),
-
-                                  ],
-                                );
-                              },
-                            ),
-                            Expanded(
-                              child: Column(
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: Constant.size10,
-                                        horizontal: Constant.size10),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Widgets.getSizedBox(
-                                          height: Constant.size10,
-                                        ),
-                                        Text(
-                                          product.name,
-                                          softWrap: true,
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(
-                                              fontSize: 13,
-                                              fontWeight: FontWeight.w500),
-                                        ),
-                                        Widgets.getSizedBox(
-                                          height: Constant.size10,
-                                        ),
-                                        ProductVariantDropDownMenuGrid(
-                                          variants: variants,
-                                          from: "",
-                                          product: product,
-                                          isGrid: false,
-                                        ),
-                                      ],
+                  child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Consumer<SelectedVariantItemProvider>(
+                          builder: (context, selectedVariantItemProvider,
+                              child) {
+                            return Stack(
+                              children: [
+                                ClipRRect(
+                                    borderRadius: Constant.borderRadius10,
+                                    clipBehavior:
+                                    Clip.antiAliasWithSaveLayer,
+                                    child: Widgets.setNetworkImg(
+                                      boxFit: BoxFit.fill,
+                                      image: product.imageUrl,
+                                      height: 125,
+                                      width: 125,
+                                    )),
+                                if (product
+                                    .variants[
+                                selectedVariantItemProvider
+                                    .getSelectedIndex()]
+                                    .status ==
+                                    0)
+                                  PositionedDirectional(
+                                    top: 0,
+                                    end: 0,
+                                    start: 0,
+                                    bottom: 0,
+                                    child: getOutOfStockWidget(
+                                      height: 125,
+                                      width: 125,
+                                      textSize: 15,
+                                      context: context,
                                     ),
-
                                   ),
-                                  // PositionedDirectional(
-                                  //   end: 5,
-                                  //   bottom: 5,
-                                  //   child: ProductWishListIcon(
-                                  //     product: product,
-                                  //   ),
-                                  // ),
-                                ],
+
+                              ],
+                            );
+                          },
+                        ),
+                        Expanded(
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: Constant.size10,
+                                    horizontal: Constant.size10),
+                                child: Column(
+                                  mainAxisAlignment:
+                                  MainAxisAlignment.spaceAround,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                   /* Widgets.getSizedBox(
+                                      height: Constant.size10,
+                                    ),*/
+                                    Text(
+                                      product.name,
+                                      softWrap: true,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                   /* Widgets.getSizedBox(
+                                      height: Constant.size10,
+                                    ),*/
+                                    ProductVariantDropDownMenuGrid(
+                                      variants: variants,
+                                      from: "",
+                                      product: product,
+                                      isGrid: false,
+                                    ),
+                                  ],
+                                ),
+
                               ),
-
-                            )
-                          ]),
-
-
-                    ],
-                  ),
+                              // PositionedDirectional(
+                              //   end: 5,
+                              //   bottom: 5,
+                              //   child: ProductWishListIcon(
+                              //     product: product,
+                              //   ),
+                              // ),
+                            ],
+                          ),
+                        )
+                      ]),
                 ),
               ),
             )

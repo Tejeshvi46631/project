@@ -68,13 +68,13 @@ class _AddressDetailScreenState extends State<AddressDetailScreen> {
           ),
         };
         edtName.text = widget.address?.name ?? "";
-        edtAltMobile.text = widget.address?.alternateMobile ?? "";
-        edtMobile.text = widget.address?.mobile ?? "";
+        edtAltMobile.text = widget.address?.alternateMobile?.toString() ?? "";
+        edtMobile.text = widget.address?.mobile?.toString() ?? "";
         edtAddress.text = widget.address?.address ?? "";
         edtLandmark.text = widget.address?.landmark ?? "";
         edtCity.text = widget.address?.city ?? "";
         edtArea.text = widget.address?.area ?? "";
-        edtZipcode.text = widget.address?.pincode ?? "";
+        edtZipcode.text = widget.address?.pincode?.toString() ?? "";
         edtCountry.text = widget.address?.country ?? "";
         edtState.text = widget.address?.state ?? "";
         selectedType = widget.address?.type?.toLowerCase() ??
@@ -82,8 +82,8 @@ class _AddressDetailScreenState extends State<AddressDetailScreen> {
               context,
               "lblAddressTypeHome",
             );
-        longitude = widget.address?.longitude ?? "";
-        latitude = widget.address?.latitude ?? "";
+        longitude = widget.address?.longitude?.toString() ?? "";
+        latitude = widget.address?.latitude?.toString() ?? "";
       },
     );
   }

@@ -81,7 +81,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       },
                       contentPadding:
                           const EdgeInsets.symmetric(horizontal: 10),
-                      leading: Container(
+                      /*leading: Container(
                         decoration: DesignConfig.boxDecoration(
                             ColorsRes.appColorLightHalfTransparent, 5),
                         padding: const EdgeInsets.all(8),
@@ -90,7 +90,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             iconColor: ColorsRes.appColor,
                             height: 20,
                             width: 20),
-                      ),
+                      ),*/
                       title: Text(
                         profileMenus[index]['label'],
                         style: Theme.of(context).textTheme.bodyMedium!.merge(
@@ -117,14 +117,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
   setProfileMenuList() {
     profileMenus = [];
     profileMenus = [
-      {
+      /*{
         "icon": "theme_icon",
         "label": getTranslatedValue(
           context,
           "lblChangeTheme",
         ),
         "clickFunction": Widgets.themeDialog,
-      },
+      },*/
       {
         "icon": "translate_icon",
         "label": getTranslatedValue(

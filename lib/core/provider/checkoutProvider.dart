@@ -24,8 +24,6 @@ import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 
-import '../../features/screens/orderSummaryScreen/widgets/OrdersucessfullySummaryScreen.dart';
-
 enum CheckoutTimeSlotsState {
   timeSlotsLoading,
   timeSlotsLoaded,
@@ -115,7 +113,7 @@ class CheckoutProvider extends ChangeNotifier {
           context: context, params: {ApiAndParams.isDefault: "1"}));
       if (getAddress[ApiAndParams.status].toString() == "1") {
         Address addressData = Address.fromJson(getAddress);
-        print(addressData.data);
+        print("View Address :: ${addressData.data?.toString()}");
         selectedAddress = addressData.data?[0];
         // print(selectedAddress);
 
@@ -191,12 +189,12 @@ class CheckoutProvider extends ChangeNotifier {
         print(deliveryChargeData.toJson());
         print("=======================================>");
 
-        subTotalAmount = double.parse(deliveryChargeData.subTotal);
-        totalAmount = double.parse(deliveryChargeData.totalAmount);
+        subTotalAmount = double.parse(deliveryChargeData.subTotal.toString());
+        totalAmount = double.parse(deliveryChargeData.totalAmount.toString());
         deliveryCharge = Constant.deliveryAmount;
         // double.parse(deliveryChargeData.deliveryCharge.totalDeliveryCharge);
         sellerWiseDeliveryCharges =
-            deliveryChargeData.deliveryCharge.sellersInfo;
+            deliveryChargeData.deliveryCharge!.sellersInfo!;
 
         checkoutDeliveryChargeState =
             CheckoutDeliveryChargeState.deliveryChargeLoaded;
@@ -227,13 +225,14 @@ class CheckoutProvider extends ChangeNotifier {
   }
 
   setData() {
-    deliveryChargeData.deliveryCharge.totalDeliveryCharge =
-        Constant.deliveryAmount.toString();
+    if (deliveryChargeData.deliveryCharge != null) {
+      deliveryChargeData.deliveryCharge!.totalDeliveryCharge = Constant.deliveryAmount.toString();
+    }
     deliveryChargeData.totalAmount =
-        (double.parse(deliveryChargeData.totalAmount) + Constant.deliveryAmount)
+        (double.parse(deliveryChargeData.totalAmount.toString()) + Constant.deliveryAmount)
             .toString();
-    subTotalAmount = double.parse(deliveryChargeData.subTotal);
-    totalAmount = double.parse(deliveryChargeData.totalAmount);
+    subTotalAmount = double.parse(deliveryChargeData.subTotal.toString());
+    totalAmount = double.parse(deliveryChargeData.totalAmount.toString());
     notifyListeners();
   }
 

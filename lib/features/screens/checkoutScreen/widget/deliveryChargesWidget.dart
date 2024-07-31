@@ -140,7 +140,7 @@ Widget getDeliveryCharges(BuildContext context) {
                                       context
                                           .read<CheckoutProvider>()
                                           .sellerWiseDeliveryCharges[index - 1]
-                                          .sellerName,
+                                          .sellerName!,
                                       softWrap: true,
                                       style: const TextStyle(fontSize: 14),
                                     ),
@@ -150,7 +150,7 @@ Widget getDeliveryCharges(BuildContext context) {
                                                 .read<CheckoutProvider>()
                                                 .sellerWiseDeliveryCharges[
                                             index - 1]
-                                                .deliveryCharge)),
+                                                .deliveryCharge.toString())),
                                         softWrap: true,
                                         style: const TextStyle(fontSize: 14)),
                                   ],
@@ -283,10 +283,11 @@ Widget getDeliveryCharges(BuildContext context) {
                           softWrap: true,
                           style: const TextStyle(fontSize: 17),
                         ),
-                        Image.asset(
+                        ///TODO Add Offer Image here
+                        /*Image.asset(
                           'assets/images/offer.png', // Path to your image file
                           height: 20, // Adjust height as needed
-                        ),
+                        ),*/
                         Text(
                           getTranslatedValue(
                             context,

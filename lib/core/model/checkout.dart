@@ -30,39 +30,39 @@ class Checkout {
 
 class DeliveryChargeData {
   DeliveryChargeData({
-    required this.isCodAllowed,
-    required this.productVariantId,
-    required this.quantity,
-    required this.deliveryCharge,
-    required this.totalAmount,
-    required this.subTotal,
-    required this.savedAmount,
+    this.isCodAllowed,
+    this.productVariantId,
+    this.quantity,
+    this.deliveryCharge,
+    this.totalAmount,
+    this.subTotal,
+    this.savedAmount,
   });
 
-  late final String isCodAllowed;
-  late final String productVariantId;
-  late final String quantity;
-  late final DeliveryCharge deliveryCharge;
-  late final String totalAmount;
-  late final String subTotal;
-  late final String savedAmount;
+  String? isCodAllowed;
+  String? productVariantId;
+  String? quantity;
+  DeliveryCharge? deliveryCharge;
+  String? totalAmount;
+  String? subTotal;
+  String? savedAmount;
 
   DeliveryChargeData.fromJson(Map<String, dynamic> json) {
-    isCodAllowed = json['cod_allowed'].toString();
-    productVariantId = json['product_variant_id'].toString();
-    quantity = json['quantity'].toString();
-    deliveryCharge = DeliveryCharge.fromJson(json['delivery_charge']);
-    totalAmount = json['total_amount'].toString();
-    subTotal = json['sub_total'].toString();
-    savedAmount = json['saved_amount'].toString();
+    isCodAllowed = json['cod_allowed']?.toString();
+    productVariantId = json['product_variant_id']?.toString();
+    quantity = json['quantity']?.toString();
+    deliveryCharge = json['delivery_charge'] != null ? DeliveryCharge.fromJson(json['delivery_charge']) : null;
+    totalAmount = json['total_amount']?.toString();
+    subTotal = json['sub_total']?.toString();
+    savedAmount = json['saved_amount']?.toString();
   }
+
   Map<String, dynamic> toJson() {
     final itemData = <String, dynamic>{};
     itemData['cod_allowed'] = isCodAllowed;
     itemData['product_variant_id'] = productVariantId;
     itemData['quantity'] = quantity;
-     itemData['delivery_charge'] = deliveryCharge.toJson();
-
+    itemData['delivery_charge'] = deliveryCharge?.toJson();
     itemData['total_amount'] = totalAmount;
     itemData['sub_total'] = subTotal;
     itemData['saved_amount'] = savedAmount;
@@ -72,41 +72,45 @@ class DeliveryChargeData {
 
 class DeliveryCharge {
   DeliveryCharge({
-    required this.totalDeliveryCharge,
-    required this.sellersInfo,
+    this.totalDeliveryCharge,
+    this.sellersInfo,
   });
-  late final String totalDeliveryCharge;
-  late final List<SellersInfo> sellersInfo;
+
+  String? totalDeliveryCharge;
+  List<SellersInfo>? sellersInfo;
 
   DeliveryCharge.fromJson(Map<String, dynamic> json) {
-    totalDeliveryCharge = json['total_delivery_charge'].toString();
-    sellersInfo = List.from(json['sellers_info']).map((e) => SellersInfo.fromJson(e)).toList();
+    totalDeliveryCharge = json['total_delivery_charge']?.toString();
+    sellersInfo = json['sellers_info'] != null
+        ? List.from(json['sellers_info']).map((e) => SellersInfo.fromJson(e)).toList()
+        : null;
   }
 
   Map<String, dynamic> toJson() {
     final itemData = <String, dynamic>{};
     itemData['total_delivery_charge'] = totalDeliveryCharge;
-    itemData['sellers_info'] = sellersInfo.map((e) => e.toJson()).toList();
+    itemData['sellers_info'] = sellersInfo?.map((e) => e.toJson()).toList();
     return itemData;
   }
 }
 
+
 class SellersInfo {
   SellersInfo({
-    required this.sellerName,
-    required this.deliveryCharge,
-    required this.distance,
-    required this.duration,
+    this.sellerName,
+    this.deliveryCharge,
+    this.distance,
+    this.duration,
   });
 
-  late final String sellerName;
-  late final String deliveryCharge;
-  late final String distance;
-  late final String duration;
+  String? sellerName;
+  int? deliveryCharge;
+  int? distance;
+  int? duration;
 
   SellersInfo.fromJson(Map<String, dynamic> json) {
     sellerName = json['seller_name'];
-    deliveryCharge = json['delivery_charge'].toString();
+    deliveryCharge = json['delivery_charge']?.toInt();
     distance = json['distance'];
     duration = json['duration'];
   }
@@ -120,3 +124,4 @@ class SellersInfo {
     return itemData;
   }
 }
+

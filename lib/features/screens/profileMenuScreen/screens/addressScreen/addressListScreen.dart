@@ -158,7 +158,7 @@ class _AddressListScreenState extends State<AddressListScreen> {
                                                           height: Constant.size7,
                                                         ),
                                                         Text(
-                                                          address.mobile ?? "",
+                                                          address.mobile?.toString() ?? "",
                                                           softWrap: true,
                                                           style: TextStyle(
                                                               /*fontSize: 18,*/

@@ -1,7 +1,6 @@
-
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:egrocer/core/model/trackOrdersModel.dart';
 import 'package:egrocer/core/provider/orderInvoiceProvider.dart';
-import 'package:egrocer/core/utils/styles/colorsRes.dart';
 import 'package:egrocer/core/widgets/generalMethods.dart';
 import 'package:egrocer/core/widgets/orderTrackingHistoryBottomsheet.dart';
 import 'package:flutter/material.dart';
@@ -87,11 +86,13 @@ class TrackMyOrderButton extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             if (iconAssetPath != null) ...[
-              Image.asset(
-                iconAssetPath!,
-                width: 24, // Adjust the size as needed
+              CachedNetworkImage(
+                imageUrl: iconAssetPath ?? 'assets/images/tracking_order.png', // Provide a fallback image URL if needed
+                width: 24,
                 height: 24,
-                color: Colors.black, // Optionally, apply color filter if needed
+                color: Colors.black,
+                placeholder: (context, url) => Center(child: CircularProgressIndicator()),
+                errorWidget: (context, url, error) => Icon(Icons.error),
               ),
               const SizedBox(width: 5),
             ],

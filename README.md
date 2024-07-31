@@ -14,3 +14,4 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials, samples, guidance on
 mobile development, and a full API .
+/// AppCheckIn : Enter this debug secret into the allow list in the Firebase Console for your project: dd91fbc9-80f3-4095-add6-293f3e3407f6

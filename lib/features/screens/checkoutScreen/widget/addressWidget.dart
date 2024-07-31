@@ -102,8 +102,7 @@ getAddressWidget(BuildContext context) {
                       context
                               .read<CheckoutProvider>()
                               .selectedAddress
-                              ?.mobile ??
-                          "",
+                              ?.mobile ?? "",
                       softWrap: true,
                       style: TextStyle(
                           /*fontSize: 18,*/

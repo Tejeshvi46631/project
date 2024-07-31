@@ -75,7 +75,7 @@ class _SearchWidgetState extends State<SearchWidget> {
                 ),
               ),
             )),
-        SizedBox(width: Constant.size10),
+        /*SizedBox(width: Constant.size10),
         Consumer<ProductSearchProvider>(
           builder: (context, productSearchProvider, child) {
             return GestureDetector(
@@ -93,7 +93,7 @@ class _SearchWidgetState extends State<SearchWidget> {
               ),
             );
           },
-        )
+        )*/
       ]),
     );
   }

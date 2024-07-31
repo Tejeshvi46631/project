@@ -130,16 +130,13 @@ class HomeMainScreenState extends State<HomeMainScreen> {
     Connectivity().onConnectivityChanged.listen(
           (ConnectivityResult status) {
         if (mounted) {
-          setState(
-                () {
-              networkStatus = GeneralMethods.getNetworkStatus(status);
-            },
-          );
+          setState(() {
+            networkStatus = GeneralMethods.getNetworkStatus(status);
+          });
         }
       },
     );
   }
-
 
   @override
   Widget build(BuildContext context) {

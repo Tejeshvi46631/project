@@ -65,7 +65,7 @@ getPaymentMethods(
                     decoration: BoxDecoration(
                         color: context.read<CheckoutProvider>().selectedPaymentMethod == "Razorpay"
                             ? Constant.session.getBoolData(SessionManager.isDarkTheme)
-                            ? ColorsRes.appColorBlack
+                            ? ColorsRes.appColorWhite
                             : ColorsRes.appColorWhite
                             : Theme.of(context).scaffoldBackgroundColor.withOpacity(0.8),
                         borderRadius: Constant.borderRadius7,
@@ -116,7 +116,7 @@ getPaymentMethods(
                     decoration: BoxDecoration(
                         color: context.read<CheckoutProvider>().selectedPaymentMethod == "COD"
                             ? Constant.session.getBoolData(SessionManager.isDarkTheme)
-                            ? ColorsRes.appColorBlack
+                            ? ColorsRes.appColorWhite
                             : ColorsRes.appColorWhite
                             : Theme.of(context).scaffoldBackgroundColor.withOpacity(0.8),
                         borderRadius: Constant.borderRadius7,
@@ -168,7 +168,7 @@ getPaymentMethods(
                   decoration: BoxDecoration(
                       color: context.read<CheckoutProvider>().selectedPaymentMethod == "Razorpay"
                           ? Constant.session.getBoolData(SessionManager.isDarkTheme)
-                          ? ColorsRes.appColorBlack
+                          ? ColorsRes.appColorWhite
                           : ColorsRes.appColorWhite
                           : Theme.of(context).scaffoldBackgroundColor.withOpacity(0.8),
                       borderRadius: Constant.borderRadius7,
@@ -212,7 +212,7 @@ getPaymentMethods(
                   decoration: BoxDecoration(
                       color: context.read<CheckoutProvider>().selectedPaymentMethod == "Net Banking"
                           ? Constant.session.getBoolData(SessionManager.isDarkTheme)
-                          ? ColorsRes.appColorBlack
+                          ? ColorsRes.appColorWhite
                           : ColorsRes.appColorWhite
                           : Theme.of(context).scaffoldBackgroundColor.withOpacity(0.8),
                       borderRadius: Constant.borderRadius7,
@@ -257,7 +257,7 @@ getPaymentMethods(
                     decoration: BoxDecoration(
                         color: context.read<CheckoutProvider>().selectedPaymentMethod == "Paystack"
                             ? Constant.session.getBoolData(SessionManager.isDarkTheme)
-                            ? ColorsRes.appColorBlack
+                            ? ColorsRes.appColorWhite
                             : ColorsRes.appColorWhite
                             : Theme.of(context).scaffoldBackgroundColor.withOpacity(0.8),
                         borderRadius: Constant.borderRadius7,
@@ -303,7 +303,7 @@ getPaymentMethods(
                     decoration: BoxDecoration(
                         color: context.read<CheckoutProvider>().selectedPaymentMethod == "Stripe"
                             ? Constant.session.getBoolData(SessionManager.isDarkTheme)
-                            ? ColorsRes.appColorBlack
+                            ? ColorsRes.appColorWhite
                             : ColorsRes.appColorWhite
                             : Theme.of(context).scaffoldBackgroundColor.withOpacity(0.8),
                         borderRadius: Constant.borderRadius7,
@@ -349,7 +349,7 @@ getPaymentMethods(
                     decoration: BoxDecoration(
                         color: context.read<CheckoutProvider>().selectedPaymentMethod == "Paytm"
                             ? Constant.session.getBoolData(SessionManager.isDarkTheme)
-                            ? ColorsRes.appColorBlack
+                            ? ColorsRes.appColorWhite
                             : ColorsRes.appColorWhite
                             : Theme.of(context).scaffoldBackgroundColor.withOpacity(0.8),
                         borderRadius: Constant.borderRadius7,

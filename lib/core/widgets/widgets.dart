@@ -114,7 +114,7 @@ class Widgets {
     bool? isActive,
   }) {
     String dark =
-        (Constant.session.getBoolData(SessionManager.isDarkTheme)) == false
+        (Constant.session.getBoolData(SessionManager.isDarkTheme)) == true
             ? "_dark"
             : "";
     String active = (isActive ??= false) == true ? "_active" : "";

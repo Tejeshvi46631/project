@@ -39,7 +39,7 @@ class SessionManager extends ChangeNotifier {
   static String keyPopupOfferImage = "keyPopupOfferImage";
   static String keyPopupOfferUrl = "keyPopupOfferUrl";
 
-  // static String keyCityId = "keyCityId";
+   static String keyCityId = "keyCityId";
   static String keyFavoriteIds = "keyFavoriteIds";
 
   late SharedPreferences prefs;

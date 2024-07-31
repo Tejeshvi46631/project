@@ -57,14 +57,14 @@ class _SwipeButtonState extends State<OrderSwipeButton> {
   @override
   void initState() {
     super.initState();
-   /* Future.delayed(Duration.zero).then((value) async {
-      paystackPlugin = PaystackPlugin();
+    Future.delayed(Duration.zero).then((value) async {
+     // paystackPlugin = PaystackPlugin();
       _razorpay.on(
           Razorpay.EVENT_PAYMENT_SUCCESS, _handleRazorPayPaymentSuccess);
       _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handleRazorPayPaymentError);
       _razorpay.on(
           Razorpay.EVENT_EXTERNAL_WALLET, _handleRazorPayExternalWallet);
-    });*/
+    });
   }
 
   void _handleRazorPayPaymentSuccess(PaymentSuccessResponse response) {
@@ -293,13 +293,6 @@ class _SwipeButtonState extends State<OrderSwipeButton> {
                 });
               }
 
-
-
-
-
-
-
-
             } catch (error) {
               GeneralMethods.showSnackBarMsg(
                   context, "Order placement failed");
@@ -318,8 +311,13 @@ class _SwipeButtonState extends State<OrderSwipeButton> {
                 valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
               ),
               SizedBox(width: 10),
-              Text(
-                  "Your order is being processed, please wait..."),
+              Expanded(
+                child: Text(
+                  "Your order is being processed, please wait...",
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                ),
+              ),
             ],
           )
               : Text(

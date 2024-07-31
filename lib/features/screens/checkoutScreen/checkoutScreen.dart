@@ -103,28 +103,34 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
     return WillPopScope(
       onWillPop: () async {
-        Navigator.pushNamed(context, cartScreen);
+        Navigator.of(context).pushNamedAndRemoveUntil(
+          mainHomeScreen,
+              (Route<dynamic> route) => false,
+        );
         return false;
       },
       child: Scaffold(
         backgroundColor: ColorsRes.appColorWhite,
         appBar: AppBar(
-          leading: GestureDetector(
+          /*leading: InkWell(
             onTap: () {
-              Navigator.pushNamed(context, cartScreen);
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                mainHomeScreen,
+                    (Route<dynamic> route) => false,
+              );
             },
             child: Padding(
               padding: EdgeInsets.all(18),
               child: SizedBox(
                 child: Widgets.defaultImg(
                   image: "ic_arrow_back",
-                  iconColor: ColorsRes.mainTextColor,
+                  iconColor: Colors.white,
                 ),
                 height: 10,
                 width: 10,
               ),
             ),
-          ),
+          ),*/
           elevation: 0,
           title: Text(
             getTranslatedValue(
@@ -261,11 +267,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                         style: TextStyle(fontSize: 12),
                                       ),
                                       style: ButtonStyle(
-                                        foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                                        foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
                                         backgroundColor: textLength.isNotEmpty
-                                            ? MaterialStateProperty.all<Color>(ColorsRes.gradient2)
-                                            : MaterialStateProperty.all<Color>(Colors.grey),
-                                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                            ? WidgetStateProperty.all<Color>(ColorsRes.gradient2)
+                                            : WidgetStateProperty.all<Color>(Colors.grey),
+                                        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                                           RoundedRectangleBorder(
                                             borderRadius: BorderRadius.circular(12),
                                             side: BorderSide(

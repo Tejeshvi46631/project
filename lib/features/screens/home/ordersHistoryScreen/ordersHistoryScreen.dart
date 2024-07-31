@@ -76,7 +76,9 @@ class _OrdersHistoryScreenState extends State<OrdersHistoryScreen>
       builder: (context, provider, _) {
         if (provider.activeOrdersState == ActiveOrdersState.loaded ||
             provider.activeOrdersState == ActiveOrdersState.loadingMore) {
-          return ListView(
+          return provider.orders.isEmpty ? Center(
+            child: Text("No Data found",style: TextStyle(fontSize: 18),),
+          ) :ListView(
             padding: EdgeInsets.symmetric(
               horizontal: Constant.size10,
               vertical: Constant.size10,
