@@ -72,6 +72,7 @@ class _ProductListWidgetState extends State<ProductListWidget> {
                             secID =
                             '';
                         return ProductListItemContainer(
+                          showHorizontal: false,
                           product: products[index],
                           currentSectionID: secID,
                           listSimilarProductListItem: products,

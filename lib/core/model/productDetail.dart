@@ -172,6 +172,13 @@ class ProductDetailVariants {
     required this.cartCount,
     required this.status,
     required this.images,
+    required this.deliveryCharges,
+    required this.taxes,
+    required this.taxableAmount,
+    required this.discountedTaxPrice,
+    required this.taxPrice,
+    required this.discountOff,
+    required this.discountTaxOff,
   });
 
   late final String id;
@@ -184,6 +191,13 @@ class ProductDetailVariants {
   late final String cartCount;
   late final String status;
   late final List<String> images;
+  late final String deliveryCharges;
+  late final String taxes;
+  late final String taxableAmount;
+  late final String discountedTaxPrice;
+  late final String taxPrice;
+  late final String discountOff;
+  late final String discountTaxOff;
 
   ProductDetailVariants.fromJson(Map<String, dynamic> json) {
     id = json['id'].toString();
@@ -192,10 +206,17 @@ class ProductDetailVariants {
     price = json['price'].toString();
     discountedPrice = json['discounted_price'].toString();
     stock = json['stock'].toString();
-    stockUnitName = json['stock_unit_name'];
+    stockUnitName = json['stock_unit_name'].toString();
     cartCount = json['cart_count'].toString();
     status = json['status'].toString();
-    images = List.castFrom<dynamic, String>(json['images']);
+    images = List.castFrom<dynamic, String>(json['images'] ?? []);
+    deliveryCharges = json['delivery_charges'].toString();
+    taxes = json['taxes'].toString();
+    taxableAmount = json['taxable_amount'].toString();
+    discountedTaxPrice = json['discounted_tax_price'].toString();
+    taxPrice = json['tax_price'].toString();
+    discountOff = json['discount_off'].toString();
+    discountTaxOff = json['discount_tax_off'].toString();
   }
 
   Map<String, dynamic> toJson() {
@@ -210,6 +231,13 @@ class ProductDetailVariants {
     data['cart_count'] = cartCount;
     data['status'] = status;
     data['images'] = images;
+    data['delivery_charges'] = deliveryCharges;
+    data['taxes'] = taxes;
+    data['taxable_amount'] = taxableAmount;
+    data['discounted_tax_price'] = discountedTaxPrice;
+    data['tax_price'] = taxPrice;
+    data['discount_off'] = discountOff;
+    data['discount_tax_off'] = discountTaxOff;
 
     return data;
   }

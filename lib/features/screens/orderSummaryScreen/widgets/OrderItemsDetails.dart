@@ -80,15 +80,15 @@ class OrderItemsDetails extends StatelessWidget {
                       color: ColorsRes.subTitleMainTextColor,
                     ),
                   ),
-                  const SizedBox(height: 5),
+                 /* const SizedBox(height: 5),
                   Text(
-                    "${getTranslatedValue(context, "lblPrice")}: ${orderItem.price}",
+                    "${getTranslatedValue(context, "lblSize")}: ${orderItem.price}",
                     style: TextStyle(
                       fontSize: 12.0,
                       fontWeight: FontWeight.w700,
                       color: ColorsRes.subTitleMainTextColor,
                     ),
-                  ),
+                  ),*/
                 ],
               ),
             ),

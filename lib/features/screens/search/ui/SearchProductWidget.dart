@@ -72,6 +72,7 @@ class _SearchProductWidgetState extends State<SearchProductWidget> {
                 mainAxisSize: MainAxisSize.min,
                 children: List.generate(products.length, (index) {
                   return ProductListItemContainer(
+                    showHorizontal: false,
                     product: products[index],
                     listSimilarProductListItem: products,
                   );

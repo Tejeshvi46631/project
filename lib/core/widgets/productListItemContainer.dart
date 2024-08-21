@@ -1,4 +1,3 @@
-
 import 'package:egrocer/core/constant/constant.dart';
 import 'package:egrocer/core/constant/routeGenerator.dart';
 import 'package:egrocer/core/model/productListItem.dart';
@@ -14,11 +13,14 @@ import 'package:provider/provider.dart';
 class ProductListItemContainer extends StatefulWidget {
   final ProductListItem product;
   String? currentSectionID = '';
+  bool? showHorizontal = false;
   List<ProductListItem?> listSimilarProductListItem = [];
+
   ProductListItemContainer(
       {Key? key,
       required this.product,
       this.currentSectionID,
+      this.showHorizontal,
       required this.listSimilarProductListItem})
       : super(key: key);
 
@@ -40,39 +42,150 @@ class _State extends State<ProductListItemContainer> {
       padding: const EdgeInsetsDirectional.only(
           bottom: 5, start: 10, end: 10, top: 5),
       child: variants.length > 0
-          ? GestureDetector(
-              onTap: () {
-                Navigator.pushNamed(context, productDetailScreen, arguments: [
-                  product.id.toString(),
-                  product.name,
-                  product,
-                  widget.currentSectionID,
-                  widget.listSimilarProductListItem,
-                ]);
-              },
-              child: ChangeNotifierProvider<SelectedVariantItemProvider>(
-                create: (context) => SelectedVariantItemProvider(),
-                child: Container(
-                  decoration: DesignConfig.boxDecoration(
-                      Theme.of(context).cardColor, 8),
-                  child: Row(
-                      mainAxisSize: MainAxisSize.max,
+          ? !widget.showHorizontal!
+              ? GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, productDetailScreen,
+                        arguments: [
+                          product.id.toString(),
+                          product.name,
+                          product,
+                          widget.currentSectionID,
+                          widget.listSimilarProductListItem,
+                        ]);
+                  },
+                  child: ChangeNotifierProvider<SelectedVariantItemProvider>(
+                    create: (context) => SelectedVariantItemProvider(),
+                    child: Container(
+                      decoration: DesignConfig.boxDecoration(
+                          Theme.of(context).cardColor, 8),
+                      child: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Consumer<SelectedVariantItemProvider>(
+                              builder: (context, selectedVariantItemProvider,
+                                  child) {
+                                return Stack(
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.only(left: 10, top: 10),
+                                      child: ClipRRect(
+                                          borderRadius: Constant.borderRadius10,
+                                          clipBehavior:
+                                          Clip.antiAliasWithSaveLayer,
+                                          child: Widgets.setNetworkImg(
+                                            boxFit: BoxFit.fill,
+                                            image: product.imageUrl,
+                                            height: 120,
+                                            width: 120,
+                                          )),
+                                    ),
+                                    if (product
+                                            .variants[
+                                                selectedVariantItemProvider
+                                                    .getSelectedIndex()]
+                                            .status ==
+                                        0)
+                                      PositionedDirectional(
+                                        top: 0,
+                                        end: 0,
+                                        start: 0,
+                                        bottom: 0,
+                                        child: getOutOfStockWidget(
+                                          height: 125,
+                                          width: 125,
+                                          textSize: 15,
+                                          context: context,
+                                        ),
+                                      ),
+                                  ],
+                                );
+                              },
+                            ),
+                            Expanded(
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: Constant.size10,
+                                        horizontal: Constant.size10),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        /* Widgets.getSizedBox(
+                                      height: Constant.size10,
+                                    ),*/
+                                        Text(
+                                          product.name,
+                                          softWrap: true,
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                              fontSize: 13,
+                                              fontWeight: FontWeight.w500),
+                                        ),
+                                        /* Widgets.getSizedBox(
+                                      height: Constant.size10,
+                                    ),*/
+                                        ProductVariantDropDownMenuGrid(
+                                          variants: variants,
+                                          from: "",
+                                          product: product,
+                                          isGrid: false,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  // PositionedDirectional(
+                                  //   end: 5,
+                                  //   bottom: 5,
+                                  //   child: ProductWishListIcon(
+                                  //     product: product,
+                                  //   ),
+                                  // ),
+                                ],
+                              ),
+                            )
+                          ]),
+                    ),
+                  ),
+                )
+              : GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, productDetailScreen,
+                        arguments: [
+                          product.id.toString(),
+                          product.name,
+                          product,
+                          widget.currentSectionID,
+                          widget.listSimilarProductListItem,
+                        ]);
+                  },
+                  child: ChangeNotifierProvider<SelectedVariantItemProvider>(
+                    create: (context) => SelectedVariantItemProvider(),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Consumer<SelectedVariantItemProvider>(
-                          builder: (context, selectedVariantItemProvider,
-                              child) {
+                          builder: (context,
+                              selectedVariantItemProvider, child) {
                             return Stack(
                               children: [
                                 ClipRRect(
-                                    borderRadius: Constant.borderRadius10,
+                                    borderRadius:
+                                    Constant.borderRadius10,
                                     clipBehavior:
                                     Clip.antiAliasWithSaveLayer,
                                     child: Widgets.setNetworkImg(
                                       boxFit: BoxFit.fill,
                                       image: product.imageUrl,
-                                      height: 125,
-                                      width: 125,
+                                      height: 150,
+                                      width: 150,
                                     )),
                                 if (product
                                     .variants[
@@ -92,62 +205,35 @@ class _State extends State<ProductListItemContainer> {
                                       context: context,
                                     ),
                                   ),
-
                               ],
                             );
                           },
                         ),
-                        Expanded(
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: Constant.size10,
-                                    horizontal: Constant.size10),
-                                child: Column(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.spaceAround,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                   /* Widgets.getSizedBox(
+                        /*Widgets.getSizedBox(
+                          height: Constant.size7,
+                        ),*/
+                        Text(
+                          product.name,
+                          softWrap: true,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500),
+                        ),
+                        /* Widgets.getSizedBox(
                                       height: Constant.size10,
                                     ),*/
-                                    Text(
-                                      product.name,
-                                      softWrap: true,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w500),
-                                    ),
-                                   /* Widgets.getSizedBox(
-                                      height: Constant.size10,
-                                    ),*/
-                                    ProductVariantDropDownMenuGrid(
-                                      variants: variants,
-                                      from: "",
-                                      product: product,
-                                      isGrid: false,
-                                    ),
-                                  ],
-                                ),
-
-                              ),
-                              // PositionedDirectional(
-                              //   end: 5,
-                              //   bottom: 5,
-                              //   child: ProductWishListIcon(
-                              //     product: product,
-                              //   ),
-                              // ),
-                            ],
-                          ),
-                        )
-                      ]),
-                ),
-              ),
-            )
+                        ProductVariantDropDownMenuGrid(
+                          variants: variants,
+                          from: "",
+                          product: product,
+                          isGrid: false,
+                        ),
+                      ],
+                    ),
+                  ),
+                )
           : SizedBox.shrink(),
     );
   }

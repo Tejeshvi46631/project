@@ -69,7 +69,7 @@ class _CartListScreenState extends State<CartListScreen> {
                         end: 0,
                         bottom: 0,
                         child: DefaultBlankItemMessageScreen(
-                          image: "cart_empty",
+                          image: "empty_cart",
                           title: getTranslatedValue(
                             context,
                             "lblEmptyCartListMessage",

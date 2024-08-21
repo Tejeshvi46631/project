@@ -90,20 +90,27 @@ class OSOrderStatusContainer extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    "${getTranslatedValue(context, "lblPlacedOrderOn")} ${GeneralMethods.formatDate(DateTime.parse(order.createdAt))}",
-                    style: TextStyle(
-                      fontSize: 12.5,
-                      color: ColorsRes.mainTextColor,
-                      fontWeight: FontWeight.bold,
+                  Expanded(
+                    child: Text(
+                      "${getTranslatedValue(context, 'lblPlacedOrderOn')} ${GeneralMethods.formatDate(DateTime.parse(order.createdAt))}",
+                      style: TextStyle(
+                        fontSize: 12.5,
+                        color: ColorsRes.mainTextColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      //overflow: TextOverflow.ellipsis, // To handle overflow
                     ),
                   ),
-                  Text(
-                    "${getTranslatedValue(context, "lblPaymentMethod")}: ${order.paymentMethod}",
-                    style: TextStyle(
-                      fontSize: 12.5,
-                      color: ColorsRes.mainTextColor,
-                      fontWeight: FontWeight.bold,
+                  Expanded(
+                    child: Text(
+                      "${getTranslatedValue(context, 'lblPaymentMethod')}: ${order.paymentMethod}",
+                      style: TextStyle(
+                        fontSize: 12.5,
+                        color: ColorsRes.mainTextColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.right, // Aligns the text to the right
+                      //overflow: TextOverflow.ellipsis, // To handle overflow
                     ),
                   ),
                 ],

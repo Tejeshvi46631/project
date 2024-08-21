@@ -78,7 +78,7 @@ class ColorsRes {
     brightness: Brightness.light,
     scaffoldBackgroundColor: bgColorLight,
     cardColor: cardColorLight,
-    fontFamily: 'Lato',
+    fontFamily: 'Kanit',
     iconTheme: IconThemeData(
       color: grey,
     ),
@@ -99,7 +99,7 @@ class ColorsRes {
     brightness: Brightness.dark,
     scaffoldBackgroundColor: bgColorDark,
     cardColor: cardColorDark,
-    fontFamily: 'Lato',
+    fontFamily: 'Kanit',
     iconTheme: IconThemeData(
       color: grey,
     ),

@@ -8,6 +8,7 @@ class Order {
       required this.orderNote,
       required this.total,
       required this.deliveryCharge,
+        this.codServicesFee,
       required this.taxAmount,
       required this.taxPercentage,
       required this.walletBalance,
@@ -42,6 +43,7 @@ class Order {
   late final String orderNote;
   late final String total;
   late final String deliveryCharge;
+   String? codServicesFee;
   late final String taxAmount;
   late final String taxPercentage;
   late final String walletBalance;
@@ -76,6 +78,7 @@ class Order {
       orderNote: orderNote,
       total: total,
       deliveryCharge: deliveryCharge,
+      codServicesFee: codServicesFee,
       taxAmount: taxAmount,
       taxPercentage: taxPercentage,
       walletBalance: walletBalance,
@@ -113,6 +116,7 @@ class Order {
     orderNote = json['order_note'].toString();
     total = json['total'].toString();
     deliveryCharge = json['delivery_charge'].toString();
+    codServicesFee = json['cod_service_fee'].toString();
     taxAmount = json['tax_amount'].toString();
     taxPercentage = json['tax_percentage'].toString();
     walletBalance = json['wallet_balance'].toString();

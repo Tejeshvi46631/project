@@ -127,7 +127,7 @@ class _CartWidgetState extends State<CartWidget> {
                   (Route<dynamic> route) => false,
             );
           },
-          image: "no_product_icon",
+          image: "empty_cart",
         );
       },
     );

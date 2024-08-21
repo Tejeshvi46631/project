@@ -36,7 +36,11 @@ class DeliveryChargeData {
     this.deliveryCharge,
     this.totalAmount,
     this.subTotal,
+    this.taxSubTotal,
     this.savedAmount,
+    this.shippingFee,
+    this.platformFee,
+    this.codServicesFee,
   });
 
   String? isCodAllowed;
@@ -45,7 +49,11 @@ class DeliveryChargeData {
   DeliveryCharge? deliveryCharge;
   String? totalAmount;
   String? subTotal;
+  String? taxSubTotal;
   String? savedAmount;
+  String? shippingFee;
+  String? platformFee;
+  String? codServicesFee;
 
   DeliveryChargeData.fromJson(Map<String, dynamic> json) {
     isCodAllowed = json['cod_allowed']?.toString();
@@ -54,7 +62,11 @@ class DeliveryChargeData {
     deliveryCharge = json['delivery_charge'] != null ? DeliveryCharge.fromJson(json['delivery_charge']) : null;
     totalAmount = json['total_amount']?.toString();
     subTotal = json['sub_total']?.toString();
+    taxSubTotal = json['tax_sub_total']?.toString();
     savedAmount = json['saved_amount']?.toString();
+    shippingFee = json['shipping_fee']?.toString();
+    platformFee = json['platform_fee']?.toString();
+    codServicesFee = json['cod_service_fee']?.toString();
   }
 
   Map<String, dynamic> toJson() {
@@ -65,7 +77,11 @@ class DeliveryChargeData {
     itemData['delivery_charge'] = deliveryCharge?.toJson();
     itemData['total_amount'] = totalAmount;
     itemData['sub_total'] = subTotal;
+    itemData['tax_sub_total'] = taxSubTotal;
     itemData['saved_amount'] = savedAmount;
+    itemData['shipping_fee'] = shippingFee;
+    itemData['platform_fee'] = platformFee;
+    itemData['cod_service_fee'] = codServicesFee;
     return itemData;
   }
 }

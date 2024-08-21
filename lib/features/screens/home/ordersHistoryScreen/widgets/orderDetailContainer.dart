@@ -35,8 +35,23 @@ class _OrderDetailContainerState extends State<OrderDetailContainer> {
                     style: const TextStyle(fontWeight: FontWeight.w500),
                   ),
                   const Spacer(),
-                  GestureDetector(
+                  widget.order.activeStatus == "1"
+                      ? RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: "${widget.order.items.length} items \n",
+                          style: TextStyle(color: Colors.black), // Style for the item count text
+                        ),
+                        TextSpan(
+                          text: "Cancelled",
+                          style: TextStyle(color: Colors.red), // Style for the "Cancelled" text
+                        ),
+                      ],
+                    ),
+                  ) : GestureDetector(
                     onTap: () {
+                      widget.order.transactionId == 0 ? null :
                       Navigator.pushNamed(context, orderDetailScreen,
                           arguments: widget.order)
                           .then((value) {

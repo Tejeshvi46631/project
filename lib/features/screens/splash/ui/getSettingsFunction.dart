@@ -1,4 +1,5 @@
 import 'package:egrocer/core/constant/constant.dart';
+import 'package:egrocer/core/constant/routeGenerator.dart';
 import 'package:egrocer/core/model/homeScreenData.dart';
 import 'package:egrocer/core/provider/homeScreenDataProvider.dart';
 import 'package:egrocer/features/screens/splash/ui/timer.dart';
@@ -13,8 +14,9 @@ class SplashSetting {
     try {
       await getAppSettings(context: context);
 
-      Map<String, String> params = await Constant.getProductsDefaultParams();
-      await context.read<HomeScreenProvider>().getHomeScreenApiProvider(context: context, params: params);
+     /* Map<String, String> params = await Constant.getProductsDefaultParams();
+      await context.read<HomeScreenProvider>().getHomeScreenApiProvider(context: context, params: params);*/
+      Navigator.pushNamed(context, mainHomeScreen,);
 
       currentAppVersion = packageInfo.version;
       print("PACKAGE VERSION: ${packageInfo.version}");

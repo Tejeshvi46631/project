@@ -31,10 +31,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  shared_preferences: ^2.2.3
+  shared_preferences: ^2.3.0
   http: ^0.13.6
   connectivity_plus: ^4.0.1
-  provider: ^6.1.1
+  provider: ^6.1.2
   flutter_svg: ^2.0.9
   flutter_widget_from_html: ^0.15.1
   country_code_picker: ^3.0.0
@@ -59,10 +59,10 @@ dependencies:
   intl: ^0.19.0
   razorpay_flutter: any
   #flutter_paystack: ^1.0.7
-  flutter_stripe: ^11.0.0
+#  flutter_stripe: ^11.0.0
   external_path: ^1.0.3
   open_filex: ^4.4.0
-  paytm: ^3.0.1
+#  paytm: ^3.0.1
   version: ^3.0.2
   package_info_plus: ^4.0.2
   awesome_notifications: ^0.9.3+1
@@ -78,18 +78,24 @@ dependencies:
   flutter_inappwebview: ^6.0.0
   cached_network_image: ^3.3.1
   blinking_text: ^1.0.4
-  facebook_app_events: ^0.12.0
+  facebook_app_events: ^0.19.2
   google_api_headers: ^1.6.0 # or the latest version
 
   # Firebase auths
-  firebase_messaging: ^15.0.3
+  firebase_messaging: ^15.0.4
   firebase_app_check: any
-  firebase_dynamic_links: ^6.0.3  #for share product
-  firebase_crashlytics: ^4.0.3
-  firebase_auth: ^5.1.2
-  firebase_core: ^3.2.0
-  cloud_firestore: ^5.1.0
+  firebase_dynamic_links: ^6.0.4  #for share product
+  firebase_crashlytics: ^4.0.4
+  firebase_auth: ^5.1.3
+  firebase_core: ^3.3.0
+  cloud_firestore: ^5.2.0
   #get: ^4.6.6
+  wakelock_plus: ^1.2.1
+  phonepe_payment_sdk: ^2.0.3
+  crypto: ^3.0.3
+  get: ^4.6.6
+  font_awesome_flutter: ^10.7.0
+  sizer: ^3.0.3
 
 dependency_overrides:
   country_code_picker: ^3.0.0
@@ -112,3 +118,17 @@ flutter:
     - assets/fonts/
     - assets/language/
     - assets/images/
+
+  fonts:
+    - family: Kanit
+      fonts:
+        - asset: assets/fonts/light.ttf
+          weight: 300
+        - asset: assets/fonts/regular.ttf
+          weight: 400
+        - asset: assets/fonts/medium.ttf
+          weight: 500
+        - asset: assets/fonts/semi_bold.ttf
+          weight: 600
+        - asset: assets/fonts/bold.ttf
+          weight: 700

@@ -202,6 +202,7 @@ class _ProductListScreenState extends State<WishListDrawerScreen> {
                         children:
                             List.generate(wishlistProducts.length, (index) {
                           return ProductListItemContainer(
+                            showHorizontal: false,
                             product: wishlistProducts[index],
                             listSimilarProductListItem: wishlistProducts,
                           );

@@ -76,7 +76,9 @@ Widget getDeliveryCharges(BuildContext context) {
                       softWrap: true,
                       style: const TextStyle(fontSize: 17)),
                   Text(
-                      GeneralMethods.getCurrencyFormat(context.read<CheckoutProvider>().subTotalAmount),
+                      GeneralMethods.getCurrencyFormat(
+                        context.read<CheckoutProvider>().subTotalAmount + context.read<CheckoutProvider>().savedAmount,
+                      ),
                       softWrap: true,
                       style: const TextStyle(fontSize: 17))
                 ],
@@ -85,6 +87,103 @@ Widget getDeliveryCharges(BuildContext context) {
                 height: Constant.size7,
               ),
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                      getTranslatedValue(
+                        context,
+                        "lblSaveMRP",
+                      ),
+                      softWrap: true,
+                      style: const TextStyle(fontSize: 17)),
+                  Text(
+                      "-${GeneralMethods.getCurrencyFormat(context.read<CheckoutProvider>().savedAmount)}",
+                      softWrap: true,
+                      style: const TextStyle(fontSize: 17))
+                ],
+              ),
+              Widgets.getSizedBox(
+                height: Constant.size7,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                      getTranslatedValue(
+                        context,
+                        "lblCODServices",
+                      ),
+                      softWrap: true,
+                      style: const TextStyle(fontSize: 17)),
+                  if(context
+                      .read<CheckoutProvider>()
+                      .selectedPaymentMethod == "COD")
+                    Text(
+                        GeneralMethods.getCurrencyFormat(
+                            context.read<CheckoutProvider>().totalDeliveryCharges),
+                        softWrap: true,
+                        style: const TextStyle(fontSize: 17)
+                    )
+                  else
+                    Row(
+                      children: [
+                        Text(
+                            "Free",
+                            softWrap: true,
+                            style: const TextStyle(fontSize: 17)),
+                        Widgets.getSizedBox(
+                          width: Constant.size3,
+                        ),
+                      ],
+                    )
+                ],
+              ),
+              Widgets.getSizedBox(
+                height: Constant.size7,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                      getTranslatedValue(
+                        context,
+                        "lblPlatformFee",
+                      ),
+                      softWrap: true,
+                      style: const TextStyle(fontSize: 17)),
+                  Text(
+                     context.read<CheckoutProvider>().platformFee != 0
+                         ? GeneralMethods.getCurrencyFormat(context.read<CheckoutProvider>().platformFee)
+                         :  "Free",
+                      softWrap: true,
+                      style: const TextStyle(fontSize: 17))
+                ],
+              ),
+              Widgets.getSizedBox(
+                height: Constant.size7,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                      getTranslatedValue(
+                        context,
+                        "lblShippingFee",
+                      ),
+                      softWrap: true,
+                      style: const TextStyle(fontSize: 17)),
+                  Text(
+                      context.read<CheckoutProvider>().shippingFee != 0
+                          ? GeneralMethods.getCurrencyFormat(context.read<CheckoutProvider>().shippingFee)
+                          :  "Free",
+                      softWrap: true,
+                      style: const TextStyle(fontSize: 17))
+                ],
+              ),
+              Widgets.getSizedBox(
+                height: Constant.size7,
+              ),
+          /*    Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
@@ -208,7 +307,7 @@ Widget getDeliveryCharges(BuildContext context) {
                           fontWeight: FontWeight.w500)),
                 ],
               ),
-              Divider(color: ColorsRes.grey, height: 1, thickness: 0.1),
+              Divider(color: ColorsRes.grey, height: 1, thickness: 0.1),*/
               Widgets.getSizedBox(
                 height: Constant.size5,
               ),
@@ -234,33 +333,66 @@ Widget getDeliveryCharges(BuildContext context) {
                 ],
               )
                   : Container(),
-              Divider(color: ColorsRes.grey, height: 1, thickness: 0.1),
+              Divider(color: ColorsRes.grey, height: 1, thickness: 1),
               Widgets.getSizedBox(
                 height: Constant.size5,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                      getTranslatedValue(
-                        context,
-                        "lblTotal",
-                      ),
-                      softWrap: true,
-                      style: const TextStyle(fontSize: 17)),
-                  Text(
-                      GeneralMethods.getCurrencyFormat(Constant.isPromoCodeApplied
-                          ? (Constant.discountedAmount)
-                          : (context
-                          .read<CheckoutProvider>()
-                          .subTotalAmount
-                          .getTotalWithGST()) +
-                          context.read<CheckoutProvider>().deliveryCharge),
-                      softWrap: true,
-                      style: TextStyle(
-                          fontSize: 17,
-                          color: ColorsRes.appColor,
-                          fontWeight: FontWeight.w500)),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                          getTranslatedValue(
+                            context,
+                            "lblTotal",
+                          ),
+                          softWrap: true,
+                          style: const TextStyle(fontSize: 17)),
+                      Text(
+                          getTranslatedValue(
+                            context,
+                            "lblInclusive",
+                          ),
+                          softWrap: true,
+                          style: const TextStyle(fontSize: 13)),
+                    ],
+                  ),
+
+                  if(context
+                      .read<CheckoutProvider>()
+                      .selectedPaymentMethod == "COD")
+                    Text(
+                        GeneralMethods.getCurrencyFormat(Constant.isPromoCodeApplied
+                            ? (Constant.discountedAmount +
+                            context.read<CheckoutProvider>().totalDeliveryCharges)
+                            : (context
+                            .read<CheckoutProvider>()
+                            .taxSubTotalAmount) +
+                          context.read<CheckoutProvider>().totalDeliveryCharges),
+                        softWrap: true,
+                        style: TextStyle(
+                            fontSize: 17,
+                            color: ColorsRes.appColor,
+                            fontWeight: FontWeight.w500))
+                  else
+                    Row(
+                      children: [
+                        Text(
+                            GeneralMethods.getCurrencyFormat(Constant.isPromoCodeApplied
+                                ? (Constant.discountedAmount)
+                                : (context
+                                .read<CheckoutProvider>()
+                                .taxSubTotalAmount) /*+
+                          context.read<CheckoutProvider>().deliveryCharge*/),
+                            softWrap: true,
+                            style: TextStyle(
+                                fontSize: 17,
+                                color: ColorsRes.appColor,
+                                fontWeight: FontWeight.w500)),
+                      ],
+                    )
                 ],
               ),
               Divider(color: ColorsRes.grey, height: 1, thickness: 0.1),
@@ -268,26 +400,26 @@ Widget getDeliveryCharges(BuildContext context) {
                 height: Constant.size5,
               ),
               Container(
-                color: ColorsRes.buttoncolor, // Replace with your desired color
+                color: Colors.green.shade100, // Replace with your desired color
                 padding: EdgeInsets.all(12), // Adjust padding as needed
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
                       children: [
+                        Image.asset(
+                          'assets/images/offer.png', // Path to your image file
+                          height: 20, // Adjust height as needed
+                        ),
+                        SizedBox(width: 2),
                         Text(
                           getTranslatedValue(
                             context,
-                            "Yay! ",
+                            "Yay!",
                           ),
                           softWrap: true,
                           style: const TextStyle(fontSize: 17),
                         ),
-                        ///TODO Add Offer Image here
-                        /*Image.asset(
-                          'assets/images/offer.png', // Path to your image file
-                          height: 20, // Adjust height as needed
-                        ),*/
                         Text(
                           getTranslatedValue(
                             context,
@@ -297,7 +429,7 @@ Widget getDeliveryCharges(BuildContext context) {
                           style: const TextStyle(fontSize: 17),
                         ),
                         Text(
-                          discountedAmountString,
+                          GeneralMethods.getCurrencyFormat(context.read<CheckoutProvider>().savedAmount),
                           softWrap: true,
                           style: const TextStyle(
                             fontSize: 17,

@@ -1,4 +1,5 @@
 import 'package:egrocer/core/constant/constant.dart';
+import 'package:egrocer/core/constant/routeGenerator.dart';
 import 'package:egrocer/core/repository/facebook_analytics.dart';
 import 'package:egrocer/core/widgets/generalMethods.dart';
 import 'package:flutter/material.dart';
@@ -67,8 +68,6 @@ class SessionManager extends ChangeNotifier {
     prefs.setString(keyLangCode, languageCode);
     notifyListeners();
   }
-
-
 
   void addItemIntoList(String id, String item) {
     if (!Constant.searchedItemsHistoryList.contains(item)) {
@@ -180,7 +179,7 @@ class SessionManager extends ChangeNotifier {
               setBoolData(isUserLogin, false, false);
               setData(SessionManager.keyAuthInfo, authData, false);
               _fbEventLogout();
-              // Navigator.of(context).pushNamedAndRemoveUntil(loginScreen, (Route<dynamic> route) => false);
+               Navigator.of(context).pushNamedAndRemoveUntil(loginScreen, (Route<dynamic> route) => false);
             },
             child: Text(
               getTranslatedValue(

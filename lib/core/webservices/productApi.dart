@@ -14,6 +14,7 @@ Future<Map<String, dynamic>> getProductListApi(
       params: params,
       isPost: true,
       context: context);
+  print(await json.decode(response)["data"]);
   var getData = json.decode(response);
 
   return getData;

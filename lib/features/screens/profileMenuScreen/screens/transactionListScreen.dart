@@ -89,7 +89,12 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
                       TransactionState.loaded ||
                   transactionProvider.itemsState ==
                       TransactionState.loadingMore) {
-                return Column(
+                return transactions.isEmpty ? Align(
+                  alignment: Alignment.center,
+                  child: Center(
+                      child: Text("No Transactions Available ", style: TextStyle(fontSize: 16),)
+                  ),
+                ) : Column(
                   children: List.generate(transactions.length, (index) {
                     return getTransactionItemWidget(transactions[index]);
                   }),

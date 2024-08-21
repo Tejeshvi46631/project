@@ -5,7 +5,6 @@ import 'package:egrocer/core/model/notificationSettings.dart';
 import 'package:egrocer/core/provider/activeOrdersProvider.dart';
 import 'package:egrocer/core/provider/productListProvider.dart';
 import 'package:egrocer/core/provider/productWishListProvider.dart';
-import 'package:egrocer/core/utils/styles/colorsRes.dart';
 import 'package:egrocer/core/webservices/notificationSettingsApi.dart';
 import 'package:egrocer/core/widgets/generalMethods.dart';
 import 'package:egrocer/core/widgets/widgets.dart';
@@ -29,97 +28,81 @@ class HomeMainScreenState extends State<HomeMainScreen> {
   NetworkStatus networkStatus = NetworkStatus.online;
   int currentPage = 0;
 
-  List<ScrollController> scrollController = [
-    ScrollController(),
-    ScrollController(),
-    ScrollController(),
-    ScrollController(),
-    ScrollController()
-  ];
+  final List<ScrollController> scrollControllers = List.generate(5, (_) => ScrollController());
 
-  //total pageListing
-  List<Widget> pages = [];
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
+  late List<Widget> pages;
 
   @override
   void initState() {
+    super.initState();
     checkConnectionState();
+    initializePages();
+    fetchNotificationSettings();
+  }
 
+  @override
+  void dispose() {
+    for (var controller in scrollControllers) {
+      controller.dispose();
+    }
+    super.dispose();
+  }
+
+  void initializePages() {
     pages = [
       ChangeNotifierProvider<ProductListProvider>(
-        create: (context) {
-          return ProductListProvider();
-        },
-        child: HomeScreen(
-          scrollController: scrollController[0],
-        ),
+        create: (context) => ProductListProvider(),
+        child: HomeScreen(scrollController: scrollControllers[0]),
       ),
-      /* ChangeNotifierProvider<ProductListProviderV2>(
-        create: (context) {
-          return ProductListProviderV2();
-        },
-        child: HomeScreen(
-          scrollController: scrollController[0],
-        ),
-      ), */
-      CategoryListScreen(
-        scrollController: scrollController[1],
-      ),
-      ContactinfoScreen(
-        scrollController: scrollController[2],
-      ),
+      CategoryListScreen(scrollController: scrollControllers[1]),
+      ContactinfoScreen(scrollController: scrollControllers[2]),
       ChangeNotifierProvider<ProductWishListProvider>(
-        create: (context) {
-          return ProductWishListProvider();
-        },
-        child: WishListScreen(
-          scrollController: scrollController[3],
-        ),
+        create: (context) => ProductWishListProvider(),
+        child: WishListScreen(scrollController: scrollControllers[3]),
       ),
-
       ChangeNotifierProvider<ActiveOrdersProvider>(
-        create: (context) {
-          return ActiveOrdersProvider();
-        },
-        child: OrdersHistoryScreen(
-            // scrollController: scrollController[3],
-            ),
+        create: (context) => ActiveOrdersProvider(),
+        child: OrdersHistoryScreen(),
       ),
-
-
     ];
+  }
 
-    Future.delayed(
-      Duration.zero,
-      () async {
-        if (Constant.session.isUserLoggedIn()) {
-          await getAppNotificationSettingsRepository(
-                  params: {}, context: context)
-              .then(
-            (value) async {
-              if (value[ApiAndParams.status].toString() == "1") {
-                late AppNotificationSettings notificationSettings =
-                    AppNotificationSettings.fromJson(value);
-                if (notificationSettings.data!.isEmpty) {
-                  await updateAppNotificationSettingsRepository(params: {
-                    ApiAndParams.statusIds: "1,2,3,4,5,6,7,8",
-                    ApiAndParams.mobileStatuses: "1,1,1,1,1,1,1,1",
-                    ApiAndParams.mailStatuses: "1,1,1,1,1,1,1,1"
-                  }, context: context);
-                }
-              }
+  Future<void> fetchNotificationSettings() async {
+    if (Constant.session.isUserLoggedIn()) {
+      final response = await getAppNotificationSettingsRepository(params: {}, context: context);
+      if (response[ApiAndParams.status] == "1") {
+        final notificationSettings = AppNotificationSettings.fromJson(response);
+        if (notificationSettings.data!.isEmpty) {
+          await updateAppNotificationSettingsRepository(
+            params: {
+              ApiAndParams.statusIds: "1,2,3,4,5,6,7,8",
+              ApiAndParams.mobileStatuses: "1,1,1,1,1,1,1,1",
+              ApiAndParams.mailStatuses: "1,1,1,1,1,1,1,1"
             },
+            context: context,
           );
+        }
+      }
+    }
+  }
+
+  /*//internet connection checking
+  checkConnectionState() async {
+    networkStatus = await GeneralMethods.checkInternet()
+        ? NetworkStatus.online
+        : NetworkStatus.offline;
+
+    Connectivity().onConnectivityChanged.listen(
+          (List<ConnectivityResult> statusList) {
+        if (mounted) {
+          setState(() {
+            // Assuming you need to handle only the first result in the list
+            networkStatus = GeneralMethods.getNetworkStatus(statusList.first);
+          });
         }
       },
     );
-
-    super.initState();
-  }
+  }*/
 
   //internet connection checking
   checkConnectionState() async {
@@ -141,19 +124,15 @@ class HomeMainScreenState extends State<HomeMainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: homeBottomNavigation(
-          currentPage, selectBottomMenu, pages.length, context),
+      bottomNavigationBar: buildBottomNavigationBar(),
       body: networkStatus == NetworkStatus.online
           ? PopScope(
         canPop: currentPage == 0,
         onPopInvoked: (didPop) {
-          if (didPop) return;
-          if (currentPage != 0) {
-            if (mounted) {
-              setState(() {
-                currentPage = 0;
-              });
-            }
+          if (!didPop && currentPage != 0) {
+            setState(() {
+              currentPage = 0;
+            });
           }
         },
         child: IndexedStack(
@@ -163,82 +142,108 @@ class HomeMainScreenState extends State<HomeMainScreen> {
       )
           : Center(
         child: Text(
-          getTranslatedValue(
-            context,
-            "lblCheckInternet",
-          ),
+          getTranslatedValue(context, "lblCheckInternet"),
         ),
       ),
     );
   }
 
-  homeBottomNavigation(int selectedIndex, Function selectBottomMenu,
-      int totalPage, BuildContext context) {
-    List lblHomeBottomMenu = [
-      getTranslatedValue(
-        context,
-        "lblHomeBottomMenuHome",
-      ),
-      getTranslatedValue(
-        context,
-        "lblHomeBottomMenuCategory",
-      ),
-      getTranslatedValue(
-        context,
-        "lblContactUs",
-      ),
-      getTranslatedValue(
-        context,
-        "lblHomeBottomMenuWishlist",
-      ),
-      getTranslatedValue(
-        context,
-        "lblAllOrders",
-      ),
+
+  Widget buildBottomNavigationBar() {
+    final lblHomeBottomMenu = [
+      getTranslatedValue(context, "lblHomeBottomMenuHome"),
+      getTranslatedValue(context, "lblHomeBottomMenuCategory"),
+      getTranslatedValue(context, "lblContactUs"),
+      getTranslatedValue(context, "lblHomeBottomMenuWishlist"),
+      getTranslatedValue(context, "lblAllOrders"),
     ];
-    return BottomNavigationBar(
-        items: List.generate(
-          totalPage,
-          (index) => BottomNavigationBarItem(
-            backgroundColor: Theme.of(context).cardColor,
-            icon: Widgets.getHomeBottomNavigationBarIcons(
-                isActive: selectedIndex == index)[index],
-            label: lblHomeBottomMenu[index],
-          ),
+
+    return DecoratedBox(
+      position: DecorationPosition.foreground,
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: Colors.red,
+          width: 2.0,
         ),
-        type: BottomNavigationBarType.shifting,
-        currentIndex: selectedIndex,
-        selectedItemColor: ColorsRes.mainTextColor,
-        unselectedItemColor: Colors.transparent,
-        onTap: (int ind) {
-          selectBottomMenu(ind);
-        },
-        elevation: 5);
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(24.0),
+          topRight: Radius.circular(24.0),
+        ),
+      ),
+      child: ClipRRect(
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(24.0),
+          topRight: Radius.circular(24.0),
+        ),
+        child: NavigationBar(
+          animationDuration: const Duration(seconds: 1),
+          selectedIndex: currentPage,
+          onDestinationSelected: (index) => selectBottomMenu(index),
+          destinations: List.generate(
+            pages.length,
+                (index) => NavigationDestination(
+              icon: Widgets.getHomeBottomNavigationBarIcons(isActive: currentPage == index)[index],
+              label: lblHomeBottomMenu[index],
+            ),
+          ),
+          backgroundColor: Theme.of(context).cardColor,
+          elevation: 5,
+          //surfaceTintColor: Colors.black,
+          indicatorColor: Colors.orange,
+        ),
+      ),
+    );
   }
 
-  //change current screen based on bottom menu selection
-  selectBottomMenu(int index) {
-    if (mounted) {
-      setState(
-        () {
-          if (index == currentPage) {
-            scrollController[currentPage].animateTo(0,
-                duration: const Duration(milliseconds: 400),
-                curve: Curves.linear);
-          }
-          if (index == 2) {
-            _openWhatsApp();
-          }
 
-          currentPage = index;
-        },
-      );
+
+  /* BottomNavigationBar buildBottomNavigationBar() {
+    final lblHomeBottomMenu = [
+      getTranslatedValue(context, "lblHomeBottomMenuHome"),
+      getTranslatedValue(context, "lblHomeBottomMenuCategory"),
+      getTranslatedValue(context, "lblContactUs"),
+      getTranslatedValue(context, "lblHomeBottomMenuWishlist"),
+      getTranslatedValue(context, "lblAllOrders"),
+    ];
+
+    return BottomNavigationBar(
+      items: List.generate(
+        pages.length,
+            (index) => BottomNavigationBarItem(
+          backgroundColor: Theme.of(context).cardColor,
+          icon: Widgets.getHomeBottomNavigationBarIcons(isActive: currentPage == index)[index],
+          label: lblHomeBottomMenu[index],
+        ),
+      ),
+      type: BottomNavigationBarType.shifting,
+      currentIndex: currentPage,
+      selectedItemColor: ColorsRes.mainTextColor,
+      unselectedItemColor: Colors.transparent,
+      onTap: (index) => selectBottomMenu(index),
+      elevation: 5,
+    );
+  }*/
+
+  void selectBottomMenu(int index) {
+    if (mounted) {
+      setState(() {
+        if (index == currentPage) {
+          scrollControllers[currentPage].animateTo(0,
+              duration: const Duration(milliseconds: 400),
+              curve: Curves.linear);
+        }
+        if (index == 2) {
+          _openWhatsApp();
+        }
+        currentPage = index;
+      });
     }
   }
 
-  _openWhatsApp() async {
-    String whatsappNumber = "+919420920320";
-    String url = "https://wa.me/$whatsappNumber";
+  Future<void> _openWhatsApp() async {
+    const whatsappNumber = "+919420920320";
+    final url = "https://wa.me/$whatsappNumber";
 
     if (await canLaunchUrl(Uri.parse(url))) {
       await launchUrl(Uri.parse(url));

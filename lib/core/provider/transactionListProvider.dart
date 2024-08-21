@@ -23,10 +23,11 @@ class TransactionProvider extends ChangeNotifier {
   int totalData = 0;
   int offset = 0;
 
-  getTransactionProvider({
+  Future<void> getTransactionProvider({
     required Map<String, dynamic> params,
     required BuildContext context,
   }) async {
+    // Set state to loading or loading more based on offset
     if (offset == 0) {
       itemsState = TransactionState.loading;
     } else {
@@ -35,30 +36,56 @@ class TransactionProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
+      // Set parameters for API call
       params[ApiAndParams.limit] = Constant.defaultDataLoadLimitAtOnce.toString();
       params[ApiAndParams.offset] = offset.toString();
 
-      Map<String, dynamic> getData = (await getTransactionApi(context: context, params: params));
+      // Fetch data from API
+      Map<String, dynamic> getData = await getTransactionApi(context: context, params: params);
 
+      // Check API status
       if (getData[ApiAndParams.status].toString() == "1") {
-        totalData = int.parse(getData[ApiAndParams.total.toString()]);
-        List<TransactionData> tempTransactions = (getData['data'] as List).map((e) => TransactionData.fromJson(Map.from(e))).toList();
+        // Safely parse totalData
+        final totalDataString = getData[ApiAndParams.total.toString()];
+        if (totalDataString is String) {
+          totalData = int.parse(totalDataString);
+        } else if (totalDataString is int) {
+          totalData = totalDataString;
+        } else {
+          // Handle unexpected data type for totalData
+          totalData = 0; // Or handle as needed
+        }
 
+        // Parse transactions
+        List<TransactionData> tempTransactions = (getData['data'] as List)
+            .map((e) => TransactionData.fromJson(Map.from(e)))
+            .toList();
+
+        // Update transactions list
         transactions.addAll(tempTransactions);
-      }
 
-      hasMoreData = totalData > transactions.length;
-      if (hasMoreData) {
-        offset += Constant.defaultDataLoadLimitAtOnce;
-      }
+        // Check if more data is available
+        hasMoreData = totalData > transactions.length;
+        if (hasMoreData) {
+          offset += Constant.defaultDataLoadLimitAtOnce;
+        }
 
-      itemsState = TransactionState.loaded;
-      notifyListeners();
+        // Update state to loaded
+        itemsState = TransactionState.loaded;
+      } else {
+        // Handle API error status
+        message = 'Failed to load transactions';
+        itemsState = TransactionState.error;
+        GeneralMethods.showSnackBarMsg(context, message);
+      }
     } catch (e) {
+      // Handle exceptions
       message = e.toString();
       itemsState = TransactionState.error;
       GeneralMethods.showSnackBarMsg(context, message);
+    } finally {
       notifyListeners();
     }
   }
 }
+

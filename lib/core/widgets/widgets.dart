@@ -115,7 +115,7 @@ class Widgets {
   }) {
     String dark =
         (Constant.session.getBoolData(SessionManager.isDarkTheme)) == true
-            ? "_dark"
+            ? /*"_dark"*/ ""
             : "";
     String active = (isActive ??= false) == true ? "_active" : "";
     // dev.log(image, name: "Image name");

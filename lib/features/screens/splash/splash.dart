@@ -18,7 +18,6 @@ class Splash extends StatefulWidget {
 class _SplashScreenState extends State<Splash> {
   late PackageInfo packageInfo;
   String currentAppVersion = "";
-  final String expectedAppVersion = "1.0.16";
 
   @override
   void initState() {
@@ -30,8 +29,8 @@ class _SplashScreenState extends State<Splash> {
     await initializeFirebase();
     await fetchPackageInfo();
     await getSettings();
-    await callHomeProvider();
-    navigateToNextScreen();
+   /* await callHomeProvider();*/
+   /* navigateToNextScreen();*/
   }
 
   Future<void> initializeFirebase() async {
@@ -53,7 +52,7 @@ class _SplashScreenState extends State<Splash> {
 
   Future<void> getSettings() async {
     try {
-      await SplashSetting.getSetting(context, packageInfo, currentAppVersion, expectedAppVersion);
+      await SplashSetting.getSetting(context, packageInfo, currentAppVersion, currentAppVersion);
     } catch (e) {
       print("Error getting settings: $e");
     }
@@ -75,11 +74,8 @@ class _SplashScreenState extends State<Splash> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Center(
-        child: Widgets.defaultImg(image: 'splash_logo'),
-      ),
+    return Center(
+      child: Widgets.defaultImg(image: 'splash', boxFit: BoxFit.cover),
     );
   }
 }

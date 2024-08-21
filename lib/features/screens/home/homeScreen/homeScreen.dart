@@ -27,93 +27,74 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-
-    //fetch productList from api
-    Future.delayed(Duration.zero).then(
-          (value) async {
-        HomeScreenFunction.callInit(context);
-        checkUsedPromoCode();
-      },
-    );
+    // Fetch productList from API and check used promo code
+    HomeScreenFunction.callInit(context);
+    checkUsedPromoCode();
   }
 
-  @override
-  dispose() {
-    super.dispose();
-  }
-
-  static checkUsedPromoCode() async {
+  Future<void> checkUsedPromoCode() async {
     print("In Firestore");
-    FirebaseFirestore.instance
-        .collection('users')
-        .get()
-        .then((QuerySnapshot querySnapshot) {
-      querySnapshot.docs.forEach((doc) {
-        if(Constant.session.getData(SessionManager.keyPhone)==doc["phone"]){
-          Constant.promoUsed=true;
-          print("Firestore Found Promo Code Used");
-        }else{
-          Constant.promoUsed=false;
-          print("Not Found");
-        }
-      });
-    });
-
+    try {
+      final querySnapshot = await FirebaseFirestore.instance.collection('users').get();
+      bool promoUsed = querySnapshot.docs.any((doc) => Constant.session.getData(SessionManager.keyPhone) == doc["phone"]);
+      Constant.promoUsed = promoUsed;
+      print(promoUsed ? "Firestore Found Promo Code Used" : "Not Found");
+    } catch (e) {
+      print("Error fetching promo code: $e");
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: getAppBar(
-        context: context,
-        title: Container(
-          height: 50,
-          margin: EdgeInsets.only(bottom: 10),
-          child: Image.asset(
-            "assets/images/chhayakart-white-logo.png",
-            fit: BoxFit.fill,
-          ),
-        ),
-        //deliverAddressWidget(),
-        centerTitle: true,
-        actions: [
-          setCartCounter(context: context),
-          setNotificationCounter(context: context),
-        ],
-        showBackButton: false,
-      ),
+      appBar: _buildAppBar(context),
       body: Stack(
         children: [
           Column(
             children: [
-              getSearchWidget(
-                context: context,
-              ),
-              HomeCenterUI(map: map,scrollController: widget.scrollController,)
+              getSearchWidget(context: context),
+              HomeCenterUI(map: map, scrollController: widget.scrollController),
             ],
           ),
-          Consumer<CartListProvider>(
-            builder: (context, cartListProvider, child) {
-              return cartListProvider.cartListState == CartListState.loading
-                  ? PositionedDirectional(
-                top: 0,
-                end: 0,
-                start: 0,
-                bottom: 0,
-                child: Container(
-                    color: Colors.black.withOpacity(0.2),
-                    child:
-                    const Center(child: CircularProgressIndicator())),
-              )
-                  : const SizedBox.shrink();
-            },
-          ),
+          _buildCartLoadingIndicator(),
         ],
       ),
-      drawer: CommonDrawerWidget(),
-
+      drawer: const CommonDrawerWidget(),
     );
   }
 
+  AppBar _buildAppBar(BuildContext context) {
+    return getAppBar(
+      context: context,
+      title: Container(
+        height: 50,
+        margin: const EdgeInsets.only(bottom: 10),
+        child: Image.asset(
+          "assets/images/chhayakart-white-logo.png",
+          fit: BoxFit.fill,
+        ),
+      ),
+      centerTitle: true,
+      actions: [
+        setCartCounter(context: context),
+        setNotificationCounter(context: context),
+      ],
+      showBackButton: false,
+    );
+  }
 
+  Widget _buildCartLoadingIndicator() {
+    return Consumer<CartListProvider>(
+      builder: (context, cartListProvider, child) {
+        return cartListProvider.cartListState == CartListState.loading
+            ? Positioned.fill(
+          child: Container(
+            color: Colors.black.withOpacity(0.2),
+            child: const Center(child: CircularProgressIndicator()),
+          ),
+        )
+            : const SizedBox.shrink();
+      },
+    );
+  }
 }

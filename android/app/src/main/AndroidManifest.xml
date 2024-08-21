@@ -2,6 +2,7 @@
     package="com.chayakart">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -51,6 +52,10 @@
                 android:resource="@style/NormalTheme" />
 
             <meta-data
+                android:name="io.flutter.embedding.android.splash"
+                android:resource="@drawable/splashscreen" />
+
+            <meta-data
                 android:name="flutterEmbedding"
                 android:value="2" />
             <meta-data
@@ -59,6 +64,12 @@
             <meta-data
                 android:name="firebase_analytics_collection_enabled"
                 android:value="false" />
+
+            <meta-data android:name="com.phonepe.android.sdk.isUAT" android:value="true"/>
+            <meta-data android:name="com.phonepe.android.sdk.isSimulator" android:value="true"/>
+            <meta-data android:name="com.phonepe.android.sdk.MerchantId" android:value="PGTESTPAYUAT"/>
+<!--            <meta-data android:name="com.phonepe.android.sdk.AppId" android:value="appId"/>-->
+
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

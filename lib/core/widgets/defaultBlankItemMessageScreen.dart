@@ -25,7 +25,7 @@ class DefaultBlankItemMessageScreenState extends State<DefaultBlankItemMessageSc
       padding: EdgeInsetsDirectional.all(Constant.size30),
       child: Column(
         children: [
-          Container(
+         /* Container(
             width: 200,
             height: 200,
             margin: const EdgeInsets.only(bottom: 50),
@@ -41,6 +41,13 @@ class DefaultBlankItemMessageScreenState extends State<DefaultBlankItemMessageSc
                 width: MediaQuery.of(context).size.width * 0.25,
                 height: MediaQuery.of(context).size.width * 0.25,
               ),
+            ),
+          ),*/
+          Center(
+            child: Widgets.defaultImg(
+              image: widget.image,
+              width: MediaQuery.of(context).size.width * 1,
+              height: MediaQuery.of(context).size.width * 1,
             ),
           ),
           Text(

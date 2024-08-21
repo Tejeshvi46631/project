@@ -36,6 +36,7 @@ class HomeScreenData {
     itemData['sliders'] = sliders.map((e) => e.toJson()).toList();
     itemData['offers'] = offers.map((e) => e.toJson()).toList();
     itemData['sections'] = sections.map((e) => e.toJson()).toList();
+    itemData['top_banners'] = topBanners.map((e) => e.toJson()).toList();
     return itemData;
   }
 }
@@ -153,6 +154,7 @@ class Sections {
   Sections({
     required this.id,
     required this.title,
+    required this.imageUrl,
     required this.shortDescription,
     required this.productType,
     required this.products,
@@ -160,6 +162,7 @@ class Sections {
 
   late final String id;
   late final String title;
+  late final String imageUrl;
   late final String shortDescription;
   late final String productType;
   late final String categoryid;
@@ -168,6 +171,7 @@ class Sections {
   Sections.fromJson(Map<String, dynamic> json) {
     id = json['id'].toString();
     title = json['title'].toString();
+    imageUrl = json['image_url'].toString();
     shortDescription = json['short_description'].toString();
     productType = json['product_type'].toString();
     categoryid = json['category_ids'].toString();
@@ -180,6 +184,7 @@ class Sections {
     final itemData = <String, dynamic>{};
     itemData['id'] = id;
     itemData['title'] = title;
+    itemData['image_url'] = imageUrl;
     itemData['short_description'] = shortDescription;
     itemData['product_type'] = productType;
     itemData['products'] = products;

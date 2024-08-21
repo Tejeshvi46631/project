@@ -1,3 +1,4 @@
+/*
 import 'dart:convert';
 
 import 'package:egrocer/core/provider/checkoutProvider.dart';
@@ -51,8 +52,10 @@ class StripeService {
             merchantCountryCode: 'IN',
             testEnv: isTestEnvironment,
             currencyCode:
-                currency, /*
-                  testEnv: isTestEnvironment*/
+                currency, */
+/*
+                  testEnv: isTestEnvironment*//*
+
           ),
           style: ThemeMode.light,
           merchantDisplayName: getTranslatedValue(context, "lblAppName"),
@@ -66,9 +69,11 @@ class StripeService {
       //stripePayId = paymentIntent['id'];
 
       //confirm payment
-      /*var response = await Dio().post(
+      */
+/*var response = await Dio().post(
           '${StripeService.paymentApiUrl}/${paymentIntent['id']}',
-          options: Options(headers: headers));*/
+          options: Options(headers: headers));*//*
+
 
       http.Response response = await http.post(
           Uri.parse(
@@ -129,15 +134,19 @@ class StripeService {
 
       if (from == 'order') parameter['metadata[order_id]'] = awaitedOrderID;
 
-      /*final Dio dio = Dio();*/
+      */
+/*final Dio dio = Dio();*//*
+
       // final FormData formData =
       //     FormData.fromMap(parameter, ListFormat.multiCompatible);
       print(
           "API is ${StripeService.paymentApiUrl} \n para $parameter \n secret key $secret\n public key ${Stripe.publishableKey}");
 
-      /*final response = await dio.post(StripeService.paymentApiUrl,
+      */
+/*final response = await dio.post(StripeService.paymentApiUrl,
           data: parameter,
-          options: Options(headers: StripeService.getHeaders()));*/
+          options: Options(headers: StripeService.getHeaders()));*//*
+
 
       http.Response response = await http.post(
           Uri.parse(
@@ -157,3 +166,4 @@ class StripeTransactionResponse {
 
   StripeTransactionResponse({this.message, this.success, this.status});
 }
+*/

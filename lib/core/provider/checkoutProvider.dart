@@ -78,9 +78,14 @@ class CheckoutProvider extends ChangeNotifier {
 
   // Order Delivery charge variables
   double subTotalAmount = 0.0;
+  double taxSubTotalAmount = 0.0;
   double totalAmount = 0.0;
   double savedAmount = 0.0;
-  double deliveryCharge = 0.0;
+  //double deliveryCharge = 0.0;
+  double totalDeliveryCharges = 0.0;
+  double platformFee = 0.0;
+  double shippingFee = 0.0;
+  double codServicesFee = 0.0;
   late List<SellersInfo> sellerWiseDeliveryCharges;
   late DeliveryChargeData deliveryChargeData;
   bool isCodAllowed = true;
@@ -190,9 +195,14 @@ class CheckoutProvider extends ChangeNotifier {
         print("=======================================>");
 
         subTotalAmount = double.parse(deliveryChargeData.subTotal.toString());
+        taxSubTotalAmount = double.parse(deliveryChargeData.taxSubTotal.toString());
         totalAmount = double.parse(deliveryChargeData.totalAmount.toString());
-        deliveryCharge = Constant.deliveryAmount;
-        // double.parse(deliveryChargeData.deliveryCharge.totalDeliveryCharge);
+        savedAmount = double.parse(deliveryChargeData.savedAmount.toString());
+        totalDeliveryCharges = Constant.deliveryAmount;
+        totalDeliveryCharges = double.parse(deliveryChargeData.codServicesFee.toString());
+        platformFee = double.parse(deliveryChargeData.platformFee.toString());
+        shippingFee = double.parse(deliveryChargeData.shippingFee.toString());
+        codServicesFee = double.parse(deliveryChargeData.codServicesFee.toString());
         sellerWiseDeliveryCharges =
             deliveryChargeData.deliveryCharge!.sellersInfo!;
 
@@ -384,19 +394,19 @@ class CheckoutProvider extends ChangeNotifier {
 
 //TODO: Amount Data for Place Order
       params[ApiAndParams.total] =
-          subTotalAmount.toString(); // deliveryChargeData.subTotal.toString();
-      params[ApiAndParams.deliveryCharge] = deliveryCharge.toString();
+          taxSubTotalAmount.toString(); // deliveryChargeData.subTotal.toString();
+      params[ApiAndParams.deliveryCharge] = totalDeliveryCharges.toString();
       // deliveryChargeData.deliveryCharge.totalDeliveryCharge.toString();
 
       params[ApiAndParams.finalTotal] = Constant.isPromoCodeApplied
           ? ((
           // double.parse(deliveryChargeData.totalAmount)
-          subTotalAmount - Constant.discount)
-          .getTotalWithGST() +
-          deliveryCharge)
+          taxSubTotalAmount - Constant.discount)
+          /*.getTotalWithGST() +
+          deliveryCharge*/)
           .toString()
           : //double.parse(deliveryChargeData.totalAmount)
-      (subTotalAmount.getTotalWithGST() + deliveryCharge).toString();
+      (taxSubTotalAmount/*.getTotalWithGST() + deliveryCharge*/).toString();
 
       params[ApiAndParams.paymentMethod] = selectedPaymentMethod.toString();
       params[ApiAndParams.addressId] = selectedAddress!.id.toString();
@@ -627,7 +637,7 @@ class CheckoutProvider extends ChangeNotifier {
     try {
       var cartTotal =
           context.read<CheckoutProvider>().subTotalAmount.getTotalWithGST() +
-              context.read<CheckoutProvider>().deliveryCharge;
+              context.read<CheckoutProvider>().totalDeliveryCharges;
       FacebookAnalytics.purchaseSuccess(
           amount: cartTotal,
           currency: 'INR',

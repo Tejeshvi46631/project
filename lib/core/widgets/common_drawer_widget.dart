@@ -145,7 +145,7 @@ class _CommonDrawerWidgetState extends State<CommonDrawerWidget> {
               ),
               child: ListTile(
                 onTap: () {
-                  Constant.session.logoutUser;
+                  Constant.session.logoutUser(context);
                 },
                 contentPadding: const EdgeInsets.symmetric(horizontal: 10),
                 leading: Container(

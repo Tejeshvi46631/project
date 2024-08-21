@@ -59,7 +59,7 @@ class TransactionData {
     amount = json['amount'].toString();
     status = json['status'].toString();
     message = json['message'].toString();
-    DateTime dateTime = DateTime.parse(json['created_at'].toString());
+    DateTime dateTime = DateTime.parse(json['created_at']);
     createdAt = DateFormat('dd-MMM-yyyy').format(dateTime);
   }
 

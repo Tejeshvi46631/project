@@ -92,32 +92,39 @@ class _ProductFullScreenImagesScreenState
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: List.generate(
-                        widget.images.length > 1 ? widget.images.length : 0,
-                        (index) {
-                      return GestureDetector(
-                        onTap: () {
-                          currentImage = index;
-                          _pageController.animateToPage(currentImage!,
+                      widget.images.isNotEmpty ? widget.images.length : 0,
+                          (index) {
+                            print("images length ${widget.images.length}");
+                        return GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              currentImage = index;
+                            });
+                            _pageController.animateToPage(
+                              currentImage!,
                               curve: Curves.easeOut,
-                              duration: const Duration(milliseconds: 300));
-                          setState(() {});
-                        },
-                        child: Container(
-                          margin:
-                              EdgeInsets.symmetric(horizontal: Constant.size5),
-                          decoration: getOtherImagesBoxDecoration(
-                              isActive: (currentImage == index)),
-                          child: ClipRRect(
+                              duration: const Duration(milliseconds: 300),
+                            );
+                          },
+                          child: Container(
+                            margin: EdgeInsets.symmetric(horizontal: Constant.size5),
+                            decoration: getOtherImagesBoxDecoration(
+                              isActive: (currentImage == index),
+                            ),
+                            child: ClipRRect(
                               borderRadius: Constant.borderRadius10,
                               clipBehavior: Clip.antiAliasWithSaveLayer,
                               child: Widgets.setNetworkImg(
-                                  height: 60,
-                                  width: 60,
-                                  image: widget.images[index],
-                                  boxFit: BoxFit.fill)),
-                        ),
-                      );
-                    }),
+                                height: 60,
+                                width: 60,
+                                image: widget.images[index],
+                                boxFit: BoxFit.fill,
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ),
               )
