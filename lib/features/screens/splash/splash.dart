@@ -29,8 +29,6 @@ class _SplashScreenState extends State<Splash> {
     await initializeFirebase();
     await fetchPackageInfo();
     await getSettings();
-   /* await callHomeProvider();*/
-   /* navigateToNextScreen();*/
   }
 
   Future<void> initializeFirebase() async {
@@ -58,19 +56,6 @@ class _SplashScreenState extends State<Splash> {
     }
   }
 
-  Future<void> callHomeProvider() async {
-    try {
-      Map<String, String> params = await Constant.getProductsDefaultParams();
-      await context.read<HomeScreenProvider>().getHomeScreenApiProvider(context: context, params: params);
-    } catch (e) {
-      print("Error calling home provider: $e");
-    }
-  }
-
-  void navigateToNextScreen() {
-    // TODO: Add logic to navigate to the next screen, e.g.:
-    // Navigator.pushReplacementNamed(context, Routes.nextScreen);
-  }
 
   @override
   Widget build(BuildContext context) {

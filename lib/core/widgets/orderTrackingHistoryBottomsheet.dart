@@ -119,10 +119,10 @@ class OrderTrackingHistoryBottomsheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * (0.75),
+        maxHeight: MediaQuery.of(context).size.height * (0.70),
         // maxHeight: MediaQuery.of(context).size.height * (0.90),
       ),
-      padding: const EdgeInsets.symmetric(vertical: 15),
+      padding: const EdgeInsets.symmetric(vertical: 10),
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
           color: Theme.of(context).cardColor,
@@ -206,22 +206,22 @@ class OrderTrackingHistoryBottomsheet extends StatelessWidget {
                 ),
               ],
             ), */
-              /* Expanded(
+              /* expanded(
                 flex: 9,
                 // height: 800,
-                child: ListView(
-                  // physics: NeverScrollableScrollPhysics(),
-                  // shrinkWrap: true,
-                  children: trackingData!.shipmentTrackActivities.map((e) {
-                    return ListTile(
-                      leading: Icon(
-                        Icons.check_box_rounded,
-                        color: Colors.green,
+                child: listview(
+                  // physics: neverscrollablescrollphysics(),
+                  // shrinkwrap: true,
+                  children: trackingdata!.shipmenttrackactivities.map((e) {
+                    return listtile(
+                      leading: icon(
+                        icons.check_box_rounded,
+                        color: colors.green,
                       ),
-                      title: Text(e.srStatusLabel),
-                      // subtitle: Text("Location : ${e.location}"),
+                      title: text(e.srstatuslabel),
+                      // subtitle: text("location : ${e.location}"),
                     );
-                  }).toList(),
+                  }).tolist(),
                 ),
               )
                */
@@ -261,31 +261,35 @@ class OrderTrackingHistoryBottomsheet extends StatelessWidget {
       children: [
         StatusLabelWidget(
           statusText: "Order Confirm",
+          icons: Icons.check_circle_outline_outlined,
           isCheck: orderConfirm,
         ),
         SizedBox(
-          height: 10,
+          height: 5,
         ),
         StatusLabelWidget(
           statusText: "Shipped",
+          icons: Icons.local_shipping_outlined,
           isCheck: shipped,
         ),
         SizedBox(
-          height: 10,
+          height: 5,
         ),
         StatusLabelWidget(
-          statusText: "Order Dispatch",
+          statusText: "Out of delivery",
+          icons: Icons.delivery_dining_outlined,
           isCheck: orderDispatch,
         ),
         SizedBox(
-          height: 10,
+          height: 5,
         ),
         StatusLabelWidget(
-          statusText: "Delivered",
+          statusText: "Product Delivered",
+          icons: Icons.home_outlined,
           isCheck: orderDeliverd,
         ),
         SizedBox(
-          height: 30,
+          height: 20,
         ),
         if (shipped == true)
           TextButton(
@@ -302,29 +306,57 @@ class OrderTrackingHistoryBottomsheet extends StatelessWidget {
 
 class StatusLabelWidget extends StatelessWidget {
   StatusLabelWidget(
-      {super.key, required this.isCheck, required this.statusText});
+      {super.key, required this.isCheck, required this.icons, required this.statusText});
 
   bool isCheck;
-
   String statusText;
+  IconData icons;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(
-          isCheck ? Icons.check_circle : Icons.check_circle_outline_outlined,
-          size: 30,
-          weight: 20,
-          color: isCheck ? Colors.green : Colors.grey,
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: Colors.grey, // Border color
+          width: 2.0, // Border width
         ),
-        SizedBox(
-          width: 10,
-        ),
-        Text(statusText,
-            style:
-                const TextStyle(fontWeight: FontWeight.w500, fontSize: 16.0)),
-      ],
+        borderRadius: BorderRadius.circular(10.0), // Rounded corners (optional)
+      ),
+      padding: EdgeInsets.all(10.0),
+      child: Row(
+        children: [
+          Visibility(
+            visible: isCheck,
+            maintainSize: true,
+            maintainAnimation: true,
+            maintainState: true,
+            child: Icon(
+              isCheck ? Icons.check_circle : Icons.check_circle_outline_outlined,
+              size: 30,
+              weight: 20,
+              color: isCheck ? Colors.green : Colors.grey,
+            ),
+          ),
+          Expanded(
+            child: Column(
+              children: [
+                Icon(
+                  icons,
+                  size: 30,
+                  weight: 20,
+                ),
+                //SizedBox(height: 5),
+                Text(
+                  statusText,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.w500, fontSize: 16.0),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
+

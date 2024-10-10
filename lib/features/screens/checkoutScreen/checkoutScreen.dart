@@ -1,26 +1,17 @@
-import 'package:blinking_text/blinking_text.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:egrocer/core/constant/apiAndParams.dart';
 import 'package:egrocer/core/constant/constant.dart';
 import 'package:egrocer/core/constant/routeGenerator.dart';
 import 'package:egrocer/core/model/address.dart';
 import 'package:egrocer/core/model/cartData.dart';
-import 'package:egrocer/core/model/promoCode.dart';
-import 'package:egrocer/core/provider/cartProvider.dart';
 import 'package:egrocer/core/provider/checkoutProvider.dart';
-import 'package:egrocer/core/provider/promoCodeProvider.dart';
-import 'package:egrocer/core/repository/facebook_analytics.dart';
-import 'package:egrocer/core/repository/stripeService.dart';
 import 'package:egrocer/core/utils/styles/colorsRes.dart';
 import 'package:egrocer/core/widgets/generalMethods.dart';
 import 'package:egrocer/core/widgets/sessionManager.dart';
-import 'package:egrocer/core/widgets/widgets.dart';
 import 'package:egrocer/features/screens/checkoutScreen/utils/checkout_shimmer.dart';
 import 'package:egrocer/features/screens/checkoutScreen/utils/delivery_shimmer.dart';
 import 'package:egrocer/features/screens/checkoutScreen/widget/addressWidget.dart';
 import 'package:egrocer/features/screens/checkoutScreen/widget/deliveryChargesWidget.dart';
 import 'package:egrocer/features/screens/checkoutScreen/widget/paymentMethodWidget.dart';
-import 'package:egrocer/features/screens/checkoutScreen/widget/promoCode.dart';
 import 'package:egrocer/features/screens/checkoutScreen/widget/swipeButtonWidget.dart';
 import 'package:egrocer/features/screens/checkoutScreen/widget/timeSlotsWidget.dart';
 import 'package:flutter/material.dart';
@@ -75,7 +66,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     .getPaymentMethods(context: context)
                     .then(
                   (value) {
-                   /* StripeService.secret = context
+                    /* StripeService.secret = context
                         .read<CheckoutProvider>()
                         .paymentMethods
                         .data
@@ -144,14 +135,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         ),
         body: Consumer<CheckoutProvider>(
           builder: (context, checkoutProvider, _) {
-            print(checkoutProvider.checkoutPaymentMethodsState ==
-                        CheckoutPaymentMethodsState.paymentMethodLoaded &&
-                    checkoutProvider.checkoutTimeSlotsState ==
-                        CheckoutTimeSlotsState.timeSlotsLoaded &&
-                    checkoutProvider.checkoutAddressState ==
-                        CheckoutAddressState.addressLoaded ||
-                checkoutProvider.checkoutAddressState ==
-                    CheckoutAddressState.addressBlank);
+            print("Payoption selected :_ ${checkoutProvider.isPaymentOptionSelected}");
             return Column(
               children: [
                 Expanded(
@@ -178,8 +162,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                               CheckoutAddressState.addressBlank)
                         getAddressWidget(context),
                       context.read<CheckoutProvider>().subTotalAmount >= 350 &&
-                              Constant.promoUsed == true
-                          ? Container(
+                              Constant.promoUsed == false
+                          ? /*Container(
                               alignment: Alignment.center,
                               padding: EdgeInsets.fromLTRB(12, 5, 12, 5),
                               margin: EdgeInsets.only(
@@ -391,7 +375,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                           : Container()
                                 ],
                               ),
-                            )
+                            )*/ SizedBox.shrink()
                           : Container(),
                       if (checkoutProvider.checkoutPaymentMethodsState ==
                                   CheckoutPaymentMethodsState
@@ -435,21 +419,51 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                 CheckoutDeliveryChargeState
                                     .deliveryChargeLoading)
                               GetDeliveryShimmer(),
-                            OrderSwipeButton(
-                              cartData: widget.cartData,
-                              isEnabled: (checkoutProvider
-                                              .checkoutPaymentMethodsState ==
-                                          CheckoutPaymentMethodsState
-                                              .paymentMethodLoaded &&
-                                      checkoutProvider.checkoutTimeSlotsState ==
-                                          CheckoutTimeSlotsState
-                                              .timeSlotsLoaded) &&
-                                  (checkoutProvider.checkoutAddressState ==
-                                          CheckoutAddressState.addressLoaded ||
-                                      checkoutProvider.checkoutAddressState ==
-                                          CheckoutAddressState.addressBlank) &&
-                                  checkoutProvider.isPaymentOptionSelected,
-                            ),
+                            context.read<CheckoutProvider>().subTotalAmount >=
+                                    249
+                                ? OrderSwipeButton(
+                                    cartData: widget.cartData,
+                                    isEnabled: (checkoutProvider
+                                                    .checkoutPaymentMethodsState ==
+                                                CheckoutPaymentMethodsState
+                                                    .paymentMethodLoaded &&
+                                            checkoutProvider
+                                                    .checkoutTimeSlotsState ==
+                                                CheckoutTimeSlotsState
+                                                    .timeSlotsLoaded) &&
+                                        (checkoutProvider
+                                                    .checkoutAddressState ==
+                                                CheckoutAddressState
+                                                    .addressLoaded ||
+                                            checkoutProvider
+                                                    .checkoutAddressState ==
+                                                CheckoutAddressState
+                                                    .addressBlank) &&
+                                        checkoutProvider
+                                            .isPaymentOptionSelected,
+                                  )
+                                : Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Container(
+                                      height: 45,
+                                      width: MediaQuery.of(context).size.width,
+                                      decoration: BoxDecoration(
+                                        color: Colors.orange,
+                                        // Set the background color to orange
+                                        borderRadius: BorderRadius.circular(
+                                            8), // Optional: add some corner rounding
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          'Minimum order value to place a order is ₹249',
+                                          style: TextStyle(
+                                            color: Colors
+                                                .black, // Text color set to black
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                           ],
                         ),
                       )
@@ -464,12 +478,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     );
   }
 
- /* void _fbInitiateCheckoutEvent() {
+ /*void _fbInitiateCheckoutEvent() {
     try {
       var cartData = widget.cartData.data;
       var cartTotal =
-          context.read<CheckoutProvider>().subTotalAmount.getTotalWithGST() +
-              context.read<CheckoutProvider>().deliveryCharge;
+          context.read<CheckoutProvider>().taxSubTotalAmount*//*.getTotalWithGST()*//* +
+              context.read<CheckoutProvider>().totalDeliveryCharges;
       FacebookAnalytics.initiateCheckout(
           totalPrice: cartTotal,
           numItems: cartData.cart.length,

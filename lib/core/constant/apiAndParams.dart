@@ -21,7 +21,7 @@ class ApiAndParams {
   static String apiCart = "cart/new";
   static String apiCartAdd = "$cart/add";
   static String apiCartRemove = "$cart/remove";
-  static String apiOrdersHistory = "orders";
+  static String apiOrdersHistory = "shippedorders";
   static String apiUpdateOrderStatus = "update_order_status";
   static String apiPromoCode = "promo_code";
   static String apiAddress = "address";

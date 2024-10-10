@@ -69,6 +69,7 @@ Widget getPaymentMethods(PaymentMethodsData? paymentMethodsData, BuildContext co
   final isSubtotalLessThan249 = checkoutProvider.subTotalAmount < 249;
   final isCODSelected = checkoutProvider.selectedPaymentMethod == 'COD';
 
+
   if (paymentMethodsData == null) return const SizedBox.shrink();
 
   final paymentMethods = [
@@ -79,7 +80,7 @@ Widget getPaymentMethods(PaymentMethodsData? paymentMethodsData, BuildContext co
       'available': true,
     },
     {
-      'paymentMethod': 'Razorpay',
+      'paymentMethod': 'Card Payment',
       'image': "https://th.bing.com/th/id/OIP.d0px8rOiJV_05QPderuBUAHaHa?pid=ImgDet&w=1000&h=1000&rs=1",
       'label': 'Card Payment',
       'available': true,

@@ -1,5 +1,6 @@
 import 'package:egrocer/core/constant/constant.dart';
 import 'package:egrocer/core/provider/productSearchProvider.dart';
+import 'package:egrocer/core/repository/firebase_analytics.dart';
 import 'package:egrocer/core/utils/styles/colorsRes.dart';
 import 'package:egrocer/core/utils/styles/designConfig.dart';
 import 'package:egrocer/core/widgets/generalMethods.dart';
@@ -37,28 +38,31 @@ class _SearchWidgetState extends State<SearchWidget> {
                   controller: widget.edtSearch,
                   decoration: InputDecoration(
                     border: InputBorder.none,
-                    hintText: getTranslatedValue(
+                    hintText: getTranslatedValue
+                      (
                       context,
                       "lblProductSearchHint",
                     ),
                   ),
-                  // onChanged: onSearchTextChanged,
+                  onChanged: (value) {
+                    FirebaseAnalyticsService().logSearch(searchTerm: value);
+                  },
                 ),
                 contentPadding: const EdgeInsetsDirectional.only(start: 10),
                 trailing: IconButton(
                   padding: EdgeInsets.zero,
                   icon: Consumer<ProductSearchProvider>(
                     builder: (context, productSearchProvider, _) {
-                      return Icon(context
+                      return Icon(/*context
                           .watch<ProductSearchProvider>()
                           .searchedTextLength ==
                           0
-                          ? Icons.search
-                          : Icons.cancel);
+                          ?*/ Icons.search
+                          /*: Icons.cancel*/);
                     },
                   ),
                   onPressed: () async {
-                    _initSpeech(widget.speechToText);
+                   /* _initSpeech(widget.speechToText);
 
                     PermissionStatus status = await Permission.microphone.status;
                     Future.delayed(Duration(milliseconds: 500)).then((value) {
@@ -68,9 +72,9 @@ class _SearchWidgetState extends State<SearchWidget> {
                         }
                         SearchApi.callApi(isReset: true, context: context, edtSearch: widget.edtSearch);
                       } else {
-                        Permission.microphone.request();
+                       // Permission.microphone.request();
                       }
-                    });
+                    });*/
                   },
                 ),
               ),

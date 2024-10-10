@@ -17,11 +17,11 @@ import '../../../../core/provider/orderInvoiceProvider.dart';
 class OSOrderStatusContainer extends StatelessWidget {
   final Order order;
 
-  const OSOrderStatusContainer({Key? key, required this.order}) : super(key: key);
+  const OSOrderStatusContainer({Key? key, required this.order})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-
     String getStatusCompleteDate(int currentStatus) {
       if (order.status.isNotEmpty) {
         final statusValue = order.status.where((element) {
@@ -109,7 +109,8 @@ class OSOrderStatusContainer extends StatelessWidget {
                         color: ColorsRes.mainTextColor,
                         fontWeight: FontWeight.bold,
                       ),
-                      textAlign: TextAlign.right, // Aligns the text to the right
+                      textAlign:
+                          TextAlign.right, // Aligns the text to the right
                       //overflow: TextOverflow.ellipsis, // To handle overflow
                     ),
                   ),
@@ -117,119 +118,142 @@ class OSOrderStatusContainer extends StatelessWidget {
               ),
             ),
           ),
-          Divider(color: Colors.black),
-          Center(
-            child: Text(
-              getTranslatedValue(context, "lblOrderTracking"),
-              style: TextStyle(
-                fontSize: 14.0,
-                fontWeight: FontWeight.bold,
-                color: ColorsRes.mainTextColor,
-              ),
-            ),
-          ),
-          const SizedBox(height: 10),
-          Center(
-            child: LayoutBuilder(
-              builder: (context, boxConstraints) {
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    TrackMyOrderButton(
-                      status: order.status,
-                      width: boxConstraints.maxWidth * 0.4,
-                      orderID: order.items.first.tracking_id,
-                      iconAssetPath: 'assets/images/tracking_order.png',
+          //Divider(color: Colors.black),
+       /*   order.orderStatus == 'Cancelled'
+              ? SizedBox.shrink()
+              : Center(
+                  child: Text(
+                    getTranslatedValue(context, "lblOrderTracking"),
+                    style: TextStyle(
+                      fontSize: 14.0,
+                      fontWeight: FontWeight.bold,
+                      color: ColorsRes.mainTextColor,
                     ),
-                    SizedBox(width: 20), // Adjust spacing between buttons
-                    ElevatedButton(
-                      onPressed: () async {
-                        var invoiceProvider = Provider.of<OrderInvoiceProvider>(context, listen: false);
+                  ),
+                ),*/
+          /*order.orderStatus == 'Cancelled'
+              ? SizedBox.shrink()
+              : const SizedBox(height: 10),
+          order.orderStatus == 'Cancelled'
+              ? SizedBox.shrink()
+              : Center(
+                  child: LayoutBuilder(
+                    builder: (context, boxConstraints) {
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          TrackMyOrderButton(
+                            status: order.status,
+                            width: boxConstraints.maxWidth * 0.4,
+                            orderID: order.items.first.trackingId.toString(),
+                            iconAssetPath: 'assets/images/tracking_order.png',
+                          ),
+                          SizedBox(width: 20), // Adjust spacing between buttons
+                          ElevatedButton(
+                            onPressed: () async {
+                              var invoiceProvider =
+                                  Provider.of<OrderInvoiceProvider>(context,
+                                      listen: false);
 
+                              Uint8List? htmlContent = await invoiceProvider
+                                  .getOrderInvoiceApiProvider(params: {
+                                ApiAndParams.orderId: order.id.toString()
+                              }, context: context);
 
+                              try {
+                                if (htmlContent != null) {
+                                  final appDocDirPath = io.Platform.isAndroid
+                                      ? (await ExternalPath
+                                          .getExternalStoragePublicDirectory(
+                                              ExternalPath.DIRECTORY_DOWNLOADS))
+                                      : (await getApplicationDocumentsDirectory())
+                                          .path;
 
+                                  final targetFileName =
+                                      "${getTranslatedValue(context, "lblAppName")}-${getTranslatedValue(context, "lblInvoice")}#${order.id.toString()}.pdf";
 
-                        Uint8List? htmlContent = await invoiceProvider.getOrderInvoiceApiProvider(params: {ApiAndParams.orderId: order.id.toString()}, context: context);
+                                  io.File file =
+                                      io.File("$appDocDirPath/$targetFileName");
 
-                        try {
-                          if (htmlContent != null) {
-                            final appDocDirPath = io.Platform.isAndroid
-                                ? (await ExternalPath.getExternalStoragePublicDirectory(ExternalPath.DIRECTORY_DOWNLOADS))
-                                : (await getApplicationDocumentsDirectory()).path;
+                                  // Write down the file as bytes from the bytes got from the HTTP request.
+                                  await file.writeAsBytes(htmlContent,
+                                      flush: true);
+                                  if (await file.exists()) {
+                                    print(
+                                        'File successfully written at: ${file.path}');
+                                  } else {
+                                    print(
+                                        'Failed to write file at: ${file.path}');
+                                    return;
+                                  }
 
-                            final targetFileName =
-                                "${getTranslatedValue(context, "lblAppName")}-${getTranslatedValue(context, "lblInvoice")}#${order.id.toString()}.pdf";
+                                  if (!await io.Directory(appDocDirPath)
+                                      .exists()) {
+                                    print(
+                                        'Directory does not exist: $appDocDirPath');
+                                    return;
+                                  }
 
-                            io.File file = io.File("$appDocDirPath/$targetFileName");
-
-                            // Write down the file as bytes from the bytes got from the HTTP request.
-                            await file.writeAsBytes(htmlContent, flush: true);
-                            if (await file.exists()) {
-                              print('File successfully written at: ${file.path}');
-                            } else {
-                              print('Failed to write file at: ${file.path}');
-                              return;
-                            }
-
-                            if (!await io.Directory(appDocDirPath).exists()) {
-                              print('Directory does not exist: $appDocDirPath');
-                              return;
-                            }
-
-                            if (await file.exists()) {
-      // Proceed to open the file
-      print("File Path : $file.path");
-      OpenFilex.open(file.path).catchError((e) {
-        print('Failed to open file: $e');
-      });
-    }
-                            // Show snackbar with option to open the saved file
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                action: SnackBarAction(
-                                  label: getTranslatedValue(context, "lblShowFile"),
-                                  onPressed: () {
-                                    print('Opening file: ${file.path}');
+                                  if (await file.exists()) {
+                                    // Proceed to open the file
+                                    print("File Path : $file.path");
                                     OpenFilex.open(file.path).catchError((e) {
                                       print('Failed to open file: $e');
                                     });
-                                  },
-                                ),
-                                content: Text(
-                                  getTranslatedValue(context, "lblFileSavedSuccessfully"),
-                                  softWrap: true,
-                                  style: TextStyle(color: ColorsRes.mainTextColor),
-                                ),
-                                duration: const Duration(seconds: 5),
-                                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                                  }
+                                  // Show snackbar with option to open the saved file
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      action: SnackBarAction(
+                                        label: getTranslatedValue(
+                                            context, "lblShowFile"),
+                                        onPressed: () {
+                                          print('Opening file: ${file.path}');
+                                          OpenFilex.open(file.path)
+                                              .catchError((e) {
+                                            print('Failed to open file: $e');
+                                          });
+                                        },
+                                      ),
+                                      content: Text(
+                                        getTranslatedValue(context,
+                                            "lblFileSavedSuccessfully"),
+                                        softWrap: true,
+                                        style: TextStyle(
+                                            color: ColorsRes.mainTextColor),
+                                      ),
+                                      duration: const Duration(seconds: 5),
+                                      backgroundColor: Theme.of(context)
+                                          .scaffoldBackgroundColor,
+                                    ),
+                                  );
+                                }
+                              } catch (e) {
+                                print('Error saving or opening file: $e');
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: ColorsRes.appColor,
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 12, horizontal: 20),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
                               ),
-                            );
-                          }
-                        } catch (e) {
-                          print('Error saving or opening file: $e');
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: ColorsRes.appColor,
-                        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      child: Text(
-                        getTranslatedValue(context, "lblGetInvoice"),
-                        style: TextStyle(
-                          fontSize: 14.0,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ],
-                );
-              },
-            ),
-          ),
+                            ),
+                            child: Text(
+                              getTranslatedValue(context, "lblGetInvoice"),
+                              style: TextStyle(
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ),*/
         ],
       ),
     );

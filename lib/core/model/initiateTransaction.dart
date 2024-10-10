@@ -32,20 +32,27 @@ class Data {
   Data({
     required this.paymentMethod,
     required this.transactionId,
-  });
+    required this.paymentBody,
+    required this.checkSum,});
 
   late final String paymentMethod;
   late final String transactionId;
+  late final String paymentBody;
+  late final String checkSum;
 
   Data.fromJson(Map<String, dynamic> json) {
     paymentMethod = json['payment_method'].toString();
     transactionId = json['transaction_id'].toString();
+    paymentBody = json['payment_body'].toString();
+    checkSum = json['payment_checksum'].toString();
   }
 
   Map<String, dynamic> toJson() {
     final itemData = <String, dynamic>{};
     itemData['payment_method'] = paymentMethod;
     itemData['transaction_id'] = transactionId;
+    itemData['payment_body'] = paymentBody;
+    itemData['payment_signature'] = checkSum;
     return itemData;
   }
 }

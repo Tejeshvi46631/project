@@ -2,6 +2,7 @@ import 'package:country_code_picker/country_code_picker.dart';
 import 'package:egrocer/core/constant/appLocalization.dart';
 import 'package:egrocer/core/constant/constant.dart';
 import 'package:egrocer/core/constant/routeGenerator.dart';
+import 'package:egrocer/core/repository/firebase_analytics.dart';
 import 'package:egrocer/core/utils/styles/colorsRes.dart';
 import 'package:egrocer/core/widgets/generalMethods.dart';
 import 'package:egrocer/core/widgets/sessionManager.dart';
@@ -29,7 +30,10 @@ class MainProvider {
         "lblAppName",
       ),
       theme: ColorsRes.setAppTheme(),
-      home: const HomeMainScreen(),
+      home: const Splash(),
+      navigatorObservers: <NavigatorObserver>[
+        FirebaseAnalyticsService().analyticsObserver
+      ],
       localizationsDelegates: const [
         TranslationsDelegate(),
         CountryLocalizations.delegate,

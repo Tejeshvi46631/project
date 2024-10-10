@@ -1,6 +1,7 @@
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:egrocer/core/constant/constant.dart';
 import 'package:egrocer/core/constant/routeGenerator.dart';
+import 'package:egrocer/core/repository/firebase_analytics.dart';
 import 'package:egrocer/core/utils/styles/colorsRes.dart';
 import 'package:egrocer/core/utils/styles/designConfig.dart';
 import 'package:egrocer/core/widgets/generalMethods.dart';
@@ -179,6 +180,15 @@ class _LoginUpperWidgetState extends State<LoginUpperWidget> {
               edtPhoneNumber.text,
               selectedCountryCode!
             ];
+
+          /*  // Create a map for the parameters
+            Map<String, Object> firebaseArguments1 = {
+              'firebaseAuth': firebaseAuth,
+              'otpVerificationId': otpVerificationId,
+              'phoneNumber': edtPhoneNumber.text,
+              'countryCode': selectedCountryCode!,
+            };
+            FirebaseAnalyticsService().logSignUp(parameters: firebaseArguments1);*/
             Navigator.pushNamed(context, otpScreen,
                 arguments: firebaseArguments);
           });

@@ -32,12 +32,14 @@ class _HomeScreenState extends State<HomeScreen> {
     checkUsedPromoCode();
   }
 
+
+
   Future<void> checkUsedPromoCode() async {
     print("In Firestore");
     try {
       final querySnapshot = await FirebaseFirestore.instance.collection('users').get();
       bool promoUsed = querySnapshot.docs.any((doc) => Constant.session.getData(SessionManager.keyPhone) == doc["phone"]);
-      Constant.promoUsed = promoUsed;
+     // Constant.promoUsed = promoUsed;
       print(promoUsed ? "Firestore Found Promo Code Used" : "Not Found");
     } catch (e) {
       print("Error fetching promo code: $e");

@@ -42,8 +42,12 @@ class HomeMainScreenState extends State<HomeMainScreen> {
 
   @override
   void dispose() {
+    // Only dispose controllers if they are not being used anymore.
     for (var controller in scrollControllers) {
-      controller.dispose();
+      if (controller.hasClients) {
+        // Optionally, you can check if the controller is still attached to any scrolling widget
+        controller.dispose();
+      }
     }
     super.dispose();
   }

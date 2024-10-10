@@ -138,15 +138,25 @@ class BillDetails extends StatelessWidget {
                         style: const TextStyle(fontWeight: FontWeight.w500),
                       ),
                       const Spacer(),
-                      Text(
-                        order.paymentMethod == "COD"
-                            ? getCurrencyFormatdouble(order.finalTotal , order.codServicesFee!).toString()
-                            : getCurrencyFormatdouble((order.finalTotal).toString(), ""),
+                     /* Text(
+                        order.items.isNotEmpty
+                            ? getCurrencyFormatdouble(order.items.first.subTotal.toString()).toString()
+                            : getCurrencyFormatdouble(order.shippedItems.first.order.first.subTotal.toString()).toString(),
                         style: TextStyle(
                           fontWeight: FontWeight.w500,
                           color: ColorsRes.appColor,
                         ),
-                      ),
+                      ),*/
+                      Text(
+                        // Conditional logic for COD or other payment methods
+                        order.paymentMethod == "COD"
+                            ? getSubTotal(order, addCODCharge: true)
+                            : getSubTotal(order),
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          color: ColorsRes.appColor,
+                        ),
+                      )
                     ],
                   ),
                 ],
@@ -183,6 +193,31 @@ class BillDetails extends StatelessWidget {
   }
 }
 
+/*String getSubTotal(Order order) {
+  // Determine if items or shippedItems should be used
+  String subTotal = order.items.isNotEmpty
+      ? order.items.first.subTotal.toString()
+      : order.shippedItems.first.order.first.subTotal.toString();
+
+  // Format the subtotal with currency
+  return getCurrencyFormatdouble(subTotal, "").toString();
+}*/
+
+String getSubTotal(Order order, {bool addCODCharge = false}) {
+  // Determine if items or shippedItems should be used
+  String subTotal = order.items.isNotEmpty
+      ? order.items.first.subTotal.toString()
+      : order.shippedItems.first.order.first.subTotal.toString();
+
+  // Convert the subtotal to double and optionally add 46 for COD
+  var total = getCurrencyFormatdouble(subTotal, "").toString();
+  if (addCODCharge) {
+    total = getCurrencyFormatdouble(subTotal, "46").toString();
+  }
+
+  return total.toString();
+}
+
 String getCurrencyFormatdouble(String amount1String, String amount2String) {
   // Parse both strings to doubles
   double amount1 = double.tryParse(amount1String) ?? 0.0;
@@ -201,4 +236,21 @@ String getCurrencyFormatdouble(String amount1String, String amount2String) {
     name: Constant.currencyCode,
   ).format(totalAmount);
 }
+/*String getCurrencyFormatdouble(String amount1String) {
+  // Parse both strings to doubles
+  double amount1 = double.tryParse(amount1String) ?? 0.0;
+
+  // Add the two amounts together
+  double totalAmount = amount1;
+
+  // Parse decimal points from String to int
+  int decimalDigits = int.tryParse(Constant.decimalPoints) ?? 2;
+
+  // Format the total amount using NumberFormat.currency
+  return NumberFormat.currency(
+    symbol: Constant.currency,
+    decimalDigits: decimalDigits,
+    name: Constant.currencyCode,
+  ).format(totalAmount);
+}*/
 

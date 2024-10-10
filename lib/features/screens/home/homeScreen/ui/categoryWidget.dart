@@ -93,97 +93,95 @@ class HomeScreenCategory {
 
                               dev.log(subCatImage,
                                   name: "Sub Category Image : "); */
-                          return SingleChildScrollView(
-                            child: Column(
-                              children: [
-                                InkWell(
-                                  onTap: () {
-                                    print("Category ID : " +
-                                        _category.id.toString());
-                                    Navigator.pushNamed(
-                                        context, productListScreenV2,
-                                        arguments: [
-                                          // "category",
-                                          // category.allActiveChilds[index]
-                                          //         ['id']
-                                          //     .toString(),
+                          return Column(
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  print("Category ID : " +
+                                      _category.id.toString());
+                                  Navigator.pushNamed(
+                                      context, productListScreenV2,
+                                      arguments: [
+                                        // "category",
+                                        // category.allActiveChilds[index]
+                                        //         ['id']
+                                        //     .toString(),
 
-                                          // category.id.toString(),
-                                          _category.name,
-                                          _sections,
-                                          _sections[index].title,
-                                          print("list ${_sections.toList()}"),
-                                          print("index tile ${_sections[index].title}"),
-                                          print("index tilename ${_category.name}")
-                                          /*  sections
+                                        // category.id.toString(),
+                                        _category.name,
+                                        _sections,
+                                        _sections[index].title,
+                                        print("list ${_sections.toList()}"),
+                                        print("index tile ${_sections[index].title}"),
+                                        print("index tilename ${_category.name}")
+                                        /*  sections
                                                 ?.where((element) =>
                                                     element.categoryid ==
                                                     category.id.toString())
                                                 .toList() */
-                                        ]);
-                                  },
-                                  child: Container(
-                                    // height: 100,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                      border: Border.all(
-                                          width: 1, color: Colors.white),
-                                    ),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                      children: [
-                                        SizedBox(
-                                          width: 180,
-                                          // height: 150,
-                                          child: ClipRRect(
-                                            borderRadius: BorderRadius.only(
-                                                topLeft: Radius.circular(10.0),
-                                                topRight: Radius.circular(10.0)),
-                                            child: CachedNetworkImage(
-                                              imageUrl: _category.allActiveChilds
-                                                  .where((element) =>
-                                              element['name']
-                                                  .toString()
-                                                  .toLowerCase() ==
-                                                  _sections[index]
-                                                      .title
-                                                      .toLowerCase())
-                                                  .first['image_url'],
-                                              filterQuality: FilterQuality.low,
-                                              fit: BoxFit.contain,
-                                              placeholder: (context, url) =>
-                                                  Image.asset(
-                                                      "assets/images/photoEmpty.jpg"),
-                                              errorWidget:
-                                                  (context, url, error) =>
-                                                  Icon(Icons.error),
-                                            ),
+                                      ]);
+                                },
+                                child: Container(
+                                  // height: 100,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    border: Border.all(
+                                        width: 1, color: Colors.white),
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                    children: [
+                                      SizedBox(
+                                        width: 170,
+                                        // height: 150,
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(10.0),
+                                              topRight: Radius.circular(10.0)),
+                                          child: CachedNetworkImage(
+                                            imageUrl: _category.allActiveChilds
+                                                .where((element) =>
+                                            element['name']
+                                                .toString()
+                                                .toLowerCase() ==
+                                                _sections[index]
+                                                    .title
+                                                    .toLowerCase())
+                                                .first['image_url'],
+                                            filterQuality: FilterQuality.low,
+                                            fit: BoxFit.contain,
+                                            placeholder: (context, url) =>
+                                                Image.asset(
+                                                    "assets/images/photoEmpty.jpg"),
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                Icon(Icons.error),
                                           ),
                                         ),
-                                        SizedBox(height: 5,),
-                                        Text(
-                                          /*  category.allActiveChilds[index]
+                                      ),
+                                      SizedBox(height: 5,),
+                                      Text(
+                                        /*  category.allActiveChilds[index]
                                                     ['name'] */
-                                          _sections[index].title ?? '',
-                                          textAlign: TextAlign.start,
-                                          style: TextStyle(
-                                              fontSize: 13,
-                                              fontWeight: FontWeight.w400,
-                                              overflow: TextOverflow.fade),
-                                          maxLines: 2,
-                                        ),
-                                        SizedBox(
-                                          height: 5,
-                                        )
-                                      ],
-                                    ),
+                                        _sections[index].title,
+                                        textAlign: TextAlign.start,
+                                        style: TextStyle(
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.w400,
+                                            overflow: TextOverflow.fade),
+                                        maxLines: 2,
+                                      ),
+                                      SizedBox(
+                                        height: 5,
+                                      )
+                                    ],
                                   ),
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           );
                         },
                       ),

@@ -366,7 +366,7 @@ class _SearchStackWidgetState extends State<SearchStackWidget> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Container(
+                  /*  Container(
                       alignment: AlignmentDirectional.topEnd,
                       child: IconButton(
                         splashRadius: 0.1,
@@ -423,7 +423,7 @@ class _SearchStackWidgetState extends State<SearchStackWidget> {
                           )
                         ],
                       ),
-                    )
+                    )*/
                   ],
                 ),
               ),

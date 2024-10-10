@@ -38,7 +38,7 @@ class OSOrderItemContainer extends StatelessWidget {
                     clipBehavior: Clip.antiAliasWithSaveLayer,
                     child: Widgets.setNetworkImg(
                       boxFit: BoxFit.fill,
-                      image: orderItem.imageUrl,
+                      image: orderItem.imageUrl ?? "",
                       width: boxConstraints.maxWidth * (0.25),
                       height: boxConstraints.maxWidth * (0.25),
                     )),
@@ -50,7 +50,7 @@ class OSOrderItemContainer extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        orderItem.productName,
+                        orderItem.productName ?? '',
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(fontWeight: FontWeight.w500),
@@ -64,11 +64,11 @@ class OSOrderItemContainer extends StatelessWidget {
                       const SizedBox(
                         height: 5,
                       ),
-                      Text(
+                     /* Text(
                         "${orderItem.measurement} ${orderItem.unit}",
                         style:
                             TextStyle(color: ColorsRes.subTitleMainTextColor),
-                      ),
+                      ),*/
                       const SizedBox(
                         height: 5,
                       ),
@@ -115,7 +115,7 @@ class OSOrderItemContainer extends StatelessWidget {
                                 ),
                                 Text(
                                   Constant.getOrderActiveStatusLabelFromCode(
-                                      orderItem.activeStatus),
+                                      orderItem.activeStatus ?? ''),
                                   style:
                                       TextStyle(color: ColorsRes.appColorRed),
                                 )
@@ -141,7 +141,7 @@ class OSOrderItemContainer extends StatelessWidget {
                       _showCancelOrderButton(order)
                           ? OSCancelOrderButton(
                               order: order,
-                              orderItemId: orderItem.id,
+                              orderItemId: orderItem.id.toString(),
                               width: boxConstraints.maxWidth * (0.5),
                             )
                           : SizedBox() /* (_showReturnOrderButton(widget.order)

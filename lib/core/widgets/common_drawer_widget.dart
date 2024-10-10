@@ -207,8 +207,8 @@ class _CommonDrawerWidgetState extends State<CommonDrawerWidget> {
               builder: (context) =>
                   ProfileScreen(scrollController: ScrollController()),
             ));
-            Navigator.pushNamed(context,
-                ProfileScreen(scrollController: ScrollController()) as String);
+           /* Navigator.pushNamed(context,
+                ProfileScreen(scrollController: ScrollController()));*/
           },
           "isResetLabel": false
         },
@@ -233,6 +233,14 @@ class _CommonDrawerWidgetState extends State<CommonDrawerWidget> {
               context,
               wishlistScreen,
             );
+          },
+          "isResetLabel": false
+        },
+     /* if (isUserLogin)*/
+        {
+          "icon": "wallet_icon",
+          "label": "Chhaya Purse\n(Coming Soon)",
+          "clickFunction": (context) {
           },
           "isResetLabel": false
         },

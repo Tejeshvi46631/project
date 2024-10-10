@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:egrocer/core/constant/apiAndParams.dart';
 import 'package:egrocer/core/constant/constant.dart';
 import 'package:egrocer/core/constant/routeGenerator.dart';
@@ -20,8 +21,10 @@ import 'package:egrocer/core/webservices/paymentMethodsSettingsApi.dart';
 import 'package:egrocer/core/webservices/placeOrderApi.dart';
 import 'package:egrocer/core/webservices/timeSlotSettingsApi.dart';
 import 'package:egrocer/core/widgets/generalMethods.dart';
+import 'package:egrocer/core/widgets/sessionManager.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:phonepe_payment_sdk/phonepe_payment_sdk.dart';
 import 'package:provider/provider.dart';
 
 enum CheckoutTimeSlotsState {
@@ -107,8 +110,12 @@ class CheckoutProvider extends ChangeNotifier {
   String razorpayOrderId = "";
   String transactionId = "";
   String payStackReference = "";
+  String getBody = "";
+  String checkSum = "";
+  Object? result;
 
   String paytmTxnToken = "";
+
 
   Future<AddressData?> getSingleAddressProvider(
       {required BuildContext context}) async {
@@ -330,15 +337,15 @@ class CheckoutProvider extends ChangeNotifier {
         if (paymentMethodsData.codMode == "global" && !isCodAllowed) {
           isCodAllowed = true;
         } else if (paymentMethodsData.codMode == "product" && !isCodAllowed) {
-          isCodAllowed = false;
+          isCodAllowed = true;
         }
 
         if (paymentMethodsData.codPaymentMethod == "1" &&
-            isCodAllowed == true) {
+            isCodAllowed == false) {
           selectedPaymentMethod = "COD";
         } else if (paymentMethodsData.razorpayPaymentMethod == "1") {
           selectedPaymentMethod = "Razorpay";
-        } else if (paymentMethodsData.paystackPaymentMethod == "1") {
+        } /*else if (paymentMethodsData.paystackPaymentMethod == "1") {
           selectedPaymentMethod = "Paystack";
         } else if (paymentMethodsData.stripePaymentMethod == "1") {
           selectedPaymentMethod = "Stripe";
@@ -346,7 +353,7 @@ class CheckoutProvider extends ChangeNotifier {
           selectedPaymentMethod = "Paytm";
         } else if (paymentMethodsData.paypalPaymentMethod == "1") {
           selectedPaymentMethod = "Paypal";
-        }
+        }*/
 
         checkoutPaymentMethodsState =
             CheckoutPaymentMethodsState.paymentMethodLoaded;
@@ -370,6 +377,7 @@ class CheckoutProvider extends ChangeNotifier {
     selectedPaymentMethod = method;
     isPaymentOptionSelected = true;
     notifyListeners(); // Notify listeners when the state changes
+
   }
 
   Future placeOrder(
@@ -476,6 +484,127 @@ class CheckoutProvider extends ChangeNotifier {
     }
   }
 
+
+  /// Phone Pay just enable this
+  /*Future placeOrder(
+      {required BuildContext context, required CartData cartData, required bool isPaymentUnderProcessing }) async {
+    try {
+      print("entered in place order");
+      late DateTime dateTime;
+      if (int.parse(timeSlotsData.timeSlotsDeliveryStartsFrom.toString()) ==
+          1) {
+        dateTime = DateTime.now();
+      } else {
+        dateTime = DateTime.now()
+            .add(Duration(days: int.parse(timeSlotsData.timeSlotsAllowedDays)));
+      }
+      final orderStatus = selectedPaymentMethod == "COD" ? "2" : "1";
+      print(orderStatus);
+
+      Map<String, String> params = {};
+      params[ApiAndParams.productVariantId] =
+          deliveryChargeData.productVariantId.toString();
+      params[ApiAndParams.quantity] = deliveryChargeData.quantity.toString();
+
+//TODO: Amount Data for Place Order
+      params[ApiAndParams.total] =
+          taxSubTotalAmount.toString(); // deliveryChargeData.subTotal.toString();
+      params[ApiAndParams.deliveryCharge] = totalDeliveryCharges.toString();
+      // deliveryChargeData.deliveryCharge.totalDeliveryCharge.toString();
+
+      if(selectedPaymentMethod == "COD"){
+        params[ApiAndParams.finalTotal] = Constant.isPromoCodeApplied
+            ? ((
+            // double.parse(deliveryChargeData.totalAmount)
+            taxSubTotalAmount - Constant.discount)
+            *//*.getTotalWithGST()*//* +
+            totalDeliveryCharges)
+            .toString()
+            : //double.parse(deliveryChargeData.totalAmount)
+        (taxSubTotalAmount*//*.getTotalWithGST()*//* + totalDeliveryCharges).toString();
+      }else{
+        params[ApiAndParams.finalTotal] = Constant.isPromoCodeApplied
+            ? ((
+            // double.parse(deliveryChargeData.totalAmount)
+            taxSubTotalAmount - Constant.discount)
+            *//* .getTotalWithGST() +
+          totalDeliveryCharges*//*)
+            .toString()
+            : //double.parse(deliveryChargeData.totalAmount)
+        (taxSubTotalAmount*//*.getTotalWithGST() + totalDeliveryCharges*//*).toString();
+      }
+
+      params[ApiAndParams.paymentMethod] = selectedPaymentMethod.toString();
+      params[ApiAndParams.addressId] = selectedAddress!.id.toString();
+      params[ApiAndParams.deliveryTime] =
+      "${dateTime.day}-${dateTime.month}-${dateTime.year} ${timeSlotsData.timeSlots[selectedTime].title}";
+      params[ApiAndParams.status] = orderStatus;
+      params[ApiAndParams.discount] = Constant.discount.toString();
+      params[ApiAndParams.order_from] = "1";
+      print(params);
+
+      Map<String, dynamic> getPlaceOrderResponse =
+      (await getPlaceOrderApi(context: context, params: params));
+      if (getPlaceOrderResponse[ApiAndParams.status].toString() == "1") {
+        if (selectedPaymentMethod == "Gpay/PhonePe/Paytm" ||
+            selectedPaymentMethod == "Stripe") {
+          PlacedPrePaidOrder placedPrePaidOrder =
+          PlacedPrePaidOrder.fromJson(getPlaceOrderResponse);
+          placedOrderId = placedPrePaidOrder.data.orderId.toString();
+          initiateRazorpayTransaction(context: context, isPaymentUnderProcessing: isPaymentUnderProcessing);
+        }
+        if (selectedPaymentMethod == "Net Banking" ||
+            selectedPaymentMethod == "Stripe") {
+          PlacedPrePaidOrder placedPrePaidOrder =
+          PlacedPrePaidOrder.fromJson(getPlaceOrderResponse);
+          placedOrderId = placedPrePaidOrder.data.orderId.toString();
+          initiateRazorpayTransaction(context: context, isPaymentUnderProcessing: isPaymentUnderProcessing);
+        }
+        if (selectedPaymentMethod == "Card Payment" ||
+            selectedPaymentMethod == "Stripe") {
+          PlacedPrePaidOrder placedPrePaidOrder =
+          PlacedPrePaidOrder.fromJson(getPlaceOrderResponse);
+          placedOrderId = placedPrePaidOrder.data.orderId.toString();
+          initiateRazorpayTransaction(context: context, isPaymentUnderProcessing: isPaymentUnderProcessing);
+        }
+
+        else if (selectedPaymentMethod == "Paystack") {
+          payStackReference =
+          "Charged_From_${GeneralMethods.setFirstLetterUppercase(Platform.operatingSystem)}_${DateTime.now().millisecondsSinceEpoch}";
+          transactionId = payStackReference;
+        } else if (selectedPaymentMethod == "COD") {
+          print("enter orderplacescreen");
+          _fbEventPurchaseSuccess(context, cartData);
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            orderSuccessfullySummaryScreen, (route) => false,// Use the string route name here
+          );
+
+        } *//*else if (selectedPaymentMethod == "Paytm") {
+          PlacedPrePaidOrder placedPrePaidOrder =
+          PlacedPrePaidOrder.fromJson(getPlaceOrderResponse);
+          placedOrderId = placedPrePaidOrder.data.orderId.toString();
+          initiatePaytmTransaction(context: context);
+        } else if (selectedPaymentMethod == "Paypal") {
+          PlacedPrePaidOrder placedPrePaidOrder =
+          PlacedPrePaidOrder.fromJson(getPlaceOrderResponse);
+          placedOrderId = placedPrePaidOrder.data.orderId.toString();
+          initiatePaypalTransaction(context: context);
+        }*//*
+      } else {
+        GeneralMethods.showSnackBarMsg(
+            context, getPlaceOrderResponse[ApiAndParams.message]);
+        checkoutPlaceOrderState = CheckoutPlaceOrderState.placeOrderError;
+        notifyListeners();
+      }
+    } catch (e) {
+      message = e.toString();
+      GeneralMethods.showSnackBarMsg(context, message);
+      checkoutPlaceOrderState = CheckoutPlaceOrderState.placeOrderError;
+      notifyListeners();
+    }
+  }*/
+
   Future initiatePaytmTransaction({required BuildContext context}) async {
     try {
       Map<String, String> params = {};
@@ -506,22 +635,94 @@ class CheckoutProvider extends ChangeNotifier {
     }
   }
 
-  Future initiateRazorpayTransaction({required BuildContext context}) async {
+  Future<void> storePromoUser() async {
+    try {
+      await FirebaseFirestore.instance.collection('users').add({
+        'phone': Constant.session.getData(SessionManager.keyPhone),
+        'promo_code': "NEWCKAPP",
+      });
+    } catch (e) {
+      print("Error storing promo user: $e");
+    }
+  }
+
+  Future<void> startTransaction(BuildContext context, bool isPaymentUnderProcessing) async {
+    String body = getBody;
+    String checksum = checkSum;
+    String packageName = ''; // Replace with actual package name
+    String callBackUrl = 'https://chhayakart.com/phonepe/verify.php'; // Replace with actual callback URL
+
+    print("Body: $body");
+    print("Checksum: $checksum");
+
+    try {
+      PhonePePaymentSdk.startTransaction(body, callBackUrl, checksum, packageName)
+          .then((response) {
+        if (response != null) {
+          String status = response['status'].toString();
+          String error = response['error'].toString();
+
+          if (status == 'SUCCESS') {
+            isPaymentUnderProcessing = false;
+            storePromoUser();
+            addTransaction(context: context);  // Add transaction logic
+            print("Payment Successful");
+            GeneralMethods.showSnackBarMsg(context, "Payment Successful");
+            result = "Flow Completed - Status: Success!";
+          } else {
+            result = "Flow Error - Status: $status and Error: $error";
+            GeneralMethods.showSnackBarMsg(context, "Payment failed: $error");
+          }
+        } else {
+          result = "Flow Incomplete";
+        }
+        notifyListeners();
+      }).catchError((error) {
+        handleError(error);
+        notifyListeners();
+      });
+    } catch (error) {
+      handleError(error);
+      notifyListeners();
+    }
+  }
+
+  void handleError(dynamic error) {
+    if (error is Exception) {
+      result = error.toString();
+    } else {
+      result = "Error: $error";
+    }
+    notifyListeners();
+  }
+
+
+
+  Future initiateRazorpayTransaction({required BuildContext context, required bool isPaymentUnderProcessing}) async {
     try {
       Map<String, String> params = {};
 
-      params[ApiAndParams.paymentMethod] = selectedPaymentMethod.toString();
+      params[ApiAndParams.paymentMethod] = 'PhonePe'/*selectedPaymentMethod.toString()*/;
       params[ApiAndParams.orderId] = placedOrderId;
 
       Map<String, dynamic> getInitiatedTransactionResponse =
       (await getInitiatedTransactionApi(context: context, params: params));
+
+      print("Get Value: $params");
 
       if (getInitiatedTransactionResponse[ApiAndParams.status].toString() ==
           "1") {
         InitiateTransaction initiateTransaction =
         InitiateTransaction.fromJson(getInitiatedTransactionResponse);
         razorpayOrderId = initiateTransaction.data.transactionId;
+        getBody = initiateTransaction.data.paymentBody;
+        checkSum = initiateTransaction.data.checkSum;
         checkoutPlaceOrderState = CheckoutPlaceOrderState.placeOrderLoaded;
+        await startTransaction(context, isPaymentUnderProcessing);
+        print("Get Body: ${getBody.toString()}");
+        print("Get CheckSum: ${checkSum.toString()}");
+        print("Get Status: ${getInitiatedTransactionResponse[ApiAndParams.status].toString()}");
+        print("Get Response: ${getInitiatedTransactionResponse.toString()}");
         notifyListeners();
       } else {
         GeneralMethods.showSnackBarMsg(context, message);
@@ -593,7 +794,7 @@ class CheckoutProvider extends ChangeNotifier {
           GeneralMethods.setFirstLetterUppercase(Platform.operatingSystem);
       params[ApiAndParams.appVersion] = packageInfo.version;
       params[ApiAndParams.transactionId] = transactionId;
-      params[ApiAndParams.paymentMethod] = "Razorpay";
+      params[ApiAndParams.paymentMethod] = "PhonePe";
       // if(selectedPaymentMethod.toString()=="Net Banking"){
       //   params[ApiAndParams.paymentMethod] = "Razorpay";
       // }else{
@@ -636,7 +837,7 @@ class CheckoutProvider extends ChangeNotifier {
   void _fbEventPurchaseSuccess(BuildContext context, CartData cartData) {
     try {
       var cartTotal =
-          context.read<CheckoutProvider>().subTotalAmount.getTotalWithGST() +
+          context.read<CheckoutProvider>().taxSubTotalAmount/*.getTotalWithGST()*/ +
               context.read<CheckoutProvider>().totalDeliveryCharges;
       FacebookAnalytics.purchaseSuccess(
           amount: cartTotal,

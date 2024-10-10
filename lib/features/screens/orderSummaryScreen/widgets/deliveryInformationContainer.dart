@@ -32,7 +32,7 @@ class DeliveryInformationContainer extends StatelessWidget {
             ListTile(
               leading: Icon(Icons.person, color: Theme.of(context).primaryColor),
               title: Text(
-                order.userName,
+                order.address.name,
                 style: TextStyle(
                   color: ColorsRes.subTitleMainTextColor,
                   fontSize: 13.0,
@@ -43,7 +43,7 @@ class DeliveryInformationContainer extends StatelessWidget {
             ListTile(
               leading: Icon(Icons.location_on, color: Theme.of(context).primaryColor),
               title: Text(
-                order.address,
+                '${order.address.address +" "+ order.address.landmark +" "+ order.address.area +" "+ order.address.city +" "+ order.address.state + '-' + order.address.pincode}',
                 style: TextStyle(
                   color: ColorsRes.subTitleMainTextColor,
                   fontSize: 13.0,
@@ -54,7 +54,7 @@ class DeliveryInformationContainer extends StatelessWidget {
             ListTile(
               leading: Icon(Icons.phone, color: Theme.of(context).primaryColor),
               title: Text(
-                order.mobile,
+                order.address.mobile,
                 style: TextStyle(
                   color: ColorsRes.subTitleMainTextColor,
                   fontSize: 12.0,

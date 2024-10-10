@@ -53,7 +53,7 @@ class HomeScreenProvider extends ChangeNotifier {
 
   Future getHomeScreenApiProvider(
       {required Map<String, dynamic> params,
-      required BuildContext context}) async {
+        required BuildContext context}) async {
     homeScreenState = HomeScreenState.loading;
     notifyListeners();
 
@@ -66,7 +66,7 @@ class HomeScreenProvider extends ChangeNotifier {
       Constant.gSections = homeScreenData.sections;
       homeScreenState = HomeScreenState.loaded;
       // HomeScreenData homeData = homeScreenData;
-       map = await getSliderImages(homeScreenData);
+      map = await getSliderImages(homeScreenData);
 
       notifyListeners();
 

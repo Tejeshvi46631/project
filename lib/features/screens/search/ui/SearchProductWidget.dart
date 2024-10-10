@@ -2,6 +2,7 @@ import 'package:egrocer/core/constant/constant.dart';
 import 'package:egrocer/core/model/productListItem.dart';
 import 'package:egrocer/core/provider/productChangeListingProvider.dart';
 import 'package:egrocer/core/provider/productSearchProvider.dart';
+import 'package:egrocer/core/repository/firebase_analytics.dart';
 import 'package:egrocer/core/widgets/defaultBlankItemMessageScreen.dart';
 import 'package:egrocer/core/widgets/generalMethods.dart';
 import 'package:egrocer/core/widgets/productGridItemContainer.dart';

@@ -5,6 +5,7 @@ import 'package:egrocer/core/provider/orderInvoiceProvider.dart';
 import 'package:egrocer/core/utils/styles/colorsRes.dart';
 import 'package:egrocer/core/widgets/generalMethods.dart';
 import 'package:egrocer/core/widgets/widgets.dart';
+import 'package:egrocer/features/screens/orderSummaryScreen/widgets/ShippedItemsDetails.dart';
 import 'package:egrocer/features/screens/orderSummaryScreen/widgets/billDetails.dart';
 import 'package:egrocer/features/screens/orderSummaryScreen/widgets/deliveryInformationContainer.dart';
 import 'package:egrocer/features/screens/orderSummaryScreen/widgets/orderItemContainer.dart';
@@ -20,10 +21,11 @@ import '../widgets/OrderItemsDetails.dart';
 
 class OSStackWidget extends StatefulWidget {
   final Order order;
+  final List<ShippedItem> shippedItems;
   final List<OrderItem> orderItems;
 
   const OSStackWidget(
-      {super.key, required this.order, required this.orderItems});
+      {super.key, required this.order, required this.orderItems, required this.shippedItems});
 
   @override
   State<OSStackWidget> createState() => _OSStackWidgetState();
@@ -49,6 +51,7 @@ class _OSStackWidgetState extends State<OSStackWidget> {
             child: Column(
               children: [
                 OSOrderStatusContainer(order: widget.order),
+                ShippedItemsDetails(order: widget.order, shippedItems: widget.shippedItems),
                 OrderItemsDetails(order: widget.order, orderItems: widget.orderItems),
                 DeliveryInformationContainer(order: widget.order),
                 BillDetails(order: widget.order, shopByReaginProduct: [], listSimilarProductListItem: [],)
